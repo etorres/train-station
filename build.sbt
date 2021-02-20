@@ -1,10 +1,19 @@
 import Dependencies._
 import Settings._
 
-commonSettings
+sbtSettings
 
 lazy val root = (project in file("."))
-  .settings(skip in publish := true)
-  .aggregate(`models`)
+  .settings(Seq(name := "train-station", skip in publish := true))
+  .aggregate(effect, models)
 
-lazy val `models` = project.testDependencies(weaverFramework)
+lazy val effect = project
+  .module("effect")
+  .mainDependencies(newType, refined, shapeless)
+
+lazy val models =
+  project
+    .module("models")
+    .dependsOn(effect)
+    .mainDependencies(catsCore, newType, refined, shapeless)
+    .testDependencies(weaverFramework)
