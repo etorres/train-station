@@ -5,15 +5,15 @@ sbtSettings
 
 lazy val root = (project in file("."))
   .settings(Seq(name := "train-station", skip in publish := true))
-  .aggregate(effect, models)
+  .aggregate(`effect-lib`, `models-lib`)
 
-lazy val effect = project
-  .module("effect")
+lazy val `effect-lib` = project
+  .library("effect")
   .mainDependencies(newType, refined, shapeless)
 
-lazy val models =
+lazy val `models-lib` =
   project
-    .module("models")
-    .dependsOn(effect)
+    .library("models")
+    .dependsOn(`effect-lib`)
     .mainDependencies(catsCore, newType, refined, shapeless)
     .testDependencies(weaverFramework)

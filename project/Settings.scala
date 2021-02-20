@@ -74,7 +74,11 @@ object Settings {
     )
 
   implicit class ProjectSyntax(project: Project) {
-    def module(path: String): Project = project.in(file(path)).settings(commonSettings(project.id))
+    private[this] def module(path: String): Project =
+      project.in(file(path)).settings(commonSettings(project.id))
+
+    def application(path: String): Project = module(s"apps/$path")
+    def library(path: String): Project = module("libs/" ++ path)
 
     private[this] def dependencies_(dependencies: Seq[ModuleID]): Project =
       project.settings(libraryDependencies ++= dependencies)
