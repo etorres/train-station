@@ -1,0 +1,27 @@
+package es.eriktorr
+
+import arrival.Arrivals
+
+import cats.effect.{ConcurrentEffect, Timer}
+import fs2.Stream
+import org.http4s.implicits._
+import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.server.middleware.Logger
+
+import scala.concurrent.ExecutionContext
+
+object TrainControlPanelServer {
+  def stream[F[_]: ConcurrentEffect](
+    executionContext: ExecutionContext
+  )(implicit T: Timer[F]): Stream[F, Nothing] = {
+    val arrivals = Arrivals.impl[F]
+
+    val httpApp = TrainControlPanelRoutes.arrivalRoutes[F](arrivals).orNotFound
+    val finalHttpApp = Logger.httpApp(logHeaders = true, logBody = true)(httpApp)
+
+    BlazeServerBuilder[F](executionContext)
+      .bindHttp(8080, "0.0.0.0")
+      .withHttpApp(finalHttpApp)
+      .serve
+  }.drain
+}

@@ -1,25 +1,27 @@
 package es.eriktorr
 
 import effect._
-import error._
+import error.TrainStationError.InvalidParameter
 
 import cats.implicits._
 import eu.timepit.refined.api.Refined
-import eu.timepit.refined.predicates.all._
+import eu.timepit.refined.predicates.all.MatchesRegex
 import eu.timepit.refined.refineV
 import io.estatico.newtype.Coercible
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
 
 object station {
-  sealed trait TravelDirection
-
-  sealed trait Origin extends TravelDirection
-  sealed trait Destination extends TravelDirection
-
-  @newtype class Station[A <: TravelDirection](val unStation: NonBlankString)
+  @newtype class Station[A <: Station.TravelDirection](val unStation: NonBlankString)
 
   object Station {
+    sealed trait TravelDirection
+
+    object TravelDirection {
+      sealed trait Origin extends TravelDirection
+      sealed trait Destination extends TravelDirection
+    }
+
     implicit def evCoercible[A <: TravelDirection, B]: Coercible[B, Station[A]] =
       Coercible.instance[B, Station[A]]
 

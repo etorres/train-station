@@ -5,10 +5,15 @@ import io.estatico.newtype.macros.newtype
 import java.time.Instant
 
 object time {
-  sealed trait Record
+  @newtype case class Moment[A <: Moment.When](unTimestamp: Instant)
 
-  sealed trait Created extends Record
-  sealed trait Expected extends Record
+  object Moment {
+    sealed trait When
 
-  @newtype case class Moment[A <: Record](unTimestamp: Instant)
+    object When {
+      sealed trait Actual extends When
+      sealed trait Created extends When
+      sealed trait Expected extends When
+    }
+  }
 }

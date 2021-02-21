@@ -1,14 +1,16 @@
 package es.eriktorr
 
 import effect._
-import error._
-import station._
-import time._
-import train._
+import error.TrainStationError.InvalidParameter
+import station.Station
+import station.Station.TravelDirection.{Destination, Origin}
+import time.Moment
+import time.Moment.When.{Created, Expected}
+import train.TrainId
 
 import cats.implicits._
-import eu.timepit.refined._
-import eu.timepit.refined.predicates.all._
+import eu.timepit.refined.predicates.all.Uuid
+import eu.timepit.refined.refineV
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
 
@@ -28,21 +30,23 @@ object event {
     def created: Moment[Created]
   }
 
-  final case class Departed(
-    id: EventId,
-    trainId: TrainId,
-    from: Station[Origin],
-    to: Station[Destination],
-    expected: Moment[Expected],
-    created: Moment[Created]
-  ) extends Event
+  object Event {
+    final case class Departed(
+      id: EventId,
+      trainId: TrainId,
+      from: Station[Origin],
+      to: Station[Destination],
+      expected: Moment[Expected],
+      created: Moment[Created]
+    ) extends Event
 
-  final case class Arrived(
-    id: EventId,
-    trainId: TrainId,
-    from: Station[Origin],
-    to: Station[Destination],
-    expected: Moment[Expected],
-    created: Moment[Created]
-  ) extends Event
+    final case class Arrived(
+      id: EventId,
+      trainId: TrainId,
+      from: Station[Origin],
+      to: Station[Destination],
+      expected: Moment[Expected],
+      created: Moment[Created]
+    ) extends Event
+  }
 }

@@ -21,6 +21,7 @@ object Settings {
   private[this] val warts: Seq[Wart] = Warts.allBut(
     Wart.Any,
     Wart.Nothing,
+    Wart.Null, // TO-DO
     Wart.Equals,
     Wart.DefaultArguments,
     Wart.Overloading,
@@ -44,7 +45,7 @@ object Settings {
       addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full),
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1" cross CrossVersion.binary),
       dependencyOverrides ++= Seq(catsCore, catsEffect, fs2Core),
-      testFrameworks += new TestFramework("weaver.framework.TestFramework"),
+      testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
       wartremoverErrors in (Compile, compile) ++= warts,
       wartremoverErrors in (Test, compile) ++= warts,
       scalacOptions ++= Seq(
@@ -74,6 +75,9 @@ object Settings {
     )
 
   implicit class ProjectSyntax(project: Project) {
+    def root(rootName: String): Project =
+      project.in(file(".")).settings(Seq(name := rootName, skip in publish := true))
+
     private[this] def module(path: String): Project =
       project.in(file(path)).settings(commonSettings(project.id))
 

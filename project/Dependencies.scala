@@ -20,6 +20,18 @@ trait CatsScalaCheck {
   val catsScalaCheck = organization %% "cats-scalacheck" % version
 }
 
+trait Circe {
+  private[this] val organization = "io.circe"
+  private[this] val version = "0.13.0"
+
+  // for auto-derivation of JSON codecs
+  val circeGeneric = organization %% "circe-generic" % version
+  // for string interpolation to JSON model
+  val circeLiteral = organization %% "circe-literal" % version
+  // codecs for refined types
+  val circeRefined = organization %% "circe-refined" % version
+}
+
 trait Ciris {
   private[this] val organization = "is.cir"
 
@@ -81,15 +93,16 @@ trait Shapeless {
 trait Weaver {
   private[this] val organization = "com.disneystreaming"
 
-  private[this] val version = "0.7.0-M6"
+  private[this] val version = "0.6.0-M6"
 
-  val weaverFramework = organization %% "weaver-framework" % version
+  val weaverCats = organization %% "weaver-cats" % version
   val weaverScalaCheck = organization %% "weaver-scalacheck" % version
 }
 
 object Dependencies
     extends Cats
     with CatsScalaCheck
+    with Circe
     with Ciris
     with Fs2
     with Fs2Kafka

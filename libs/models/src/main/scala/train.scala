@@ -1,11 +1,11 @@
 package es.eriktorr
 
 import effect._
-import error._
+import error.TrainStationError.InvalidParameter
 
 import cats.implicits._
-import eu.timepit.refined._
-import eu.timepit.refined.predicates.all._
+import eu.timepit.refined.predicates.all.Uuid
+import eu.timepit.refined.refineV
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
 

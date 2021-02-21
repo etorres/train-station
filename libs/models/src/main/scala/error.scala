@@ -5,5 +5,7 @@ import scala.util.control.NoStackTrace
 object error {
   sealed trait TrainStationError extends NoStackTrace
 
-  final case class InvalidParameter(error: String) extends TrainStationError
+  object TrainStationError {
+    final case class InvalidParameter(error: String) extends TrainStationError
+  }
 }

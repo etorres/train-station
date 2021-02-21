@@ -3,17 +3,38 @@ import Settings._
 
 sbtSettings
 
-lazy val root = (project in file("."))
-  .settings(Seq(name := "train-station", skip in publish := true))
-  .aggregate(`effect-lib`, `models-lib`)
+lazy val root = project
+  .root("train-station")
+  .aggregate(`circe-models`, effect, models, `train-control-panel`)
 
-lazy val `effect-lib` = project
+lazy val `circe-models` = project
+  .library("circe-models")
+  .dependsOn(models)
+  .mainDependencies(circeGeneric, circeLiteral, circeRefined)
+
+lazy val effect = project
   .library("effect")
-  .mainDependencies(newType, refined, shapeless)
+  .mainDependencies(catsEffect, newType, refined, shapeless)
 
-lazy val `models-lib` =
+lazy val models =
   project
     .library("models")
-    .dependsOn(`effect-lib`)
+    .dependsOn(effect)
     .mainDependencies(catsCore, newType, refined, shapeless)
-    .testDependencies(weaverFramework)
+
+lazy val `train-control-panel` =
+  project
+    .application("train-control-panel")
+    .dependsOn(models)
+    .mainDependencies(
+      catsEffect,
+      circeGeneric,
+      circeLiteral,
+      circeRefined,
+      http4sBlazeServer,
+      http4sCirce,
+      http4sDsl
+    )
+    .testDependencies(weaverCats, weaverScalaCheck)
+
+lazy val `train-schedule-display` = ???

@@ -5,7 +5,7 @@ import eu.timepit.refined.api.Refined
 import eu.timepit.refined.predicates.all._
 import io.estatico.newtype.Coercible
 
-package object effect {
+package object effect extends ResourceSyntax {
   type NonBlank = W.`"""\\A(?!\\s*\\Z).+"""`.T
 
   type NonBlankString = String Refined NonBlank
