@@ -1,15 +1,18 @@
 package es.eriktorr
 
 import event.Event.Arrived
+import event.EventId
+import station.Station
+import station.Station.TravelDirection.{Destination, Origin}
 import time.Moment
-import time.Moment.When.Actual
+import time.Moment.When.{Actual, Created, Expected}
 import train.TrainId
 
 import cats.Applicative
 import cats.effect.Sync
 import cats.implicits._
-import io.circe.generic.semiauto._
 import io.circe._
+import io.circe.generic.semiauto._
 import org.http4s._
 import org.http4s.circe._
 
@@ -80,12 +83,19 @@ object arrival {
 
   object Arrivals {
     def impl[F[_]: Sync]: Arrivals[F] = new Arrivals[F] {
-      override def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] = {
-        println(s"\n\n >> HERE IS OK: ${arrival.toString}\n")
+      override def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
         for {
-          trainId <- F.fromEither(TrainId.fromString("123"))
-        } yield Left(ArrivalError.UnexpectedTrain(trainId))
-      }
+          id <- F.fromEither(EventId.fromString("8ad325ab-c42b-47ae-8018-cb11a8aa80f6"))
+          origin <- F.fromEither(Station.fromString[Origin]("Barcelona"))
+          destination <- F.fromEither(Station.fromString[Destination]("Girona"))
+        } yield Arrived(
+          id = id,
+          trainId = arrival.trainId,
+          from = origin,
+          to = destination,
+          expected = arrival.actual.asMoment[Expected],
+          created = arrival.actual.asMoment[Created]
+        ).asRight
     }
   }
 }

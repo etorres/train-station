@@ -1,11 +1,18 @@
 package es.eriktorr
 
+import io.estatico.newtype.Coercible
 import io.estatico.newtype.macros.newtype
+import io.estatico.newtype.ops._
 
 import java.time.Instant
 
 object time {
-  @newtype case class Moment[A <: Moment.When](unMoment: Instant)
+  @newtype case class Moment[A <: Moment.When](unMoment: Instant) {
+    def asMoment[B <: Moment.When]: Moment[B] = unMoment.coerce[Moment[B]]
+  }
+
+  implicit def evCoercible[A <: Moment.When, B]: Coercible[B, Moment[A]] =
+    Coercible.instance[B, Moment[A]]
 
   object Moment {
     sealed trait When
