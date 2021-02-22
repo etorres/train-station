@@ -5,7 +5,7 @@ import io.estatico.newtype.macros.newtype
 import java.time.Instant
 
 object time {
-  @newtype case class Moment[A <: Moment.When](unTimestamp: Instant)
+  @newtype case class Moment[A <: Moment.When](unMoment: Instant)
 
   object Moment {
     sealed trait When

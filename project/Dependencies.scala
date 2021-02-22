@@ -61,6 +61,7 @@ trait Http4s {
 
   private[this] val version = "0.21.19"
 
+  val http4sBlazeClient = organization %% "http4s-blaze-client" % version
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
   val http4sDsl = organization %% "http4s-dsl" % version
