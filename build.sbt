@@ -5,16 +5,11 @@ sbtSettings
 
 lazy val root = project
   .root("train-station")
-  .aggregate(`circe-models`, effect, models, `train-control-panel`)
-
-lazy val `circe-models` = project
-  .library("circe-models")
-  .dependsOn(models)
-  .mainDependencies(circeGeneric, circeLiteral, circeRefined)
+  .aggregate(effect, models, `models-circe`, `train-control-panel`)
 
 lazy val effect = project
   .library("effect")
-  .mainDependencies(catsEffect, newType, refined, shapeless)
+  .mainDependencies(catsCore, catsEffect, newType, refined, shapeless)
 
 lazy val models =
   project
@@ -22,10 +17,15 @@ lazy val models =
     .dependsOn(effect)
     .mainDependencies(catsCore, newType, refined, shapeless)
 
+lazy val `models-circe` = project
+  .library("models-circe")
+  .dependsOn(models)
+  .mainDependencies(circeGeneric, circeLiteral, circeRefined)
+
 lazy val `train-control-panel` =
   project
     .application("train-control-panel")
-    .dependsOn(models)
+    .dependsOn(models, `models-circe`)
     .mainDependencies(
       catsEffect,
       circeGeneric,

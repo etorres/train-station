@@ -1,5 +1,6 @@
 package es.eriktorr
 
+import circe.{MomentJsonProtocol, TrainJsonProtocol}
 import event.Event.Arrived
 import event.EventId
 import station.Station
@@ -16,54 +17,10 @@ import io.circe.generic.semiauto._
 import org.http4s._
 import org.http4s.circe._
 
-import java.time.Instant
-import scala.util.{Failure, Success, Try}
-
 object arrival {
   final case class Arrival(trainId: TrainId, actual: Moment[Actual])
 
-  object Arrival {
-    implicit val trainIdDecoder: Decoder[TrainId] = (cursor: HCursor) =>
-      cursor
-        .downField("trainId")
-        .as[String]
-        .map(TrainId.fromString)
-        .fold(
-          _.asLeft, {
-            case Left(constructorError) =>
-              DecodingFailure(
-                s"Failed to decode: ${cursor.value.toString}, with error: ${constructorError.error}",
-                List.empty
-              ).asLeft
-            case Right(trainId) => trainId.asRight
-          }
-        )
-
-    implicit val trainIdEncoder: Encoder[TrainId] = (trainId: TrainId) =>
-      Json.obj(("trainId", Json.fromString(trainId.unTrainId.value)))
-
-    implicit def momentEncoder[A <: Moment.When]: Encoder[Moment[A]] =
-      (moment: Moment[A]) => Json.obj(("moment", Json.fromString(moment.unMoment.toString)))
-
-    implicit def momentDecoder[A <: Moment.When]: Decoder[Moment[A]] =
-      (cursor: HCursor) =>
-        cursor
-          .downField("moment")
-          .as[String]
-          .map(str => Try(Instant.parse(str)))
-          .fold(
-            _.asLeft,
-            a =>
-              a match {
-                case Failure(exception) =>
-                  DecodingFailure(
-                    s"Failed to decode: ${cursor.value.toString}, with error: ${exception.getMessage}",
-                    List()
-                  ).asLeft
-                case Success(instant) => Moment[A](instant).asRight
-              }
-          )
-
+  object Arrival extends MomentJsonProtocol with TrainJsonProtocol {
     implicit val arrivalDecoder: Decoder[Arrival] = deriveDecoder
     implicit def arrivalEntityDecoder[F[_]: Sync]: EntityDecoder[F, Arrival] = jsonOf
 
