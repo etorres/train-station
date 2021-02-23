@@ -20,20 +20,24 @@ lazy val models =
 lazy val `models-circe` = project
   .library("models-circe")
   .dependsOn(models)
-  .mainDependencies(circeGeneric, circeLiteral, circeRefined)
+  .mainDependencies(catsCore, circeCore, refined)
 
 lazy val `train-control-panel` =
   project
     .application("train-control-panel")
     .dependsOn(models, `models-circe`)
     .mainDependencies(
+      catsCore,
       catsEffect,
+      circeCore,
       circeGeneric,
-      circeLiteral,
-      circeRefined,
+      fs2Core,
       http4sBlazeServer,
       http4sCirce,
-      http4sDsl
+      http4sCore,
+      http4sDsl,
+      http4sServer,
+      shapeless
     )
     .testDependencies(weaverCats, weaverScalaCheck)
 

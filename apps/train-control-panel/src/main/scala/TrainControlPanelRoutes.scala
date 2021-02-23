@@ -1,13 +1,15 @@
 package es.eriktorr
 
 import arrival.{Arrival, ArrivalError, Arrivals}
+import circe.EventJsonProtocol
 
 import cats.effect.Sync
 import cats.implicits._
 import org.http4s._
+import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.dsl.Http4sDsl
 
-object TrainControlPanelRoutes {
+object TrainControlPanelRoutes extends EventJsonProtocol {
   def arrivalRoutes[F[_]: Sync](A: Arrivals[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F] {}
     import dsl._
@@ -23,7 +25,7 @@ object TrainControlPanelRoutes {
                 case ArrivalError.UnexpectedTrain(trainId) =>
                   BadRequest(s"Unexpected train ${trainId.toString}")
               },
-            _ => Created()
+            arrivalEvent => Created(arrivalEvent.id)
           )
         } yield response
     }

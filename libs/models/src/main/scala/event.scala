@@ -1,6 +1,5 @@
 package es.eriktorr
 
-import effect._
 import error.TrainStationError.InvalidParameter
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin}
@@ -9,13 +8,14 @@ import time.Moment.When.{Created, Expected}
 import train.TrainId
 
 import cats.implicits._
+import eu.timepit.refined.api.Refined
 import eu.timepit.refined.predicates.all.Uuid
 import eu.timepit.refined.refineV
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
 
 object event {
-  @newtype class EventId(val unEventId: Uuid)
+  @newtype class EventId(val unEventId: String Refined Uuid)
 
   object EventId {
     def fromString(str: String): Either[InvalidParameter, EventId] = refineV[Uuid](str) match {

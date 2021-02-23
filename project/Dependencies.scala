@@ -24,6 +24,7 @@ trait Circe {
   private[this] val organization = "io.circe"
   private[this] val version = "0.13.0"
 
+  val circeCore = organization %% "circe-core" % version
   // for auto-derivation of JSON codecs
   val circeGeneric = organization %% "circe-generic" % version
   // for string interpolation to JSON model
@@ -63,7 +64,9 @@ trait Http4s {
 
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
+  val http4sCore = organization %% "http4s-core" % version
   val http4sDsl = organization %% "http4s-dsl" % version
+  val http4sServer = organization %% "http4s-server" % version
 }
 
 trait NewType {

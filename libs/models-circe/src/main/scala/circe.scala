@@ -1,5 +1,6 @@
 package es.eriktorr
 
+import event.EventId
 import time.Moment
 import train.TrainId
 
@@ -10,6 +11,27 @@ import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 object circe {
+  trait EventJsonProtocol {
+    implicit val eventIdDecoder: Decoder[EventId] = (cursor: HCursor) =>
+      cursor
+        .downField("eventId")
+        .as[String]
+        .map(EventId.fromString)
+        .fold(
+          _.asLeft, {
+            case Left(constructorError) =>
+              DecodingFailure(
+                s"Failed to decode: ${cursor.value.toString}, with error: ${constructorError.error}",
+                List.empty
+              ).asLeft
+            case Right(eventId) => eventId.asRight
+          }
+        )
+
+    implicit val eventIdEncoder: Encoder[EventId] = (eventId: EventId) =>
+      Json.obj(("eventId", Json.fromString(eventId.unEventId.value)))
+  }
+
   trait TrainJsonProtocol {
     implicit val trainIdDecoder: Decoder[TrainId] = (cursor: HCursor) =>
       cursor
