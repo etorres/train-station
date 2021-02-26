@@ -3,6 +3,7 @@ package es.eriktorr
 import effect._
 import error.TrainStationError.InvalidParameter
 
+import cats.Show
 import cats.implicits._
 import eu.timepit.refined.predicates.all.MatchesRegex
 import eu.timepit.refined.refineV
@@ -18,5 +19,7 @@ object train {
         case Left(_) => InvalidParameter("Train Id should be a valid UUID").asLeft
         case Right(refinedStr) => refinedStr.coerce[TrainId].asRight
       }
+
+    implicit val showTrainId: Show[TrainId] = Show.show(_.toString)
   }
 }

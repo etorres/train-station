@@ -16,6 +16,7 @@ lazy val models =
     .library("models")
     .dependsOn(effect)
     .mainDependencies(catsCore, newType, refined, shapeless)
+    .testDependencies(scalaCheck)
 
 lazy val `models-circe` = project
   .library("models-circe")
@@ -25,7 +26,7 @@ lazy val `models-circe` = project
 lazy val `train-control-panel` =
   project
     .application("train-control-panel")
-    .dependsOn(models, `models-circe`)
+    .dependsOn(models % "test->test;compile->compile", `models-circe`)
     .mainDependencies(
       catsCore,
       catsEffect,
@@ -39,6 +40,6 @@ lazy val `train-control-panel` =
       http4sServer,
       shapeless
     )
-    .testDependencies(weaverCats, weaverScalaCheck)
+    .testDependencies(kittens, weaverCats, weaverScalaCheck)
 
 lazy val `train-schedule-display` = ???

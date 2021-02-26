@@ -2,42 +2,65 @@ package es.eriktorr
 
 import arrival.{Arrival, Arrivals}
 import circe.EventJsonProtocol
-import effect._
 import event.EventId
-import spec.HttpRoutesIOSuite
+import infrastructure.{FakeUUIDGenerator, UUIDGeneratorState}
+import shared.infrastructure.TrainStationGenerators._
+import spec.HttpRoutesIOCheckers
 import time.Moment
 import time.Moment.When.Actual
 import train.TrainId
+import uuid.UUIDGenerator
 
+import cats.Show
+import cats.derived._
 import cats.effect._
 import cats.implicits._
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers._
 import org.http4s.implicits._
+import weaver._
+import weaver.scalacheck._
 
-import java.time.Instant
+object ArrivalSuite
+    extends SimpleIOSuite
+    with Checkers
+    with HttpRoutesIOCheckers
+    with EventJsonProtocol {
 
-object ArrivalSuite extends HttpRoutesIOSuite with EventJsonProtocol {
-  override def sharedResource: Resource[IO, Res] =
-    TrainControlPanelRoutes.arrivalRoutes[IO](Arrivals.impl[IO]).toResource
+  test("create train arrivals") {
+    final case class TestCase(trainId: TrainId, actual: Moment[Actual], expectedEventId: EventId)
 
-  test("create a train arrival") { httpRoutes =>
-    @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-    val trainId = TrainId.fromString("C14").toOption.get
-    val actual = Moment[Actual](Instant.ofEpochMilli(1614017453487L))
-    @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-    val expectedEventId = EventId.fromString("8ad325ab-c42b-47ae-8018-cb11a8aa80f6").toOption.get
-    check(
-      httpRoutes = httpRoutes,
-      request = Request(
-        method = Method.POST,
-        uri = uri"arrival",
-        headers = Headers.of(`Content-Type`(MediaType.application.json)),
-        body = Arrival.arrivalEntityEncoder[IO].toEntity(Arrival(trainId, actual)).body
-      ),
-      expectedStatus = Status.Created,
-      expectedBody = expectedEventId.some
-    )
+    object TestCase {
+      implicit val showTestCase: Show[TestCase] = semiauto.show
+    }
+
+    val gen = for {
+      trainId <- trainIdGen
+      actual <- actualGen
+      expectedEventId <- eventIdGen
+    } yield TestCase(trainId, actual, expectedEventId)
+
+    forall(gen) {
+      case TestCase(trainId, actual, expectedEventId) =>
+        for {
+          uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(expectedEventId.unEventId.value)
+          expectations <- {
+            implicit val uuidGenerator: UUIDGenerator[IO] =
+              FakeUUIDGenerator.impl[IO](uuidGeneratorStateRef)
+            check(
+              httpRoutes = TrainControlPanelRoutes.arrivalRoutes[IO](Arrivals.impl[IO]),
+              request = Request(
+                method = Method.POST,
+                uri = uri"arrival",
+                headers = Headers.of(`Content-Type`(MediaType.application.json)),
+                body = Arrival.arrivalEntityEncoder[IO].toEntity(Arrival(trainId, actual)).body
+              ),
+              expectedStatus = Status.Created,
+              expectedBody = expectedEventId.some
+            )
+          }
+        } yield expectations
+    }
   }
 }

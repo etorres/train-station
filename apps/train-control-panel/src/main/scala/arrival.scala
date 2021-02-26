@@ -8,6 +8,7 @@ import station.Station.TravelDirection.{Destination, Origin}
 import time.Moment
 import time.Moment.When.{Actual, Created, Expected}
 import train.TrainId
+import uuid.UUIDGenerator
 
 import cats.Applicative
 import cats.effect.Sync
@@ -39,10 +40,11 @@ object arrival {
   }
 
   object Arrivals {
-    def impl[F[_]: Sync]: Arrivals[F] = new Arrivals[F] {
+    def impl[F[_]: Sync: UUIDGenerator]: Arrivals[F] = new Arrivals[F] {
       override def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
         for {
-          id <- F.fromEither(EventId.fromString("8ad325ab-c42b-47ae-8018-cb11a8aa80f6"))
+          uuid <- UUIDGenerator[F].next.map(_.toString)
+          id <- F.fromEither(EventId.fromString(uuid))
           origin <- F.fromEither(Station.fromString[Origin]("Barcelona"))
           destination <- F.fromEither(Station.fromString[Destination]("Girona"))
         } yield Arrived(

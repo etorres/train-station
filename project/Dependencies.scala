@@ -86,6 +86,14 @@ trait Refined {
   val refinedScalaCheck = organization %% "refined-scalacheck" % version
 }
 
+trait ScalaCheck {
+  private[this] val organization = "org.scalacheck"
+
+  private[this] val version = "1.15.3"
+
+  val scalaCheck = organization %% "scalacheck" % version
+}
+
 trait Shapeless {
   private[this] val organization = "com.chuusai"
   private[this] val version = "2.3.3"
@@ -112,5 +120,6 @@ object Dependencies
     with Http4s
     with NewType
     with Refined
+    with ScalaCheck
     with Shapeless
     with Weaver

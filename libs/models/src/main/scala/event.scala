@@ -7,6 +7,7 @@ import time.Moment
 import time.Moment.When.{Created, Expected}
 import train.TrainId
 
+import cats.Show
 import cats.implicits._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.predicates.all.Uuid
@@ -22,6 +23,8 @@ object event {
       case Left(_) => InvalidParameter("Event Id should be a valid UUID").asLeft
       case Right(refinedStr) => refinedStr.coerce[EventId].asRight
     }
+
+    implicit val showEventId: Show[EventId] = Show.show(_.toString)
   }
 
   sealed trait Event {

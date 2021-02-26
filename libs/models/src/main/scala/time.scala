@@ -1,5 +1,6 @@
 package es.eriktorr
 
+import cats.Show
 import io.estatico.newtype.Coercible
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
@@ -23,4 +24,6 @@ object time {
       sealed trait Expected extends When
     }
   }
+
+  implicit def showMoment[A <: Moment.When]: Show[Moment[A]] = Show.show(_.toString)
 }

@@ -5,11 +5,10 @@ import cats.effect._
 import cats.implicits._
 import org.http4s._
 import org.http4s.implicits._
-import weaver._
+import weaver.Expectations
+import weaver.Expectations.Helpers.expect
 
-trait HttpRoutesIOSuite extends IOSuite {
-  override type Res = HttpRoutes[IO]
-
+trait HttpRoutesIOCheckers {
   def check[A](
     httpRoutes: HttpRoutes[IO],
     request: Request[IO],

@@ -44,7 +44,7 @@ object Settings {
       addCompilerPlugin("org.augustjune" %% "context-applied" % "0.1.4"),
       addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full),
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1" cross CrossVersion.binary),
-      dependencyOverrides ++= Seq(catsCore, catsEffect, fs2Core),
+      dependencyOverrides ++= Seq(catsCore, catsEffect, fs2Core, scalaCheck),
       testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
       wartremoverErrors in (Compile, compile) ++= warts,
       wartremoverErrors in (Test, compile) ++= warts,
