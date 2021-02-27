@@ -1,15 +1,17 @@
 package es.eriktorr.train_station
+package arrival
 
-import arrival.{Arrival, Arrivals}
-import circe.EventJsonProtocol
+import arrival.Arrivals.Arrival
+import circe._
 import event.EventId
 import infrastructure.TrainStationGenerators._
-import infrastructure.{FakeUUIDGenerator, UUIDGeneratorState}
 import spec.HttpRoutesIOCheckers
 import time.Moment
 import time.Moment.When.Actual
 import train.TrainId
 import uuid.UUIDGenerator
+import uuid.infrastructure.FakeUUIDGenerator
+import uuid.infrastructure.FakeUUIDGenerator.UUIDGeneratorState
 
 import cats.Show
 import cats.derived._
@@ -22,11 +24,7 @@ import org.http4s.implicits._
 import weaver._
 import weaver.scalacheck._
 
-object ArrivalSuite
-    extends SimpleIOSuite
-    with Checkers
-    with HttpRoutesIOCheckers
-    with EventJsonProtocol {
+object ArrivalSuite extends SimpleIOSuite with Checkers with HttpRoutesIOCheckers {
 
   test("create train arrivals") {
     final case class TestCase(trainId: TrainId, actual: Moment[Actual], expectedEventId: EventId)

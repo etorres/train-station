@@ -1,6 +1,7 @@
 package es.eriktorr.train_station
 
-import arrival.{Arrival, ArrivalError, Arrivals}
+import arrival.Arrivals
+import arrival.Arrivals.{Arrival, ArrivalError}
 import circe.EventJsonProtocol
 
 import cats.effect.Sync

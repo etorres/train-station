@@ -1,4 +1,5 @@
 package es.eriktorr.train_station
+package arrival
 
 import circe.{MomentJsonProtocol, TrainJsonProtocol}
 import event.Event.Arrived
@@ -18,7 +19,13 @@ import io.circe.generic.semiauto._
 import org.http4s._
 import org.http4s.circe._
 
-object arrival {
+trait Arrivals[F[_]] {
+  import Arrivals.{Arrival, ArrivalError}
+
+  def register(arrival: Arrival): F[Either[ArrivalError, Arrived]]
+}
+
+object Arrivals {
   final case class Arrival(trainId: TrainId, actual: Moment[Actual])
 
   object Arrival extends MomentJsonProtocol with TrainJsonProtocol {
@@ -35,26 +42,20 @@ object arrival {
     final case class UnexpectedTrain(trainId: TrainId) extends ArrivalError
   }
 
-  trait Arrivals[F[_]] {
-    def register(arrival: Arrival): F[Either[ArrivalError, Arrived]]
-  }
-
-  object Arrivals {
-    def impl[F[_]: Sync: UUIDGenerator]: Arrivals[F] = new Arrivals[F] {
-      override def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
-        for {
-          uuid <- UUIDGenerator[F].next.map(_.toString)
-          id <- F.fromEither(EventId.fromString(uuid))
-          origin <- F.fromEither(Station.fromString[Origin]("Barcelona"))
-          destination <- F.fromEither(Station.fromString[Destination]("Girona"))
-        } yield Arrived(
-          id = id,
-          trainId = arrival.trainId,
-          from = origin,
-          to = destination,
-          expected = arrival.actual.asMoment[Expected],
-          created = arrival.actual.asMoment[Created]
-        ).asRight
-    }
+  def impl[F[_]: Sync: UUIDGenerator]: Arrivals[F] = new Arrivals[F] {
+    override def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
+      for {
+        uuid <- UUIDGenerator[F].next.map(_.toString)
+        id <- F.fromEither(EventId.fromString(uuid))
+        origin <- F.fromEither(Station.fromString[Origin]("Barcelona"))
+        destination <- F.fromEither(Station.fromString[Destination]("Girona"))
+      } yield Arrived(
+        id = id,
+        trainId = arrival.trainId,
+        from = origin,
+        to = destination,
+        expected = arrival.actual.asMoment[Expected],
+        created = arrival.actual.asMoment[Created]
+      ).asRight
   }
 }
