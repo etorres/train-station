@@ -36,7 +36,7 @@ object Settings {
       ThisBuild / organization := "es.eriktorr",
       ThisBuild / version := "1.0.0",
       ThisBuild / scalaVersion := "2.13.4",
-      ThisBuild / idePackagePrefix := Some("es.eriktorr"),
+      ThisBuild / idePackagePrefix := Some("es.eriktorr.train_station"),
       Global / excludeLintKeys += idePackagePrefix,
       Global / cancelable := true,
       Global / fork := true,

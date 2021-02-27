@@ -1,4 +1,4 @@
-package es.eriktorr
+package es.eriktorr.train_station
 
 import error.TrainStationError.InvalidParameter
 import station.Station

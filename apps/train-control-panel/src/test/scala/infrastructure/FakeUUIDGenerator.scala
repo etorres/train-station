@@ -1,4 +1,4 @@
-package es.eriktorr
+package es.eriktorr.train_station
 package infrastructure
 
 import uuid.UUIDGenerator

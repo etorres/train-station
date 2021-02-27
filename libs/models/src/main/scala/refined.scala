@@ -1,11 +1,11 @@
-package es.eriktorr
+package es.eriktorr.train_station
 
 import eu.timepit.refined._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.predicates.all._
 import io.estatico.newtype.Coercible
 
-package object effect extends ResourceSyntax {
+object refined {
   type NonBlank = W.`"""\\A(?!\\s*\\Z).+"""`.T
 
   type NonBlankString = String Refined NonBlank

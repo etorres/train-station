@@ -1,10 +1,9 @@
-package es.eriktorr
+package es.eriktorr.train_station
 
 import event.EventId
 import time.Moment
 import train.TrainId
 
-import cats.implicits._
 import io.circe._
 
 import java.time.Instant
@@ -43,13 +42,15 @@ object circe {
           .as[String]
           .map(fA)
           .fold(
-            _.asLeft, {
+            Left(_), {
               case Left(constructorError) =>
-                DecodingFailure(
-                  s"Failed to decode: ${cursor.value.toString}, with error: ${constructorError.getMessage}",
-                  List.empty
-                ).asLeft
-              case Right(value) => value.asRight
+                Left(
+                  DecodingFailure(
+                    s"Failed to decode: ${cursor.value.toString}, with error: ${constructorError.getMessage}",
+                    List.empty
+                  )
+                )
+              case Right(value) => Right(value)
             }
           )
     }

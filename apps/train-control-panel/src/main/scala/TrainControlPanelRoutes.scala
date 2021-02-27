@@ -1,4 +1,4 @@
-package es.eriktorr
+package es.eriktorr.train_station
 
 import arrival.{Arrival, ArrivalError, Arrivals}
 import circe.EventJsonProtocol

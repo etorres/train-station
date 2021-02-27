@@ -3,25 +3,20 @@ import Settings._
 
 sbtSettings
 
-lazy val root = project
+lazy val `train-station` = project
   .root("train-station")
-  .aggregate(effect, models, `models-circe`, `train-control-panel`)
-
-lazy val effect = project
-  .library("effect")
-  .mainDependencies(catsCore, catsEffect, newType, refined, shapeless)
+  .aggregate(models, `models-circe`, `train-control-panel`)
 
 lazy val models =
   project
     .library("models")
-    .dependsOn(effect)
     .mainDependencies(catsCore, newType, refined, shapeless)
     .testDependencies(scalaCheck)
 
 lazy val `models-circe` = project
   .library("models-circe")
   .dependsOn(models)
-  .mainDependencies(catsCore, circeCore, refined)
+  .mainDependencies(circeCore, refined)
 
 lazy val `train-control-panel` =
   project
@@ -41,5 +36,3 @@ lazy val `train-control-panel` =
       shapeless
     )
     .testDependencies(kittens, weaverCats, weaverScalaCheck)
-
-lazy val `train-schedule-display` = ???

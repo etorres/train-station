@@ -1,5 +1,5 @@
-package es.eriktorr
-package shared.infrastructure
+package es.eriktorr.train_station
+package infrastructure
 
 import org.scalacheck._
 

@@ -1,10 +1,10 @@
-package es.eriktorr
+package es.eriktorr.train_station
 
 import arrival.{Arrival, Arrivals}
 import circe.EventJsonProtocol
 import event.EventId
+import infrastructure.TrainStationGenerators._
 import infrastructure.{FakeUUIDGenerator, UUIDGeneratorState}
-import shared.infrastructure.TrainStationGenerators._
 import spec.HttpRoutesIOCheckers
 import time.Moment
 import time.Moment.When.Actual

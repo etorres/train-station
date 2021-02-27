@@ -1,7 +1,7 @@
-package es.eriktorr
+package es.eriktorr.train_station
 
-import effect._
 import error.TrainStationError.InvalidParameter
+import refined._
 
 import cats.Show
 import cats.implicits._
