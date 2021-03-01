@@ -84,7 +84,7 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
               expectedBody = eventId.some
             )
           }
-        } yield expectations
+        } yield expectations // TODO: replace with eventSender check
     }
   }
 }

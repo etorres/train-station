@@ -14,9 +14,14 @@ final class FakeExpectedTrains[F[_]: Sync] private[arrival] (val ref: Ref[F, Exp
   override def findBy(trainId: TrainId): F[Option[ExpectedTrain]] =
     ref.get.map(_.trains.find(_.trainId == trainId))
 
-  override def removeAllIdentifiedBy(trainId: TrainId): F[Unit] = ???
+  override def removeAllIdentifiedBy(trainId: TrainId): F[Unit] =
+    ref.get.flatMap(current =>
+      ref.set(current.copy(current.trains.filterNot(_.trainId == trainId)))
+    )
 
-  override def update(expectedTrain: ExpectedTrain): F[Unit] = ???
+  override def update(expectedTrain: ExpectedTrain): F[Unit] = ref.get.map { current =>
+    val _ = ref.set(current.copy(expectedTrain :: current.trains)); ()
+  }
 }
 
 object FakeExpectedTrains {
