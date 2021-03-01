@@ -21,7 +21,7 @@ object Settings {
   private[this] val warts: Seq[Wart] = Warts.allBut(
     Wart.Any,
     Wart.Nothing,
-    Wart.Null, // TO-DO
+    Wart.Null, // Disabled due to an unsolved issue of the context-applied Scala compiler plugin
     Wart.Equals,
     Wart.DefaultArguments,
     Wart.Overloading,

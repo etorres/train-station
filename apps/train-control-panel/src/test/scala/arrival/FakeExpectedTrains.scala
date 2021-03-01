@@ -27,5 +27,6 @@ object FakeExpectedTrains {
       Ref.of[F, ExpectedTrainsState](ExpectedTrainsState(trains))
   }
 
-  def impl[F[_]: Sync](ref: Ref[F, ExpectedTrainsState]) = new FakeExpectedTrains[F](ref)
+  def impl[F[_]: Sync](ref: Ref[F, ExpectedTrainsState]): FakeExpectedTrains[F] =
+    new FakeExpectedTrains[F](ref)
 }
