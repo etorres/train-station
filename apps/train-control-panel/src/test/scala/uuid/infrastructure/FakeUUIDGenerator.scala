@@ -2,6 +2,7 @@ package es.eriktorr.train_station
 package uuid.infrastructure
 
 import uuid.UUIDGenerator
+import uuid.infrastructure.FakeUUIDGenerator.UUIDGeneratorState
 
 import cats.data.NonEmptyList
 import cats.effect.Sync
@@ -11,7 +12,7 @@ import cats.implicits._
 import java.util.UUID
 
 final class FakeUUIDGenerator[F[_]: Sync] private[infrastructure] (
-  val ref: Ref[F, FakeUUIDGenerator.UUIDGeneratorState]
+  val ref: Ref[F, UUIDGeneratorState]
 ) extends UUIDGenerator[F] {
   @SuppressWarnings(Array("org.wartremover.warts.ListAppend"))
   override def next: F[UUID] =

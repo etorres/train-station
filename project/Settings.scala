@@ -92,5 +92,7 @@ object Settings {
       dependencies_(dependencies.map(_ % Test))
     def providedDependencies(dependencies: ModuleID*): Project =
       dependencies_(dependencies.map(_ % Provided))
+    def runtimeDependencies(dependencies: ModuleID*): Project =
+      dependencies_(dependencies.map(_ % Runtime))
   }
 }

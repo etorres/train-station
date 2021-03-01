@@ -33,6 +33,10 @@ lazy val `train-control-panel` =
       http4sCore,
       http4sDsl,
       http4sServer,
-      shapeless
+      log4CatsCore,
+      log4CatsSlf4j,
+      shapeless,
+      slf4jApi
     )
-    .testDependencies(kittens, weaverCats, weaverScalaCheck)
+    .testDependencies(catsScalaCheck, kittens, weaverCats, weaverScalaCheck)
+    .runtimeDependencies(logback)

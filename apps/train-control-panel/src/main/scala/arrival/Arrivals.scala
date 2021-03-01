@@ -1,13 +1,15 @@
 package es.eriktorr.train_station
 package arrival
 
+import arrival.Arrivals.{Arrival, ArrivalError}
 import circe.{MomentJsonProtocol, TrainJsonProtocol}
 import event.Event.Arrived
 import event.EventId
+import notification.EventSender
 import station.Station
-import station.Station.TravelDirection.{Destination, Origin}
+import station.Station.TravelDirection.Destination
 import time.Moment
-import time.Moment.When.{Actual, Created, Expected}
+import time.Moment.When.{Actual, Created}
 import train.TrainId
 import uuid.UUIDGenerator
 
@@ -18,10 +20,9 @@ import io.circe._
 import io.circe.generic.semiauto._
 import org.http4s._
 import org.http4s.circe._
+import org.typelevel.log4cats.Logger
 
 trait Arrivals[F[_]] {
-  import Arrivals.{Arrival, ArrivalError}
-
   def register(arrival: Arrival): F[Either[ArrivalError, Arrived]]
 }
 
@@ -42,20 +43,35 @@ object Arrivals {
     final case class UnexpectedTrain(trainId: TrainId) extends ArrivalError
   }
 
-  def impl[F[_]: Sync: UUIDGenerator]: Arrivals[F] = new Arrivals[F] {
-    override def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
+  def impl[F[_]: Sync: Logger: UUIDGenerator](
+    station: Station[Destination],
+    expectedTrains: ExpectedTrains[F],
+    eventSender: EventSender[F]
+  ): Arrivals[F] =
+    (arrival: Arrival) =>
       for {
-        uuid <- UUIDGenerator[F].next.map(_.toString)
-        id <- F.fromEither(EventId.fromString(uuid))
-        origin <- F.fromEither(Station.fromString[Origin]("Barcelona"))
-        destination <- F.fromEither(Station.fromString[Destination]("Girona"))
-      } yield Arrived(
-        id = id,
-        trainId = arrival.trainId,
-        from = origin,
-        to = destination,
-        expected = arrival.actual.asMoment[Expected],
-        created = arrival.actual.asMoment[Created]
-      ).asRight
-  }
+        maybeTrain <- expectedTrains.findBy(arrival.trainId)
+        arrived <- maybeTrain match {
+          case Some(expectedTrain) =>
+            F.next
+              .map(EventId.fromUuid)
+              .map(eventId =>
+                Arrived(
+                  id = eventId,
+                  trainId = arrival.trainId,
+                  from = expectedTrain.from,
+                  to = station,
+                  expected = expectedTrain.expected,
+                  created = arrival.actual.asMoment[Created]
+                )
+              )
+              .flatTap(arrived => expectedTrains.removeAllIdentifiedBy(arrived.trainId))
+              .flatTap(arrived => eventSender.send(arrived))
+              .map(_.asRight)
+          case None =>
+            val error = ArrivalError.UnexpectedTrain(arrival.trainId)
+            F.error(s"Tried to create arrival of an unexpected train: ${arrival.toString}")
+              .as(error.asLeft)
+        }
+      } yield arrived
 }

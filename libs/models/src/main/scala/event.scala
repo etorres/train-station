@@ -12,8 +12,11 @@ import cats.implicits._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.predicates.all.Uuid
 import eu.timepit.refined.refineV
+import io.estatico.newtype.Coercible
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
+
+import java.util.UUID
 
 object event {
   @newtype class EventId(val unEventId: String Refined Uuid)
@@ -22,6 +25,11 @@ object event {
     def fromString(str: String): Either[InvalidParameter, EventId] = refineV[Uuid](str) match {
       case Left(_) => InvalidParameter("Event Id should be a valid UUID").asLeft
       case Right(refinedStr) => refinedStr.coerce[EventId].asRight
+    }
+
+    def fromUuid(uuid: UUID): EventId = {
+      implicit def evString: Coercible[String, EventId] = Coercible.instance[String, EventId]
+      uuid.toString.coerce[EventId]
     }
 
     implicit val showEventId: Show[EventId] = Show.show(_.toString)

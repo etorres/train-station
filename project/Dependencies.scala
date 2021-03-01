@@ -69,6 +69,23 @@ trait Http4s {
   val http4sServer = organization %% "http4s-server" % version
 }
 
+trait Logback {
+  private[this] val organization = "ch.qos.logback"
+
+  private[this] val version = "1.2.3"
+
+  val logback = organization % "logback-classic" % version
+}
+
+trait Log4Cats {
+  private[this] val organization = "org.typelevel"
+
+  private[this] val version = "1.2.0"
+
+  val log4CatsCore = organization %% "log4cats-core" % version
+  val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
+}
+
 trait NewType {
   private[this] val organization = "io.estatico"
 
@@ -96,9 +113,18 @@ trait ScalaCheck {
 
 trait Shapeless {
   private[this] val organization = "com.chuusai"
+
   private[this] val version = "2.3.3"
 
   val shapeless = organization %% "shapeless" % version
+}
+
+trait Slf4j {
+  private[this] val organization = "org.slf4j"
+
+  private[this] val version = "1.7.30"
+
+  val slf4jApi = organization % "slf4j-api" % version
 }
 
 trait Weaver {
@@ -118,8 +144,11 @@ object Dependencies
     with Fs2
     with Fs2Kafka
     with Http4s
+    with Logback
+    with Log4Cats
     with NewType
     with Refined
     with ScalaCheck
     with Shapeless
+    with Slf4j
     with Weaver
