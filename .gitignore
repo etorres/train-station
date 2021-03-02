@@ -18,6 +18,13 @@ project/plugins/project/
 .lib/
 .bsp/
 
+### Metals
+# https://scalameta.org/metals/docs/editors/vscode.html
+.metals/
+.bloop/
+.ammonite/
+metals.sbt
+
 ### Windows template
 # Windows thumbnail cache files
 Thumbs.db
@@ -92,6 +99,15 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+
+### Visual Studio Code
+.vscode/
+#.vscode/*
+#!.vscode/settings.json
+#!.vscode/tasks.json
+#!.vscode/launch.json
+#!.vscode/extensions.json
+*.code-workspace
 
 ### Vim template
 # Swap
