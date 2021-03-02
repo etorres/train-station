@@ -19,9 +19,8 @@ final class FakeExpectedTrains[F[_]: Sync] private[arrival] (val ref: Ref[F, Exp
       ref.set(current.copy(current.trains.filterNot(_.trainId == trainId)))
     )
 
-  override def update(expectedTrain: ExpectedTrain): F[Unit] = ref.get.map { current =>
-    val _ = ref.set(current.copy(expectedTrain :: current.trains)); ()
-  }
+  override def update(expectedTrain: ExpectedTrain): F[Unit] =
+    ref.get.flatMap(current => ref.set(current.copy(expectedTrain :: current.trains)))
 }
 
 object FakeExpectedTrains {

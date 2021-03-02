@@ -12,7 +12,6 @@ import cats.implicits._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.predicates.all.Uuid
 import eu.timepit.refined.refineV
-import io.estatico.newtype.Coercible
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
 
@@ -27,10 +26,8 @@ object event {
       case Right(refinedStr) => refinedStr.coerce[EventId].asRight
     }
 
-    def fromUuid(uuid: UUID): EventId = {
-      implicit def evString: Coercible[String, EventId] = Coercible.instance[String, EventId]
-      uuid.toString.coerce[EventId]
-    }
+    @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
+    def fromUuid(uuid: UUID): EventId = EventId.fromString(uuid.toString).toOption.get
 
     implicit val showEventId: Show[EventId] = Show.show(_.toString)
   }

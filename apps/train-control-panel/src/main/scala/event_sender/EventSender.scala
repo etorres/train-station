@@ -1,5 +1,5 @@
 package es.eriktorr.train_station
-package sender
+package event_sender
 
 import event.Event
 

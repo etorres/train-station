@@ -38,5 +38,5 @@ lazy val `train-control-panel` =
       shapeless,
       slf4jApi
     )
-    .testDependencies(catsScalaCheck, kittens, weaverCats, weaverScalaCheck)
+    .testDependencies(catsScalaCheck, kittens, scalactic, weaverCats, weaverScalaCheck)
     .runtimeDependencies(logback)

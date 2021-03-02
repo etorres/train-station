@@ -2,9 +2,13 @@ package es.eriktorr.train_station
 package arrival
 
 import arrival.Arrivals.Arrival
+import arrival.ExpectedTrains.ExpectedTrain
 import arrival.FakeExpectedTrains.ExpectedTrainsState
 import circe._
+import event.Event.Arrived
 import event.EventId
+import event_sender.FakeEventSender
+import event_sender.FakeEventSender.EventSenderState
 import shared.infrastructure.Generators.nDistinct
 import shared.infrastructure.TrainControlPanelGenerators.expectedTrainGen
 import shared.infrastructure.TrainStationGenerators._
@@ -12,7 +16,7 @@ import spec.HttpRoutesIOCheckers
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin => StationOrigin}
 import time.Moment
-import time.Moment.When.Actual
+import time.Moment.When.{Actual, Created}
 import uuid.UUIDGenerator
 import uuid.infrastructure.FakeUUIDGenerator
 import uuid.infrastructure.FakeUUIDGenerator.UUIDGeneratorState
@@ -22,17 +26,19 @@ import cats.data.NonEmptyList
 import cats.derived._
 import cats.effect._
 import cats.implicits._
-import arrival.ExpectedTrains.ExpectedTrain
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers._
 import org.http4s.implicits._
-import org.scalacheck.cats.implicits._
 import org.scalacheck.Gen
+import org.scalacheck.cats.implicits._
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import weaver._
 import weaver.scalacheck._
+
+import org.scalactic._
+import TypeCheckedTripleEquals._
 
 object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOCheckers {
 
@@ -63,13 +69,19 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
           logger <- Slf4jLogger.create[F]
           expectedTrainsRef <- ExpectedTrainsState.refFrom(expectedTrains.toList)
           uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
+          eventSenderStateRef <- EventSenderState.refEmpty
+          expectedTrain = expectedTrains.head
           expectations <- {
             implicit val testLogger: Logger[F] = logger
             implicit val uuidGenerator: UUIDGenerator[IO] =
               FakeUUIDGenerator.impl[IO](uuidGeneratorStateRef)
             check(
               httpRoutes = TrainControlPanelRoutes.arrivalRoutes[IO](
-                Arrivals.impl[IO](destination, FakeExpectedTrains.impl[IO](expectedTrainsRef), ???)
+                Arrivals.impl[IO](
+                  destination,
+                  FakeExpectedTrains.impl[IO](expectedTrainsRef),
+                  FakeEventSender.impl[IO](eventSenderStateRef)
+                )
               ),
               request = Request(
                 method = Method.POST,
@@ -77,14 +89,26 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
                 headers = Headers.of(`Content-Type`(MediaType.application.json)),
                 body = Arrival
                   .arrivalEntityEncoder[IO]
-                  .toEntity(Arrival(expectedTrains.head.trainId, actual))
+                  .toEntity(Arrival(expectedTrain.trainId, actual))
                   .body
               ),
               expectedStatus = Status.Created,
               expectedBody = eventId.some
             )
           }
-        } yield expectations // TODO: replace with eventSender check
+          sentEvents <- eventSenderStateRef.get
+        } yield expectations && expect(
+          sentEvents.events === List(
+            Arrived(
+              id = eventId,
+              trainId = expectedTrain.trainId,
+              from = expectedTrain.from,
+              to = destination,
+              expected = expectedTrain.expected,
+              created = actual.asMoment[Created]
+            )
+          )
+        )
     }
   }
 }

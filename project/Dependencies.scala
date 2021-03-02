@@ -111,6 +111,14 @@ trait ScalaCheck {
   val scalaCheck = organization %% "scalacheck" % version
 }
 
+trait Scalactic {
+  private[this] val organization = "org.scalactic"
+
+  private[this] val version = "3.2.5"
+
+  val scalactic = organization %% "scalactic" % version
+}
+
 trait Shapeless {
   private[this] val organization = "com.chuusai"
 
@@ -149,6 +157,7 @@ object Dependencies
     with NewType
     with Refined
     with ScalaCheck
+    with Scalactic
     with Shapeless
     with Slf4j
     with Weaver

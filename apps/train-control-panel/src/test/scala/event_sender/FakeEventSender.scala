@@ -1,18 +1,17 @@
 package es.eriktorr.train_station
-package sender
+package event_sender
 
 import event.Event
-import sender.FakeEventSender.EventSenderState
+import event_sender.FakeEventSender.EventSenderState
 
 import cats.effect.Sync
 import cats.effect.concurrent.Ref
 import cats.implicits._
 
-final class FakeEventSender[F[_]: Sync] private[sender] (val ref: Ref[F, EventSenderState])
+final class FakeEventSender[F[_]: Sync] private[event_sender] (val ref: Ref[F, EventSenderState])
     extends EventSender[F] {
-  override def send(event: Event): F[Unit] = ref.get.map { current =>
-    val _ = ref.set(current.copy(event :: current.events)); ()
-  }
+  override def send(event: Event): F[Unit] =
+    ref.get.flatMap(current => ref.set(current.copy(event :: current.events)))
 }
 
 object FakeEventSender {
