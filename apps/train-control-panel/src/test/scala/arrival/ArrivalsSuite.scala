@@ -71,7 +71,7 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
           uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
           eventSenderStateRef <- EventSenderState.refEmpty
           expectedTrain = expectedTrains.head
-          expectations <- {
+          httpExpectations <- {
             implicit val testLogger: Logger[F] = logger
             implicit val uuidGenerator: UUIDGenerator[IO] =
               FakeUUIDGenerator.impl[IO](uuidGeneratorStateRef)
@@ -97,7 +97,7 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
             )
           }
           sentEvents <- eventSenderStateRef.get
-        } yield expectations && expect(
+        } yield httpExpectations && expect(
           sentEvents.events === List(
             Arrived(
               id = eventId,
