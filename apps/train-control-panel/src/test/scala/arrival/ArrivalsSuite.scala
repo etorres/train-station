@@ -70,7 +70,7 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
           expectedTrainsRef <- ExpectedTrainsState.refFrom(expectedTrains.toList)
           uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
           eventSenderStateRef <- EventSenderState.refEmpty
-          expectedTrain = expectedTrains.head
+          train = expectedTrains.head
           httpExpectations <- {
             implicit val testLogger: Logger[F] = logger
             implicit val uuidGenerator: UUIDGenerator[IO] =
@@ -89,7 +89,7 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
                 headers = Headers.of(`Content-Type`(MediaType.application.json)),
                 body = Arrival
                   .arrivalEntityEncoder[IO]
-                  .toEntity(Arrival(expectedTrain.trainId, actual))
+                  .toEntity(Arrival(train.trainId, actual))
                   .body
               ),
               expectedStatus = Status.Created,
@@ -101,10 +101,10 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
           sentEvents.events === List(
             Arrived(
               id = eventId,
-              trainId = expectedTrain.trainId,
-              from = expectedTrain.from,
+              trainId = train.trainId,
+              from = train.from,
               to = destination,
-              expected = expectedTrain.expected,
+              expected = train.expected,
               created = actual.asMoment[Created]
             )
           )
