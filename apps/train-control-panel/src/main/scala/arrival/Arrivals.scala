@@ -66,7 +66,7 @@ object Arrivals {
                 )
               )
               .flatTap(arrived => expectedTrains.removeAllIdentifiedBy(arrived.trainId))
-              .flatTap(arrived => eventSender.send(arrived))
+              .flatTap(eventSender.send)
               .map(_.asRight)
           case None =>
             val error = ArrivalError.UnexpectedTrain(arrival.trainId)

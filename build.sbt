@@ -10,7 +10,7 @@ lazy val `train-station` = project
 lazy val models =
   project
     .library("models")
-    .mainDependencies(catsCore, newType, refined, shapeless)
+    .mainDependencies(catsCore, catsKernel, kittens, newType, refined, shapeless)
     .testDependencies(scalaCheck)
 
 lazy val `models-circe` = project
@@ -25,6 +25,7 @@ lazy val `train-control-panel` =
     .mainDependencies(
       catsCore,
       catsEffect,
+      catsKernel,
       circeCore,
       circeGeneric,
       fs2Core,
@@ -38,5 +39,5 @@ lazy val `train-control-panel` =
       shapeless,
       slf4jApi
     )
-    .testDependencies(catsScalaCheck, kittens, scalactic, weaverCats, weaverScalaCheck)
+    .testDependencies(catsScalaCheck, kittens, weaverCats, weaverScalaCheck)
     .runtimeDependencies(logback)

@@ -7,8 +7,9 @@ import time.Moment
 import time.Moment.When.{Created, Expected}
 import train.TrainId
 
-import cats.Show
+import cats.derived._
 import cats.implicits._
+import cats.{Eq, Show}
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.predicates.all.Uuid
 import eu.timepit.refined.refineV
@@ -29,6 +30,7 @@ object event {
     @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
     def fromUuid(uuid: UUID): EventId = EventId.fromString(uuid.toString).toOption.get
 
+    implicit def eqEventId: Eq[EventId] = Eq.fromUniversalEquals
     implicit val showEventId: Show[EventId] = Show.show(_.toString)
   }
 
@@ -56,5 +58,7 @@ object event {
       expected: Moment[Expected],
       created: Moment[Created]
     ) extends Event
+
+    implicit val eqEvent: Eq[Event] = semiauto.eq
   }
 }

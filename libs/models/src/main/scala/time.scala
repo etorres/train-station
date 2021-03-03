@@ -1,6 +1,6 @@
 package es.eriktorr.train_station
 
-import cats.Show
+import cats.{Eq, Show}
 import io.estatico.newtype.Coercible
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
@@ -25,5 +25,6 @@ object time {
     }
   }
 
+  implicit def eqMoment[A <: Moment.When]: Eq[Moment[A]] = Eq.fromUniversalEquals
   implicit def showMoment[A <: Moment.When]: Show[Moment[A]] = Show.show(_.toString)
 }

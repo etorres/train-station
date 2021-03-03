@@ -3,7 +3,7 @@ package es.eriktorr.train_station
 import error.TrainStationError.InvalidParameter
 import refined._
 
-import cats.Show
+import cats.{Eq, Show}
 import cats.implicits._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.predicates.all.MatchesRegex
@@ -30,6 +30,7 @@ object station {
       : Coercible[String Refined MatchesRegex[NonBlank], Station[A]] =
       Coercible.instance[String Refined MatchesRegex[NonBlank], Station[A]]
 
+    implicit def eqStation[A <: Station.TravelDirection]: Eq[Station[A]] = Eq.fromUniversalEquals
     implicit def showStation[A <: Station.TravelDirection]: Show[Station[A]] = Show.show(_.toString)
 
     def fromString[A <: TravelDirection](

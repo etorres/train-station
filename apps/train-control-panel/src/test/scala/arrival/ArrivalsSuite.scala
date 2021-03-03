@@ -37,9 +37,6 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 import weaver._
 import weaver.scalacheck._
 
-import org.scalactic._
-import TypeCheckedTripleEquals._
-
 object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOCheckers {
 
   test("create train arrivals") {

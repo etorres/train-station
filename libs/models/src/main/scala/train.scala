@@ -3,8 +3,8 @@ package es.eriktorr.train_station
 import error.TrainStationError.InvalidParameter
 import refined._
 
-import cats.Show
 import cats.implicits._
+import cats.{Eq, Show}
 import eu.timepit.refined.predicates.all.MatchesRegex
 import eu.timepit.refined.refineV
 import io.estatico.newtype.macros.newtype
@@ -20,6 +20,7 @@ object train {
         case Right(refinedStr) => refinedStr.coerce[TrainId].asRight
       }
 
+    implicit def eqTrainId: Eq[TrainId] = Eq.fromUniversalEquals
     implicit val showTrainId: Show[TrainId] = Show.show(_.toString)
   }
 }
