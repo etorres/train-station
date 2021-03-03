@@ -13,6 +13,7 @@ import train.TrainId
 import uuid.UUIDGenerator
 
 import cats.Applicative
+import cats.data.NonEmptyList
 import cats.effect.Sync
 import cats.implicits._
 import io.circe._
@@ -52,7 +53,7 @@ object Departures {
 
   def impl[F[_]: Sync: Logger: UUIDGenerator](
     station: Station[Origin],
-    connectedStations: Set[Station[Destination]],
+    connectedStations: NonEmptyList[Station[Destination]],
     eventSender: EventSender[F]
   ): Departures[F] = new Departures[F] {
     override def register(departure: Departure): F[Either[DepartureError, Departed]] =
