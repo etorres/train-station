@@ -55,8 +55,8 @@ object Departures {
     station: Station[Origin],
     connectedStations: NonEmptyList[Station[Destination]],
     eventSender: EventSender[F]
-  ): Departures[F] = new Departures[F] {
-    override def register(departure: Departure): F[Either[DepartureError, Departed]] =
+  ): Departures[F] =
+    (departure: Departure) =>
       for {
         departed <- connectedStations.find(_ === departure.to) match {
           case Some(_) =>
@@ -82,5 +82,4 @@ object Departures {
               .as(error.asLeft)
         }
       } yield departed
-  }
 }

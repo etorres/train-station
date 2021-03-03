@@ -7,6 +7,8 @@ lazy val `train-station` = project
   .root("train-station")
   .aggregate(models, `models-circe`, `train-control-panel`)
 
+lazy val effect = project.library("effect").mainDependencies(catsCore)
+
 lazy val models =
   project
     .library("models")
@@ -21,13 +23,15 @@ lazy val `models-circe` = project
 lazy val `train-control-panel` =
   project
     .application("train-control-panel")
-    .dependsOn(models % "test->test;compile->compile", `models-circe`)
+    .dependsOn(effect, models % "test->test;compile->compile", `models-circe`)
     .mainDependencies(
       catsCore,
       catsEffect,
       catsKernel,
       circeCore,
       circeGeneric,
+      ciris,
+      cirisRefined,
       fs2Core,
       http4sBlazeServer,
       http4sCirce,
@@ -36,6 +40,8 @@ lazy val `train-control-panel` =
       http4sServer,
       log4CatsCore,
       log4CatsSlf4j,
+      refined,
+      scalaReflect,
       shapeless,
       slf4jApi
     )

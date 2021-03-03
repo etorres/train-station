@@ -40,6 +40,7 @@ trait Ciris {
   private[this] val version = "1.2.1"
 
   val ciris = organization %% "ciris" % version
+  val cirisRefined = organization %% "ciris-refined" % version
 }
 
 trait Fs2 {
@@ -101,6 +102,7 @@ trait Refined {
   private[this] val version = "0.9.21"
 
   val refined = organization %% "refined" % version
+  val refinedCats = organization %% "refined-cats" % version
   val refinedScalaCheck = organization %% "refined-scalacheck" % version
 }
 
@@ -110,6 +112,14 @@ trait ScalaCheck {
   private[this] val version = "1.15.3"
 
   val scalaCheck = organization %% "scalacheck" % version
+}
+
+trait ScalaReflect {
+  private[this] val organization = "org.scala-lang"
+
+  private[this] val version = "2.13.4"
+
+  val scalaReflect = organization % "scala-reflect" % version
 }
 
 trait Shapeless {
@@ -150,6 +160,7 @@ object Dependencies
     with NewType
     with Refined
     with ScalaCheck
+    with ScalaReflect
     with Shapeless
     with Slf4j
     with Weaver
