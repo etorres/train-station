@@ -1,6 +1,7 @@
 package es.eriktorr.train_station
 package departure
 
+import circe.{MomentJsonProtocol, StationJsonProtocol, TrainJsonProtocol}
 import event.Event.Departed
 import event.EventId
 import event_sender.EventSender
@@ -11,8 +12,13 @@ import time.Moment.When.{Actual, Created, Expected}
 import train.TrainId
 import uuid.UUIDGenerator
 
+import cats.Applicative
 import cats.effect.Sync
 import cats.implicits._
+import io.circe._
+import io.circe.generic.semiauto._
+import org.http4s._
+import org.http4s.circe._
 import org.typelevel.log4cats.Logger
 
 trait Departures[F[_]] {
@@ -28,6 +34,15 @@ object Departures {
     expected: Moment[Expected],
     actual: Moment[Actual]
   )
+
+  object Departure extends MomentJsonProtocol with StationJsonProtocol with TrainJsonProtocol {
+    implicit val departureDecoder: Decoder[Departure] = deriveDecoder
+    implicit def departureEntityDecoder[F[_]: Sync]: EntityDecoder[F, Departure] = jsonOf
+
+    implicit val departureEncoder: Encoder[Departure] = deriveEncoder
+    implicit def departureEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Departure] =
+      jsonEncoderOf
+  }
 
   sealed trait DepartureError
 

@@ -3,6 +3,8 @@ package es.eriktorr.train_station
 import arrival.Arrivals
 import arrival.Arrivals.{Arrival, ArrivalError}
 import circe.EventJsonProtocol
+import departure.Departures
+import departure.Departures.{Departure, DepartureError}
 
 import cats.effect.Sync
 import cats.implicits._
@@ -27,6 +29,27 @@ object TrainControlPanelRoutes extends EventJsonProtocol {
                   BadRequest(s"Unexpected train ${trainId.toString}")
               },
             arrivalEvent => Created(arrivalEvent.id)
+          )
+        } yield response
+    }
+  }
+
+  def departureRoutes[F[_]: Sync](D: Departures[F]): HttpRoutes[F] = {
+    val dsl = new Http4sDsl[F] {}
+    import dsl._
+
+    HttpRoutes.of[F] {
+      case req @ POST -> Root / "departure" =>
+        for {
+          departure <- req.as[Departure]
+          result <- D.register(departure)
+          response <- result.fold(
+            error =>
+              error match {
+                case DepartureError.UnexpectedDestination(destination) =>
+                  BadRequest(s"Unexpected destination ${destination.toString}")
+              },
+            departureEvent => Created(departureEvent.id)
           )
         } yield response
     }
