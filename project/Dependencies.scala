@@ -54,9 +54,10 @@ trait Fs2 {
 trait Fs2Kafka {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.4.0"
+  private[this] val version = "1.4.1"
 
   val fs2Kafka = organization %% "fs2-kafka" % version
+  val fs2KafkaVulcan = organization %% "fs2-kafka-vulcan" % version
 }
 
 trait Http4s {
@@ -138,6 +139,14 @@ trait Slf4j {
   val slf4jApi = organization % "slf4j-api" % version
 }
 
+trait Vulcan {
+  private[this] val organization = "com.github.fd4s"
+
+  private[this] val version = "1.4.1"
+
+  val vulcan = organization %% "vulcan" % version
+}
+
 trait Weaver {
   private[this] val organization = "com.disneystreaming"
 
@@ -163,4 +172,5 @@ object Dependencies
     with ScalaReflect
     with Shapeless
     with Slf4j
+    with Vulcan
     with Weaver

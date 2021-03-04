@@ -1,6 +1,6 @@
 package es.eriktorr.train_station
 
-import TrainControlPanelConfig.HttpServerConfig
+import TrainControlPanelConfig.{HttpServerConfig, KafkaConfig}
 import effect._
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin}
@@ -16,12 +16,20 @@ import eu.timepit.refined.types.string.NonEmptyString
 
 final case class TrainControlPanelConfig(
   httpServerConfig: HttpServerConfig,
+  kafkaConfig: KafkaConfig,
   station: Station[Origin],
   connectedTo: NonEmptyList[Station[Destination]]
 )
 
 object TrainControlPanelConfig {
   final case class HttpServerConfig(host: NonEmptyString, port: UserPortNumber)
+  final case class KafkaConfig(
+    bootstrapServers: NonEmptyList[NonEmptyString],
+    consumerGroup: NonEmptyString,
+    topic: NonEmptyString
+  ) {
+    def bootstrapServersAsString: String = bootstrapServers.toList.mkString(",")
+  }
 
   implicit def nonEmptyListDecoder[A: ConfigDecoder[String, *]]
     : ConfigDecoder[String, NonEmptyList[A]] =
@@ -39,14 +47,31 @@ object TrainControlPanelConfig {
     (
       env("HTTP_HOST").as[NonEmptyString].option,
       env("HTTP_PORT").as[UserPortNumber].option,
+      env("KAFKA_BOOTSTRAP_SERVERS").as[NonEmptyList[NonEmptyString]].option,
+      env("KAFKA_CONSUMER_GROUP").as[NonEmptyString].option,
+      env("KAFKA_TOPIC").as[NonEmptyString].option,
       env("STATION").as[Station[Origin]],
       env("CONNECTED_STATIONS").as[NonEmptyList[Station[Destination]]]
-    ).parMapN { (httpHost, httpPort, station, connectedStations) =>
-      TrainControlPanelConfig(
-        HttpServerConfig(httpHost getOrElse "0.0.0.0", httpPort getOrElse 8080),
+    ).parMapN {
+      (
+        httpHost,
+        httpPort,
+        kafkaBootstrapServers,
+        kafkaConsumerGroup,
+        kafkaTopic,
         station,
         connectedStations
-      )
+      ) =>
+        TrainControlPanelConfig(
+          HttpServerConfig(httpHost getOrElse "0.0.0.0", httpPort getOrElse 8080),
+          KafkaConfig(
+            kafkaBootstrapServers getOrElse NonEmptyList.one("localhost:9092"),
+            kafkaConsumerGroup getOrElse "train_station",
+            kafkaTopic getOrElse "train_arrivals_and_departures"
+          ),
+          station,
+          connectedStations
+        )
     }
 
   def load[F[_]: Async: ContextShift]: F[TrainControlPanelConfig] = trainControlPanelConfig.load[F]

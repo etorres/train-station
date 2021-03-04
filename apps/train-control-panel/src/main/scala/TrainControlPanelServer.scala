@@ -12,9 +12,9 @@ import org.typelevel.log4cats.Logger
 import scala.concurrent.ExecutionContext
 
 object TrainControlPanelServer {
-  def stream[F[_]: ConcurrentEffect](
+  def stream[F[_]: ConcurrentEffect: Timer](
     executionContext: ExecutionContext
-  )(implicit L: Logger[F], T: Timer[F]): Stream[F, Nothing] = {
+  )(implicit L: Logger[F]): Stream[F, Nothing] = {
     val arrivals = Arrivals.impl[F](???, ???, ???)
 
     val httpApp = TrainControlPanelRoutes.arrivalRoutes[F](arrivals).orNotFound

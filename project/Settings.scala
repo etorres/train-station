@@ -41,6 +41,7 @@ object Settings {
       Global / cancelable := true,
       Global / fork := true,
       Global / onChangedBuildSource := ReloadOnSourceChanges,
+      resolvers += "Confluent" at "https://packages.confluent.io/maven/",
       addCompilerPlugin("org.augustjune" %% "context-applied" % "0.1.4"),
       addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full),
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1" cross CrossVersion.binary),

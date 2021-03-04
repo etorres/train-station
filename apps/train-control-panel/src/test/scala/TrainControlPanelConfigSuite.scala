@@ -1,6 +1,6 @@
 package es.eriktorr.train_station
 
-import TrainControlPanelConfig.HttpServerConfig
+import TrainControlPanelConfig.{HttpServerConfig, KafkaConfig}
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin}
 
@@ -18,6 +18,11 @@ object TrainControlPanelConfigSuite extends SimpleIOSuite {
         expect(
           actualConfig == TrainControlPanelConfig(
             HttpServerConfig(Refined.unsafeApply("0.0.0.0"), Refined.unsafeApply(8080)),
+            KafkaConfig(
+              NonEmptyList.one(Refined.unsafeApply("localhost:9092")),
+              Refined.unsafeApply("train_station"),
+              Refined.unsafeApply("train_arrivals_and_departures")
+            ),
             Station.fromString[Origin]("Barcelona").toOption.get,
             NonEmptyList.fromListUnsafe(
               List(
