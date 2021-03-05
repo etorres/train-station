@@ -5,7 +5,7 @@ import arrival.ExpectedTrains
 import arrival.ExpectedTrains.ExpectedTrain
 import event.Event.Departed
 import station.Station
-import station.Station.TravelDirection.{Destination, Origin}
+import station.Station.TravelDirection.Destination
 
 import cats.Applicative
 import cats.implicits._
@@ -17,7 +17,7 @@ trait DepartureTracker[F[_]] {
 
 object DepartureTracker {
   def impl[F[_]: Applicative: Logger](
-    station: Station[Origin],
+    station: Station[Destination],
     expectedTrains: ExpectedTrains[F]
   ): DepartureTracker[F] = (event: Departed) => {
     val updateExpectedTrains =
@@ -25,6 +25,6 @@ object DepartureTracker {
         s"${station.unStation.value} is expecting ${event.trainId.toString} from ${event.from.toString} at ${event.expected.toString}"
       )
 
-    updateExpectedTrains.whenA(event.to === station.asStation[Destination])
+    updateExpectedTrains.whenA(event.to === station)
   }
 }

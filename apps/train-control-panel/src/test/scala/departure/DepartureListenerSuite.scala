@@ -14,7 +14,7 @@ import time.Moment.When.{Created, Expected}
 import cats.effect.IO
 import cats.implicits._
 import fs2.Stream
-import fs2.kafka.{ProducerRecord, ProducerRecords}
+import fs2.kafka.{commitBatchWithin, ProducerRecord, ProducerRecords}
 import org.scalacheck.Gen
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
@@ -28,11 +28,11 @@ object DepartureListenerSuite extends SimpleIOSuite with Checkers {
   test("track train departures from connected stations") {
 
     val (origin, destination, eventId, trainId, expected, created) = (for {
-      origin <- Gen.const("Barcelona").map(Station.fromString[Origin]).map(_.toOption.get)
-      destination <- Gen
+      origin <- Gen
         .oneOf("Madrid", "Valencia")
-        .map(Station.fromString[Destination])
+        .map(Station.fromString[Origin])
         .map(_.toOption.get)
+      destination <- Gen.const("Barcelona").map(Station.fromString[Destination]).map(_.toOption.get)
       eventId <- eventIdGen
       trainId <- trainIdGen
       created <- momentGen[Created]
@@ -47,33 +47,31 @@ object DepartureListenerSuite extends SimpleIOSuite with Checkers {
         for {
           expectedTrainsRef <- ExpectedTrainsState.refFrom(List.empty)
           expectedTrains = FakeExpectedTrains.impl[IO](expectedTrainsRef)
-          departureTracker = DepartureTracker.impl[IO](origin, expectedTrains)
+          departureTracker = DepartureTracker.impl[IO](destination, expectedTrains)
           _ <- TrainControlPanelContext.impl[IO].use {
             case TrainControlPanelContext(_, consumers, producer) =>
-              (
-                Stream
-                  .emits(consumers.toList)
-                  .flatMap(_.stream)
-                  .collect {
-                    _.record.value match {
-                      case e: Departed => e
-                    }
-                  }
-                  .evalMap(departureTracker.save)
-                  .take(1)
-                  .timeout(30.seconds)
-                  .compile
-                  .drain,
-                producer.produce(
-                  ProducerRecords.one(
-                    ProducerRecord(
-                      s"train-departures-${destination.unStation.value}",
-                      eventId.unEventId.value,
-                      Departed(eventId, trainId, origin, destination, expected, created)
-                    )
+              producer.produce(
+                ProducerRecords.one(
+                  ProducerRecord(
+                    s"train-departures-${origin.unStation.value}",
+                    eventId.unEventId.value,
+                    Departed(eventId, trainId, origin, destination, expected, created)
                   )
                 )
-              ).parMapN((_, _) => ())
+              ) *> Stream
+                .emits(consumers.toList)
+                .flatMap(_.stream)
+                .mapAsync(25) { committable =>
+                  (committable.record.value match {
+                    case e: Departed => departureTracker.save(e)
+                    case _ => IO.unit
+                  }).as(committable.offset)
+                }
+                .through(commitBatchWithin(500, 15.seconds))
+                .timeout(30.seconds)
+                .take(1)
+                .compile
+                .drain
           }
           departedTrains <- expectedTrainsRef.get
         } yield departedTrains

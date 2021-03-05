@@ -3,6 +3,7 @@ package es.eriktorr.train_station
 import arrival.ExpectedTrains
 import departure.DepartureTracker
 import event.Event.Departed
+import station.Station.TravelDirection.Destination
 
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
@@ -16,7 +17,8 @@ object TrainControlPanelApp extends IOApp {
       implicit val _logger: Logger[IO] = logger
 
       val expectedTrains = ExpectedTrains.impl[IO]
-      val departureTracker = DepartureTracker.impl[IO](config.station, expectedTrains)
+      val departureTracker =
+        DepartureTracker.impl[IO](config.station.asStation[Destination], expectedTrains)
 
       TrainControlPanelContext.impl[IO].use {
         case TrainControlPanelContext(_, consumers, _) =>
