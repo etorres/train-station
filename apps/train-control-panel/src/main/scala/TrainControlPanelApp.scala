@@ -19,7 +19,7 @@ object TrainControlPanelApp extends IOApp {
       val departureTracker = DepartureTracker.impl[IO](config.station, expectedTrains)
 
       TrainControlPanelContext.impl[IO].use {
-        case TrainControlPanelContext(_, consumers) =>
+        case TrainControlPanelContext(_, consumers, _) =>
           val departureListener = Stream
             .emits(consumers.toList)
             .flatMap(_.stream)

@@ -14,7 +14,8 @@ import fs2.kafka.vulcan._
 
 final case class TrainControlPanelContext[F[_]](
   config: TrainControlPanelConfig,
-  consumers: NonEmptyList[KafkaConsumer[F, String, Event]]
+  consumers: NonEmptyList[KafkaConsumer[F, String, Event]],
+  producer: KafkaProducer[F, String, Event]
 )
 
 object TrainControlPanelContext extends EventAvroCodec {
@@ -54,72 +55,16 @@ object TrainControlPanelContext extends EventAvroCodec {
         .resource(consumerSettings)
         .evalTap(_.subscribeTo(s"$topicPrefix-${destination.unStation.value}"))
 
+    def producer(producerSettings: ProducerSettings[F, String, Event]) =
+      KafkaProducer.resource(producerSettings)
+
     for {
       config <- Resource.liftF(TrainControlPanelConfig.load[F])
-      (consumerSettings, _) <- Resource.liftF(settingsFrom(config.kafkaConfig))
+      (consumerSettings, producerSettings) <- Resource.liftF(settingsFrom(config.kafkaConfig))
       consumers <- config.connectedTo.traverse(
         consumer(config.kafkaConfig.topic.value, consumerSettings, _)
       )
-    } yield TrainControlPanelContext(config, consumers)
+      producer <- producer(producerSettings)
+    } yield TrainControlPanelContext(config, consumers, producer)
   }
 }
-
-/*
-import cats.effect.concurrent.Ref
-import cats.effect.{ Concurrent, ContextShift, Resource }
-import cats.implicits._
-import cats.{ Inject, Parallel }
-import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
-import cr.pulsar.{ Consumer, Producer, Pulsar, Subscription, Topic, Config => PulsarConfig }
-import io.circe.Encoder
-
-final case class Resources[F[_], E](
-  config: Config,
-  producer: Producer[F, E],
-  consumers: List[Consumer[F, E]],
-  trainRef: Ref[F, Map[TrainId, ExpectedTrain]]
-)
-
-object Resources {
-  def make[
-    F[_]: Concurrent: ContextShift: Parallel: Logger,
-    E: Inject[*, Array[Byte]]: Encoder
-  ]: Resource[F, Resources[F, E]] = {
-    def topic(config: PulsarConfig, city: City) =
-      Topic
-        .Builder
-        .withName(Topic.Name(city.value.toLowerCase))
-        .withConfig(config)
-        .withType(Topic.Type.Persistent)
-        .build
-
-    def consumer(client: Pulsar.T, config: Config, city: City): Resource[F, Consumer[F, E]] = {
-      val name         = s"${city.value}-${config.city.value}"
-      val subscription =
-        Subscription
-          .Builder
-          .withName(Subscription.Name(name))
-          .withType(Subscription.Type.Failover)
-          .build
-
-      val options =
-        Consumer
-          .Options[F, E]()
-          .withLogger(EventLogger.incomingEvents)
-
-      Consumer.withOptions[F, E](client, topic(config.pulsar, city), subscription, options)
-    }
-
-    def producer(client: Pulsar.T, config: Config): Resource[F, Producer[F, E]] =
-      Producer.withLogger[F, E](client, topic(config.pulsar, config.city), EventLogger.outgoingEvents)
-
-    for {
-      config    <- Resource.liftF(Config.load[F])
-      client    <- Pulsar.create[F](config.pulsar.url)
-      producer  <- producer(client, config)
-      consumers <- config.connectedTo.traverse(consumer(client, config, _))
-      trainRef  <- Resource.liftF(Ref.of[F, Map[TrainId, ExpectedTrain]](Map.empty))
-    } yield Resources(config, producer, consumers, trainRef)
-  }
-}
- */
