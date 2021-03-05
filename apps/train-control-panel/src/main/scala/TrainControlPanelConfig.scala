@@ -68,9 +68,9 @@ object TrainControlPanelConfig {
         TrainControlPanelConfig(
           HttpServerConfig(httpHost getOrElse "0.0.0.0", httpPort getOrElse 8080),
           KafkaConfig(
-            kafkaBootstrapServers getOrElse NonEmptyList.one("localhost:9092"),
-            kafkaConsumerGroup getOrElse "train_station",
-            kafkaTopic getOrElse "train_arrivals_and_departures",
+            kafkaBootstrapServers getOrElse NonEmptyList.one("localhost:29092"),
+            kafkaConsumerGroup getOrElse "train-station",
+            kafkaTopic getOrElse "train-departures",
             kafkaSchemaRegistry getOrElse "http://localhost:8081"
           ),
           station,

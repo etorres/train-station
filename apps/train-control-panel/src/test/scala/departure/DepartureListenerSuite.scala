@@ -8,13 +8,14 @@ import station.Station
 import station.Station.TravelDirection.Origin
 
 import cats.effect.IO
+import cats.implicits._
 import fs2.Stream
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import weaver._
 
 object DepartureListenerSuite extends SimpleIOSuite {
-  test("work") {
+  test("track train departures from connected stations") {
     for {
       logger <- Slf4jLogger.create[IO]
       departedTrains <- {
@@ -41,6 +42,6 @@ object DepartureListenerSuite extends SimpleIOSuite {
           departedTrains <- expectedTrainsRef.get
         } yield departedTrains
       }
-    } yield expect(departedTrains.trains == List.empty)
+    } yield expect(departedTrains.trains === List.empty)
   }
 }

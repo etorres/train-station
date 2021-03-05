@@ -20,7 +20,7 @@ object train {
         case Right(refinedStr) => refinedStr.coerce[TrainId].asRight
       }
 
-    implicit def eqTrainId: Eq[TrainId] = Eq.fromUniversalEquals
+    implicit val eqTrainId: Eq[TrainId] = Eq.fromUniversalEquals
     implicit val showTrainId: Show[TrainId] = Show.show(_.toString)
   }
 }

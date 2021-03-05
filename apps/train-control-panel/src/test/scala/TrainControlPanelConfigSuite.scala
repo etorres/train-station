@@ -19,9 +19,9 @@ object TrainControlPanelConfigSuite extends SimpleIOSuite {
           actualConfig == TrainControlPanelConfig(
             HttpServerConfig(Refined.unsafeApply("0.0.0.0"), Refined.unsafeApply(8080)),
             KafkaConfig(
-              NonEmptyList.one(Refined.unsafeApply("localhost:9092")),
-              Refined.unsafeApply("train_station"),
-              Refined.unsafeApply("train_arrivals_and_departures"),
+              NonEmptyList.one(Refined.unsafeApply("localhost:29092")),
+              Refined.unsafeApply("train-station"),
+              Refined.unsafeApply("train-departures"),
               Refined.unsafeApply("http://localhost:8081")
             ),
             Station.fromString[Origin]("Barcelona").toOption.get,

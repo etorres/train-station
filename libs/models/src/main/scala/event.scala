@@ -30,7 +30,7 @@ object event {
     @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
     def fromUuid(uuid: UUID): EventId = EventId.fromString(uuid.toString).toOption.get
 
-    implicit def eqEventId: Eq[EventId] = Eq.fromUniversalEquals
+    implicit val eqEventId: Eq[EventId] = Eq.fromUniversalEquals
     implicit val showEventId: Show[EventId] = Show.show(_.toString)
   }
 

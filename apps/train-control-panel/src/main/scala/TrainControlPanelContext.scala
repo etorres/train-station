@@ -52,7 +52,7 @@ object TrainControlPanelContext extends EventAvroCodec {
     ) =
       KafkaConsumer
         .resource(consumerSettings)
-        .evalTap(_.subscribeTo(s"$topicPrefix@${destination.unStation.value}"))
+        .evalTap(_.subscribeTo(s"$topicPrefix-${destination.unStation.value}"))
 
     for {
       config <- Resource.liftF(TrainControlPanelConfig.load[F])

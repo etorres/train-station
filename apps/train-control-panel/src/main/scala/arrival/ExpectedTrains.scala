@@ -8,8 +8,9 @@ import time.Moment
 import time.Moment.When.Expected
 import train.TrainId
 
-import cats.Show
+import cats.derived.semiauto
 import cats.effect.Sync
+import cats.{Eq, Show}
 
 trait ExpectedTrains[F[_]] {
   def findBy(trainId: TrainId): F[Option[ExpectedTrain]]
@@ -24,7 +25,8 @@ object ExpectedTrains {
     expected: Moment[Expected]
   )
 
-  implicit val showExpectedTrains: Show[ExpectedTrain] = Show.show(_.toString)
+  implicit val eqEventId: Eq[ExpectedTrain] = semiauto.eq
+  implicit val showExpectedTrains: Show[ExpectedTrain] = semiauto.show
 
   def impl[F[_]: Sync]: ExpectedTrains[F] = ???
 }
