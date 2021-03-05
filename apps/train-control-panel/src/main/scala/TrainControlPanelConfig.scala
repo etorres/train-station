@@ -26,7 +26,8 @@ object TrainControlPanelConfig {
   final case class KafkaConfig(
     bootstrapServers: NonEmptyList[NonEmptyString],
     consumerGroup: NonEmptyString,
-    topic: NonEmptyString
+    topic: NonEmptyString,
+    schemaRegistry: NonEmptyString
   ) {
     def bootstrapServersAsString: String = bootstrapServers.toList.mkString(",")
   }
@@ -50,6 +51,7 @@ object TrainControlPanelConfig {
       env("KAFKA_BOOTSTRAP_SERVERS").as[NonEmptyList[NonEmptyString]].option,
       env("KAFKA_CONSUMER_GROUP").as[NonEmptyString].option,
       env("KAFKA_TOPIC").as[NonEmptyString].option,
+      env("KAFKA_SCHEMA_REGISTRY").as[NonEmptyString].option,
       env("STATION").as[Station[Origin]],
       env("CONNECTED_STATIONS").as[NonEmptyList[Station[Destination]]]
     ).parMapN {
@@ -59,6 +61,7 @@ object TrainControlPanelConfig {
         kafkaBootstrapServers,
         kafkaConsumerGroup,
         kafkaTopic,
+        kafkaSchemaRegistry,
         station,
         connectedStations
       ) =>
@@ -67,7 +70,8 @@ object TrainControlPanelConfig {
           KafkaConfig(
             kafkaBootstrapServers getOrElse NonEmptyList.one("localhost:9092"),
             kafkaConsumerGroup getOrElse "train_station",
-            kafkaTopic getOrElse "train_arrivals_and_departures"
+            kafkaTopic getOrElse "train_arrivals_and_departures",
+            kafkaSchemaRegistry getOrElse "http://localhost:8081"
           ),
           station,
           connectedStations

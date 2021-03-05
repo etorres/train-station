@@ -63,13 +63,13 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
     forall(gen) {
       case TestCase(destination, expectedTrains, actual, eventId) =>
         for {
-          logger <- Slf4jLogger.create[F]
+          logger <- Slf4jLogger.create[IO]
           expectedTrainsRef <- ExpectedTrainsState.refFrom(expectedTrains.toList)
           uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
           eventSenderStateRef <- EventSenderState.refEmpty
           train = expectedTrains.head
           httpExpectations <- {
-            implicit val testLogger: Logger[F] = logger
+            implicit val testLogger: Logger[IO] = logger
             implicit val uuidGenerator: UUIDGenerator[IO] =
               FakeUUIDGenerator.impl[IO](uuidGeneratorStateRef)
             check(

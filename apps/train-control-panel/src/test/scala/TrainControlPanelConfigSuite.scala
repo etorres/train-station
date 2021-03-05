@@ -21,7 +21,8 @@ object TrainControlPanelConfigSuite extends SimpleIOSuite {
             KafkaConfig(
               NonEmptyList.one(Refined.unsafeApply("localhost:9092")),
               Refined.unsafeApply("train_station"),
-              Refined.unsafeApply("train_arrivals_and_departures")
+              Refined.unsafeApply("train_arrivals_and_departures"),
+              Refined.unsafeApply("http://localhost:8081")
             ),
             Station.fromString[Origin]("Barcelona").toOption.get,
             NonEmptyList.fromListUnsafe(
