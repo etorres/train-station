@@ -1,8 +1,9 @@
 package es.eriktorr.train_station
-package arrival
+package arrival.infrastructure
 
+import arrival.ExpectedTrains
 import arrival.ExpectedTrains.ExpectedTrain
-import arrival.FakeExpectedTrains.ExpectedTrainsState
+import arrival.infrastructure.FakeExpectedTrains.ExpectedTrainsState
 import train.TrainId
 
 import cats.effect.Sync

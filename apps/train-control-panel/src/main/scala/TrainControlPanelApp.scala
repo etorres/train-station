@@ -3,7 +3,7 @@ package es.eriktorr.train_station
 import arrival.ExpectedTrains
 import departure.DepartureTracker
 import event.Event.Departed
-import http_server.infrastructure.HttpServer
+import http.infrastructure.HttpServer
 import station.Station.TravelDirection.Destination
 
 import cats.effect.{ExitCode, IO, IOApp}

@@ -1,9 +1,9 @@
 package es.eriktorr.train_station
-package event_sender.infrastructure
+package messaging.infrastructure
 
 import event.Event
 import event.Event.Departed
-import event_sender.EventSender
+import messaging.EventSender
 
 import cats.effect._
 import cats.implicits._

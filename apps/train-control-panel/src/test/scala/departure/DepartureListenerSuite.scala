@@ -2,8 +2,8 @@ package es.eriktorr.train_station
 package departure
 
 import arrival.ExpectedTrains.ExpectedTrain
-import arrival.FakeExpectedTrains
-import arrival.FakeExpectedTrains.ExpectedTrainsState
+import arrival.infrastructure.FakeExpectedTrains
+import arrival.infrastructure.FakeExpectedTrains.ExpectedTrainsState
 import event.Event.Departed
 import shared.infrastructure.GeneratorSyntax._
 import shared.infrastructure.TrainStationGenerators.{afterGen, eventIdGen, momentGen, trainIdGen}

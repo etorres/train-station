@@ -5,7 +5,7 @@ import arrival.Arrivals.{Arrival, ArrivalError}
 import circe.{MomentJsonProtocol, TrainJsonProtocol}
 import event.Event.Arrived
 import event.EventId
-import event_sender.EventSender
+import messaging.EventSender
 import station.Station
 import station.Station.TravelDirection.Destination
 import time.Moment

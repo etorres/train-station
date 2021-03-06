@@ -4,7 +4,7 @@ package departure
 import circe.{MomentJsonProtocol, StationJsonProtocol, TrainJsonProtocol}
 import event.Event.Departed
 import event.EventId
-import event_sender.EventSender
+import messaging.EventSender
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin}
 import time.Moment

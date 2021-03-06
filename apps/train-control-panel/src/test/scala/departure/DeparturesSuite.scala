@@ -5,8 +5,9 @@ import circe._
 import departure.Departures.Departure
 import event.Event.Departed
 import event.EventId
-import event_sender.FakeEventSender
-import event_sender.FakeEventSender.EventSenderState
+import http.infrastructure.AllHttpRoutes
+import messaging.infrastructure.FakeEventSender
+import messaging.infrastructure.FakeEventSender.EventSenderState
 import shared.infrastructure.Generators.nDistinct
 import shared.infrastructure.TrainStationGenerators.{
   afterGen,
@@ -30,7 +31,6 @@ import cats.data.NonEmptyList
 import cats.derived._
 import cats.effect._
 import cats.implicits._
-import es.eriktorr.train_station.http_server.infrastructure.AllHttpRoutes
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers._

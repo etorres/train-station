@@ -1,5 +1,5 @@
 package es.eriktorr.train_station
-package http_server.infrastructure
+package http.infrastructure
 
 import arrival.Arrivals
 
