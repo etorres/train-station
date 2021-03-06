@@ -1,28 +1,33 @@
 package es.eriktorr.train_station
 package http.infrastructure
 
+import TrainControlPanelConfig.HttpServerConfig
 import arrival.Arrivals
+import departure.Departures
 
 import cats.effect.{ConcurrentEffect, Timer}
+import cats.implicits._
 import fs2.Stream
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.server.middleware.{Logger => Http4sLogger}
-import org.typelevel.log4cats.Logger
+import org.http4s.server.middleware.Logger
 
 import scala.concurrent.ExecutionContext
 
 object HttpServer {
   def stream[F[_]: ConcurrentEffect: Timer](
-    executionContext: ExecutionContext
-  )(implicit L: Logger[F]): Stream[F, Nothing] = {
-    val arrivals = Arrivals.impl[F](???, ???, ???)
-
-    val httpApp = AllHttpRoutes.arrivalRoutes[F](arrivals).orNotFound
-    val finalHttpApp = Http4sLogger.httpApp(logHeaders = true, logBody = true)(httpApp)
+    arrivals: Arrivals[F],
+    departures: Departures[F],
+    executionContext: ExecutionContext,
+    httpServerConfig: HttpServerConfig
+  ): Stream[F, Nothing] = {
+    val httpApp = (AllHttpRoutes.arrivalRoutes[F](arrivals) <+> AllHttpRoutes.departureRoutes[F](
+      departures
+    )).orNotFound
+    val finalHttpApp = Logger.httpApp(logHeaders = true, logBody = true)(httpApp)
 
     BlazeServerBuilder[F](executionContext)
-      .bindHttp(8080, "0.0.0.0")
+      .bindHttp(httpServerConfig.port.value, httpServerConfig.host.value)
       .withHttpApp(finalHttpApp)
       .serve
   }.drain

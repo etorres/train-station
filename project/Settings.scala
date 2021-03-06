@@ -25,6 +25,7 @@ object Settings {
     Wart.Equals,
     Wart.DefaultArguments,
     Wart.Overloading,
+    Wart.PublicInference, // context-applied Scala compiler plugin
     Wart.ToString,
     Wart.ImplicitParameter,
     Wart.ImplicitConversion // @newtype

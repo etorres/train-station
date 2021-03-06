@@ -9,7 +9,7 @@ import cats.effect._
 import cats.implicits._
 import fs2.kafka._
 
-final class KafkaEventSender[F[_]: Sync](
+final class KafkaEventSender[F[_]: Sync] /* private[infrastructure] */ (
   producer: KafkaProducer[F, String, Event],
   topicPrefix: String
 ) extends EventSender[F] {
@@ -27,4 +27,9 @@ final class KafkaEventSender[F[_]: Sync](
         )
     case _ => F.unit
   }
+}
+
+object KafkaEventSender {
+  def impl[F[_]: Sync](producer: KafkaProducer[F, String, Event], topicPrefix: String) =
+    new KafkaEventSender[F](producer, topicPrefix)
 }

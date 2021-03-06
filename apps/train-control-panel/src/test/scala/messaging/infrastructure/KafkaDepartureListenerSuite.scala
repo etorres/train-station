@@ -1,9 +1,10 @@
 package es.eriktorr.train_station
-package departure
+package messaging.infrastructure
 
 import arrival.ExpectedTrains.ExpectedTrain
 import arrival.infrastructure.FakeExpectedTrains
 import arrival.infrastructure.FakeExpectedTrains.ExpectedTrainsState
+import departure.DepartureTracker
 import event.Event.Departed
 import shared.infrastructure.GeneratorSyntax._
 import shared.infrastructure.TrainStationGenerators.{afterGen, eventIdGen, momentGen, trainIdGen}
@@ -13,7 +14,7 @@ import time.Moment.When.{Created, Expected}
 
 import cats.effect.IO
 import cats.implicits._
-import fs2.kafka.{commitBatchWithin, ProducerRecord, ProducerRecords}
+import fs2.kafka.{ProducerRecord, ProducerRecords}
 import org.scalacheck.Gen
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
@@ -23,7 +24,7 @@ import weaver.scalacheck._
 import scala.concurrent.duration._
 
 @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-object DepartureListenerSuite extends SimpleIOSuite with Checkers {
+object KafkaDepartureListenerSuite extends SimpleIOSuite with Checkers {
   test("track train departures from connected stations") {
 
     val (origin, destination, eventId, trainId, expected, created) = (for {
@@ -57,14 +58,8 @@ object DepartureListenerSuite extends SimpleIOSuite with Checkers {
                     Departed(eventId, trainId, origin, destination, expected, created)
                   )
                 )
-              ) *> consumer.stream
-                .mapAsync(16) { committable =>
-                  (committable.record.value match {
-                    case e: Departed => departureTracker.save(e)
-                    case _ => IO.unit
-                  }).as(committable.offset)
-                }
-                .through(commitBatchWithin(500, 15.seconds))
+              ) *> KafkaDepartureListener
+                .stream[IO](consumer, departureTracker)
                 .timeout(30.seconds)
                 .take(1)
                 .compile
