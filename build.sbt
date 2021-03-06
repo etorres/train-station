@@ -45,6 +45,8 @@ lazy val `train-control-panel` =
       http4sCore,
       http4sDsl,
       http4sServer,
+      kafkaSchemaRegistryClient,
+      kittens,
       log4CatsCore,
       log4CatsSlf4j,
       refined,
@@ -53,5 +55,5 @@ lazy val `train-control-panel` =
       slf4jApi,
       vulcan
     )
-    .testDependencies(catsScalaCheck, kittens, weaverCats, weaverScalaCheck)
+    .testDependencies(catsScalaCheck, weaverCats, weaverScalaCheck)
     .runtimeDependencies(logback)

@@ -72,6 +72,14 @@ trait Http4s {
   val http4sServer = organization %% "http4s-server" % version
 }
 
+trait Kafka {
+  private[this] val organization = "io.confluent"
+
+  private[this] val version = "6.1.0"
+
+  val kafkaSchemaRegistryClient = organization % "kafka-schema-registry-client" % version
+}
+
 trait Logback {
   private[this] val organization = "ch.qos.logback"
 
@@ -164,6 +172,7 @@ object Dependencies
     with Fs2
     with Fs2Kafka
     with Http4s
+    with Kafka
     with Logback
     with Log4Cats
     with NewType
