@@ -1,5 +1,13 @@
 import sbt._
 
+trait Avro {
+  private[this] val organization = "org.apache.avro"
+
+  private[this] val version = "1.10.1"
+
+  val avro = organization % "avro" % version
+}
+
 trait Cats {
   private[this] val organization = "org.typelevel"
 
@@ -9,6 +17,7 @@ trait Cats {
 
   val catsCore = organization %% "cats-core" % catsVersion
   val catsEffect = organization %% "cats-effect" % catsEffectVersion
+  val catsFree = organization %% "cats-free" % catsVersion
   val catsKernel = organization %% "cats-kernel" % catsVersion
   val kittens = organization %% "kittens" % kittensVersion
 }
@@ -165,7 +174,8 @@ trait Weaver {
 }
 
 object Dependencies
-    extends Cats
+    extends Avro
+    with Cats
     with CatsScalaCheck
     with Circe
     with Ciris

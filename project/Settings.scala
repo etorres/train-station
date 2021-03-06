@@ -1,4 +1,5 @@
 import Dependencies._
+import explicitdeps.ExplicitDepsPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 import sbt.nio.Keys._
@@ -47,6 +48,7 @@ object Settings {
       addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full),
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1" cross CrossVersion.binary),
       dependencyOverrides ++= Seq(catsCore, catsEffect, fs2Core, scalaCheck),
+      unusedCompileDependenciesFilter -= moduleFilter("ch.qos.logback", "logback-classic"),
       testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
       wartremoverErrors in (Compile, compile) ++= warts,
       wartremoverErrors in (Test, compile) ++= warts,

@@ -5,7 +5,10 @@ sbtSettings
 
 lazy val `train-station` = project
   .root("train-station")
-  .aggregate(models, `models-circe`, `train-control-panel`)
+  .aggregate(models, `models-circe`, `models-vulcan`, `train-control-panel`)
+  .dependsOn(models, `models-circe`, `models-vulcan`, `train-control-panel`)
+  .enablePlugins(JavaAppPackaging)
+  .settings(mainClass in Compile := Some("es.eriktorr.train_station.TrainControlPanelApp"))
 
 lazy val effect = project.library("effect").mainDependencies(catsCore)
 
@@ -23,7 +26,7 @@ lazy val `models-circe` = project
 lazy val `models-vulcan` = project
   .library("models-vulcan")
   .dependsOn(models)
-  .mainDependencies(fs2KafkaVulcan, refined)
+  .mainDependencies(avro, catsCore, catsFree, catsKernel, refined, vulcan)
 
 lazy val `train-control-panel` =
   project
@@ -49,6 +52,7 @@ lazy val `train-control-panel` =
       kittens,
       log4CatsCore,
       log4CatsSlf4j,
+      logback,
       refined,
       scalaReflect,
       shapeless,
@@ -56,4 +60,3 @@ lazy val `train-control-panel` =
       vulcan
     )
     .testDependencies(catsScalaCheck, weaverCats, weaverScalaCheck)
-    .runtimeDependencies(logback)
