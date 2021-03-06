@@ -1,4 +1,5 @@
 package es.eriktorr.train_station
+package http_server.infrastructure
 
 import arrival.Arrivals
 import arrival.Arrivals.{Arrival, ArrivalError}
@@ -12,7 +13,7 @@ import org.http4s._
 import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.dsl.Http4sDsl
 
-object TrainControlPanelRoutes extends EventJsonProtocol {
+object AllHttpRoutes extends EventJsonProtocol {
   def arrivalRoutes[F[_]: Sync](A: Arrivals[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F] {}
     import dsl._

@@ -1,4 +1,5 @@
 package es.eriktorr.train_station
+package http_server.infrastructure
 
 import arrival.Arrivals
 
@@ -11,13 +12,13 @@ import org.typelevel.log4cats.Logger
 
 import scala.concurrent.ExecutionContext
 
-object TrainControlPanelServer {
+object HttpServer {
   def stream[F[_]: ConcurrentEffect: Timer](
     executionContext: ExecutionContext
   )(implicit L: Logger[F]): Stream[F, Nothing] = {
     val arrivals = Arrivals.impl[F](???, ???, ???)
 
-    val httpApp = TrainControlPanelRoutes.arrivalRoutes[F](arrivals).orNotFound
+    val httpApp = AllHttpRoutes.arrivalRoutes[F](arrivals).orNotFound
     val finalHttpApp = Http4sLogger.httpApp(logHeaders = true, logBody = true)(httpApp)
 
     BlazeServerBuilder[F](executionContext)

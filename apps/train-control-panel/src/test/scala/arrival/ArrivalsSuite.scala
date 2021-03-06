@@ -26,6 +26,7 @@ import cats.data.NonEmptyList
 import cats.derived._
 import cats.effect._
 import cats.implicits._
+import es.eriktorr.train_station.http_server.infrastructure.AllHttpRoutes
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers._
@@ -73,7 +74,7 @@ object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOChecke
             implicit val uuidGenerator: UUIDGenerator[IO] =
               FakeUUIDGenerator.impl[IO](uuidGeneratorStateRef)
             check(
-              httpRoutes = TrainControlPanelRoutes.arrivalRoutes[IO](
+              httpRoutes = AllHttpRoutes.arrivalRoutes[IO](
                 Arrivals.impl[IO](
                   destination,
                   FakeExpectedTrains.impl[IO](expectedTrainsRef),
