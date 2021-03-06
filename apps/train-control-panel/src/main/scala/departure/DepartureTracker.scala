@@ -22,7 +22,7 @@ object DepartureTracker {
   ): DepartureTracker[F] = (event: Departed) => {
     val updateExpectedTrains =
       expectedTrains.update(ExpectedTrain(event.trainId, event.from, event.expected)) *> F.info(
-        s"${station.unStation.value} is expecting ${event.trainId.toString} from ${event.from.toString} at ${event.expected.toString}"
+        s"${station.unStation.value} is expecting train ${event.trainId.toString} from ${event.from.toString} at ${event.expected.toString}"
       )
 
     updateExpectedTrains.whenA(event.to === station)

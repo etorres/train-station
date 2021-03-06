@@ -14,7 +14,7 @@ import fs2.kafka.vulcan._
 
 final case class TrainControlPanelContext[F[_]](
   config: TrainControlPanelConfig,
-  consumers: NonEmptyList[KafkaConsumer[F, String, Event]],
+  consumer: KafkaConsumer[F, String, Event],
   producer: KafkaProducer[F, String, Event]
 )
 
@@ -49,11 +49,15 @@ object TrainControlPanelContext extends EventAvroCodec {
     def consumer(
       topicPrefix: String,
       consumerSettings: ConsumerSettings[F, String, Event],
-      destination: Station[Destination]
+      destinations: NonEmptyList[Station[Destination]]
     ) =
       KafkaConsumer
         .resource(consumerSettings)
-        .evalTap(_.subscribeTo(s"$topicPrefix-${destination.unStation.value}"))
+        .evalTap(
+          _.subscribe(
+            destinations.map(destination => s"$topicPrefix-${destination.unStation.value}")
+          )
+        )
 
     def producer(producerSettings: ProducerSettings[F, String, Event]) =
       KafkaProducer.resource(producerSettings)
@@ -61,10 +65,10 @@ object TrainControlPanelContext extends EventAvroCodec {
     for {
       config <- Resource.liftF(TrainControlPanelConfig.load[F])
       (consumerSettings, producerSettings) <- Resource.liftF(settingsFrom(config.kafkaConfig))
-      consumers <- config.connectedTo.traverse(
-        consumer(config.kafkaConfig.topic.value, consumerSettings, _)
-      )
-      producer <- producer(producerSettings)
-    } yield TrainControlPanelContext(config, consumers, producer)
+      (consumer, producer) <- (
+        consumer(config.kafkaConfig.topic.value, consumerSettings, config.connectedTo),
+        producer(producerSettings)
+      ).tupled
+    } yield TrainControlPanelContext(config, consumer, producer)
   }
 }

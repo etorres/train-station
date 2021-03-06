@@ -13,7 +13,6 @@ import time.Moment.When.{Created, Expected}
 
 import cats.effect.IO
 import cats.implicits._
-import fs2.Stream
 import fs2.kafka.{commitBatchWithin, ProducerRecord, ProducerRecords}
 import org.scalacheck.Gen
 import org.typelevel.log4cats.Logger
@@ -49,19 +48,17 @@ object DepartureListenerSuite extends SimpleIOSuite with Checkers {
           expectedTrains = FakeExpectedTrains.impl[IO](expectedTrainsRef)
           departureTracker = DepartureTracker.impl[IO](destination, expectedTrains)
           _ <- TrainControlPanelContext.impl[IO].use {
-            case TrainControlPanelContext(_, consumers, producer) =>
+            case TrainControlPanelContext(_, consumer, producer) =>
               producer.produce(
                 ProducerRecords.one(
                   ProducerRecord(
-                    s"train-departures-${origin.unStation.value}",
+                    s"train-arrivals-and-departures-${origin.unStation.value}",
                     eventId.unEventId.value,
                     Departed(eventId, trainId, origin, destination, expected, created)
                   )
                 )
-              ) *> Stream
-                .emits(consumers.toList)
-                .flatMap(_.stream)
-                .mapAsync(25) { committable =>
+              ) *> consumer.stream
+                .mapAsync(16) { committable =>
                   (committable.record.value match {
                     case e: Departed => departureTracker.save(e)
                     case _ => IO.unit

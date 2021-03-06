@@ -70,7 +70,7 @@ object TrainControlPanelConfig {
           KafkaConfig(
             kafkaBootstrapServers getOrElse NonEmptyList.one("localhost:29092"),
             kafkaConsumerGroup getOrElse "train-station",
-            kafkaTopic getOrElse "train-departures",
+            kafkaTopic getOrElse "train-arrivals-and-departures",
             kafkaSchemaRegistry getOrElse "http://localhost:8081/api/ccompat"
           ),
           station,

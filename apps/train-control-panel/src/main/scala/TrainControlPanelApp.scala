@@ -7,7 +7,6 @@ import station.Station.TravelDirection.Destination
 
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
-import fs2.Stream
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
@@ -21,10 +20,8 @@ object TrainControlPanelApp extends IOApp {
         DepartureTracker.impl[IO](config.station.asStation[Destination], expectedTrains)
 
       TrainControlPanelContext.impl[IO].use {
-        case TrainControlPanelContext(_, consumers, _) =>
-          val departureListener = Stream
-            .emits(consumers.toList)
-            .flatMap(_.stream)
+        case TrainControlPanelContext(_, consumer, _) =>
+          val departureListener = consumer.stream
             .collect {
               _.record.value match {
                 case e: Departed => e

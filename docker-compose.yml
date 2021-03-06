@@ -43,8 +43,8 @@ services:
         cub kafka-ready -b kafka:9092 1 40
         echo "Kafka ready"
         echo "Creating test topics"
-        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 --topic "train-departures-Madrid"
-        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 --topic "train-departures-Valencia"
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 --topic "train-arrivals-and-departures-Madrid"
+        kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 --topic "train-arrivals-and-departures-Valencia"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: ignored
       KAFKA_ADVERTISED_LISTENERS: ignored
