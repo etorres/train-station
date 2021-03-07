@@ -57,6 +57,7 @@ lazy val `train-control-panel` =
       log4CatsSlf4j,
       logback,
       refined,
+      refinedCats,
       scalaReflect,
       shapeless,
       slf4jApi,
