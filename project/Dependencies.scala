@@ -57,6 +57,8 @@ trait Doobie {
 
   private[this] val version = "0.10.0"
 
+  val doobieCore = organization %% "doobie-core" % version
+  val doobieFree = organization %% "doobie-free" % version
   val doobieHikari = organization %% "doobie-hikari" % version
   val doobiePostgres = organization %% "doobie-postgres" % version
   val doobieRefined = organization %% "doobie-refined" % version
@@ -89,6 +91,14 @@ trait Http4s {
   val http4sCore = organization %% "http4s-core" % version
   val http4sDsl = organization %% "http4s-dsl" % version
   val http4sServer = organization %% "http4s-server" % version
+}
+
+trait Hikari {
+  private[this] val organization = "com.zaxxer"
+
+  private[this] val version = "3.4.5"
+
+  val hikariCP = organization % "HikariCP" % version
 }
 
 trait Kafka {
@@ -193,6 +203,7 @@ object Dependencies
     with Fs2
     with Fs2Kafka
     with Http4s
+    with Hikari
     with Kafka
     with Logback
     with Log4Cats

@@ -5,12 +5,12 @@ import time.Moment
 
 import io.circe._
 
-import java.time.Instant
+import java.time.OffsetDateTime
 import scala.util.Try
 
 trait MomentJsonProtocol extends StringFieldDecoder {
   implicit def momentDecoder[A <: Moment.When]: Decoder[Moment[A]] =
-    decode[Moment[A]]("moment", str => Try(Instant.parse(str)).map(Moment[A]).toEither)
+    decode[Moment[A]]("moment", str => Try(OffsetDateTime.parse(str)).map(Moment[A]).toEither)
 
   implicit def momentEncoder[A <: Moment.When]: Encoder[Moment[A]] =
     (moment: Moment[A]) => Json.obj(("moment", Json.fromString(moment.unMoment.toString)))

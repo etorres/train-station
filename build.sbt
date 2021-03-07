@@ -5,8 +5,8 @@ sbtSettings
 
 lazy val `train-station` = project
   .root("train-station")
-  .aggregate(models, `models-circe`, `models-vulcan`, `train-control-panel`)
-  .dependsOn(models, `models-circe`, `models-vulcan`, `train-control-panel`)
+  .aggregate(models, `models-circe`, `models-doobie`, `models-vulcan`, `train-control-panel`)
+  .dependsOn(models, `models-circe`, `models-doobie`, `models-vulcan`, `train-control-panel`)
   .enablePlugins(JavaAppPackaging)
   .settings(mainClass in Compile := Some("es.eriktorr.train_station.TrainControlPanelApp"))
 
@@ -23,6 +23,11 @@ lazy val `models-circe` = project
   .dependsOn(models)
   .mainDependencies(circeCore, refined)
 
+lazy val `models-doobie` = project
+  .library("models-doobie")
+  .dependsOn(models)
+  .mainDependencies(doobieCore, refined)
+
 lazy val `models-vulcan` = project
   .library("models-vulcan")
   .dependsOn(models)
@@ -31,18 +36,26 @@ lazy val `models-vulcan` = project
 lazy val `train-control-panel` =
   project
     .application("train-control-panel")
-    .dependsOn(effect, models % "test->test;compile->compile", `models-circe`, `models-vulcan`)
+    .dependsOn(
+      effect,
+      models % "test->test;compile->compile",
+      `models-circe`,
+      `models-doobie`,
+      `models-vulcan`
+    )
     .mainDependencies(
       catsCore,
       catsEffect,
+      catsFree,
       catsKernel,
       circeCore,
       circeGeneric,
       ciris,
       cirisRefined,
+      doobieCore,
+      doobieFree,
       doobieHikari,
       doobiePostgres,
-      doobieRefined,
       fs2Core,
       fs2Kafka,
       fs2KafkaVulcan,
@@ -51,6 +64,7 @@ lazy val `train-control-panel` =
       http4sCore,
       http4sDsl,
       http4sServer,
+      hikariCP,
       kafkaSchemaRegistryClient,
       kittens,
       log4CatsCore,

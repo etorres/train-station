@@ -16,9 +16,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
       LOOP
         EXECUTE 'CREATE SCHEMA IF NOT EXISTS ' || quote_ident(schema_name);
         EXECUTE 'CREATE TABLE IF NOT EXISTS ' || quote_ident(schema_name) || '.expected_trains (
-          id SERIAL PRIMARY KEY,
-          train_id VARCHAR(24) NOT NULL,
-          origin VARCHAR(24) NOT NULL,
+          train_id VARCHAR(36) PRIMARY KEY,
+          origin VARCHAR(36) NOT NULL,
           expected TIMESTAMP WITH TIME ZONE NOT NULL
         )';
       END LOOP;

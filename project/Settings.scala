@@ -49,6 +49,7 @@ object Settings {
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1" cross CrossVersion.binary),
       dependencyOverrides ++= Seq(catsCore, catsEffect, fs2Core, scalaCheck),
       unusedCompileDependenciesFilter -= moduleFilter("ch.qos.logback", "logback-classic"),
+      unusedCompileDependenciesFilter -= moduleFilter("org.tpolecat", "doobie-postgres"),
       testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
       wartremoverErrors in (Compile, compile) ++= warts,
       wartremoverErrors in (Test, compile) ++= warts,

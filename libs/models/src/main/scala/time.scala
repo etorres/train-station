@@ -5,10 +5,10 @@ import io.estatico.newtype.Coercible
 import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
 
-import java.time.Instant
+import java.time.OffsetDateTime
 
 object time {
-  @newtype case class Moment[A <: Moment.When](unMoment: Instant) {
+  @newtype case class Moment[A <: Moment.When](unMoment: OffsetDateTime) {
     def asMoment[B <: Moment.When]: Moment[B] = unMoment.coerce[Moment[B]]
   }
 

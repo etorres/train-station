@@ -25,8 +25,10 @@ object ExpectedTrains {
     expected: Moment[Expected]
   )
 
-  implicit val eqEventId: Eq[ExpectedTrain] = semiauto.eq
-  implicit val showExpectedTrains: Show[ExpectedTrain] = semiauto.show
+  object ExpectedTrain {
+    implicit val eqExpectedTrain: Eq[ExpectedTrain] = semiauto.eq
+    implicit val showExpectedTrain: Show[ExpectedTrain] = semiauto.show
+  }
 
   def impl[F[_]: Sync]: ExpectedTrains[F] = ???
 }

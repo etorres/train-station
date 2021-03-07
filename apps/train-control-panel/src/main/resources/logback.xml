@@ -12,9 +12,9 @@
     </appender>
 
     <logger name="org.apache.kafka.common" level="warn"/>
-    <logger name="org.apache.kafka.clients.consumer" level="warn"/>
-    <logger name="org.apache.kafka.clients.producer" level="warn"/>
+    <logger name="org.apache.kafka.clients" level="warn"/>
     <logger name="io.confluent.kafka.serializers" level="warn"/>
+    <logger name="com.zaxxer.hikari.HikariDataSource" level="warn"/>
 
     <root level="info">
         <appender-ref ref="STDOUT" />

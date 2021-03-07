@@ -6,7 +6,7 @@ import org.scalacheck._
 import java.time.{Instant, OffsetDateTime}
 
 trait TimeGenerators {
-  implicit lazy val instantGen: Arbitrary[Instant] = {
+  implicit lazy val offsetDateTimeGen: Arbitrary[OffsetDateTime] = {
     import java.time.ZoneOffset.UTC
     Arbitrary {
       val now = OffsetDateTime.now(UTC)
@@ -15,7 +15,7 @@ trait TimeGenerators {
           now.minusMonths(6L).toEpochSecond,
           now.toEpochSecond
         )
-      } yield Instant.ofEpochSecond(epochSecond)
+      } yield OffsetDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), UTC)
     }
   }
 }
