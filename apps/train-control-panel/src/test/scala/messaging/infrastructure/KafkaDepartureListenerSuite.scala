@@ -48,8 +48,8 @@ object KafkaDepartureListenerSuite extends SimpleIOSuite with Checkers {
           expectedTrainsRef <- ExpectedTrainsState.refFrom(List.empty)
           expectedTrains = FakeExpectedTrains.impl[IO](expectedTrainsRef)
           departureTracker = DepartureTracker.impl[IO](destination, expectedTrains)
-          _ <- TrainControlPanelContext.impl[IO].use {
-            case TrainControlPanelContext(_, consumer, producer) =>
+          _ <- TrainControlPanelResources.impl[IO].use {
+            case TrainControlPanelResources(_, consumer, producer) =>
               producer.produce(
                 ProducerRecords.one(
                   ProducerRecord(

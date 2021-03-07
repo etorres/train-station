@@ -12,15 +12,15 @@ import cats.implicits._
 import fs2.kafka._
 import fs2.kafka.vulcan._
 
-final case class TrainControlPanelContext[F[_]](
+final case class TrainControlPanelResources[F[_]](
   config: TrainControlPanelConfig,
   consumer: KafkaConsumer[F, String, Event],
   producer: KafkaProducer[F, String, Event]
 )
 
-object TrainControlPanelContext extends EventAvroCodec {
+object TrainControlPanelResources extends EventAvroCodec {
   def impl[F[_]: Async: ContextShift: ConcurrentEffect: Timer]
-    : Resource[F, TrainControlPanelContext[F]] = {
+    : Resource[F, TrainControlPanelResources[F]] = {
 
     def settingsFrom(kafkaConfig: KafkaConfig) = {
       val avroSettingsSharedClient =
@@ -69,6 +69,6 @@ object TrainControlPanelContext extends EventAvroCodec {
         consumer(config.kafkaConfig.topic.value, consumerSettings, config.connectedTo),
         producer(producerSettings)
       ).tupled
-    } yield TrainControlPanelContext(config, consumer, producer)
+    } yield TrainControlPanelResources(config, consumer, producer)
   }
 }

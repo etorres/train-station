@@ -11,6 +11,11 @@
         </encoder>
     </appender>
 
+    <logger name="org.apache.kafka.common" level="warn"/>
+    <logger name="org.apache.kafka.clients.consumer" level="warn"/>
+    <logger name="org.apache.kafka.clients.producer" level="warn"/>
+    <logger name="io.confluent.kafka.serializers" level="warn"/>
+
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
