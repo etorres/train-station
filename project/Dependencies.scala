@@ -52,6 +52,16 @@ trait Ciris {
   val cirisRefined = organization %% "ciris-refined" % version
 }
 
+trait Doobie {
+  private[this] val organization = "org.tpolecat"
+
+  private[this] val version = "0.10.0"
+
+  val doobieHikari = organization %% "doobie-hikari" % version
+  val doobiePostgres = organization %% "doobie-postgres" % version
+  val doobieRefined = organization %% "doobie-refined" % version
+}
+
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
@@ -179,6 +189,7 @@ object Dependencies
     with CatsScalaCheck
     with Circe
     with Ciris
+    with Doobie
     with Fs2
     with Fs2Kafka
     with Http4s

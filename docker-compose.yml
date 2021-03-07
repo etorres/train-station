@@ -1,7 +1,8 @@
+##
 # Resources:
 # https://docs.confluent.io/platform/current/installation/docker/config-reference.html
 # https://github.com/confluentinc/examples/blob/6.1.0-post/microservices-orders/docker-compose.yml
-#
+##
 version: "3"
 services:
   zookeeper:
@@ -56,3 +57,19 @@ services:
       - 8081:8080
     depends_on:
       - kafka
+  postgres:
+    image: postgres:13.2-alpine
+    hostname: postgres
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: s3c4Et
+    volumes:
+      - "$PWD/docker/postgres:/docker-entrypoint-initdb.d"
+  adminer:
+    image: adminer
+    hostname: adminer
+    container_name: adminer
+    ports:
+      - 8080:8080
