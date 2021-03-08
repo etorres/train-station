@@ -38,7 +38,9 @@ final class JdbcExpectedTrains[F[_]: Async] private (transactor: Transactor[F])
       .option
       .transact(transactor)
 
-  override def removeAllIdentifiedBy(trainId: TrainId): F[Unit] = ???
+  override def removeAllIdentifiedBy(trainId: TrainId): F[Unit] = F.unit <* sql"""
+      DELETE FROM expected_trains WHERE train_id = $trainId
+       """.update.run.transact(transactor)
 
   override def update(expectedTrain: ExpectedTrain): F[Unit] = F.unit <* sql"""
         INSERT INTO 
