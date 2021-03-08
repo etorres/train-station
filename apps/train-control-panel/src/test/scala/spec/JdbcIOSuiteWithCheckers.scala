@@ -3,11 +3,11 @@ package spec
 
 import jdbc.infrastructure.JdbcTestTransactor
 
-import _root_.doobie._
+import doobie._
 import cats.effect._
 import weaver._
 import weaver.scalacheck._
-import _root_.doobie.util.ExecutionContexts
+import doobie.util.ExecutionContexts
 
 import scala.concurrent.ExecutionContext
 

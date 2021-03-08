@@ -2,10 +2,10 @@ package es.eriktorr.train_station
 package messaging.infrastructure
 
 import TrainControlPanelConfig.KafkaConfig
+import avro.infrastructure.EventAvroCodec
 import event.Event
 import station.Station
 import station.Station.TravelDirection.Destination
-import vulcan.EventAvroCodec
 
 import cats.data.NonEmptyList
 import cats.effect._

@@ -2,9 +2,9 @@ package es.eriktorr.train_station
 package arrival
 
 import arrival.Arrivals.{Arrival, ArrivalError}
-import circe.{MomentJsonProtocol, TrainJsonProtocol}
 import event.Event.Arrived
 import event.EventId
+import json.infrastructure.{MomentJsonProtocol, TrainJsonProtocol}
 import messaging.EventSender
 import station.Station
 import station.Station.TravelDirection.Destination

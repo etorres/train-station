@@ -1,12 +1,12 @@
 package es.eriktorr.train_station
 
+import avro.infrastructure.EventAvroCodec
 import event.Event
 import jdbc.infrastructure.JdbcTransactor
 import messaging.infrastructure.KafkaClient
-import vulcan.EventAvroCodec
 
-import _root_.doobie.Transactor
 import cats.effect._
+import doobie.Transactor
 import fs2.kafka._
 
 import scala.concurrent.ExecutionContext

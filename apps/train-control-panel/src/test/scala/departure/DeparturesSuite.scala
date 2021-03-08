@@ -1,11 +1,11 @@
 package es.eriktorr.train_station
 package departure
 
-import circe._
 import departure.Departures.Departure
 import event.Event.Departed
 import event.EventId
 import http.infrastructure.AllHttpRoutes
+import json.infrastructure.EventJsonProtocol
 import messaging.infrastructure.FakeEventSender
 import messaging.infrastructure.FakeEventSender.EventSenderState
 import shared.infrastructure.Generators.nDistinct
@@ -40,7 +40,11 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 import weaver._
 import weaver.scalacheck._
 
-object DeparturesSuite extends SimpleIOSuite with Checkers with HttpRoutesIOCheckers {
+object DeparturesSuite
+    extends SimpleIOSuite
+    with Checkers
+    with HttpRoutesIOCheckers
+    with EventJsonProtocol {
 
   test("create train departures") {
     final case class TestCase(

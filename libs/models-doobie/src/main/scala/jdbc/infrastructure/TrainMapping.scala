@@ -1,9 +1,9 @@
 package es.eriktorr.train_station
-package doobie
+package jdbc.infrastructure
 
 import train.TrainId
 
-import _root_.doobie._
+import doobie._
 
 trait TrainMapping {
   implicit val trainIdPut: Put[TrainId] = Put[String].contramap(_.unTrainId.value)

@@ -1,9 +1,9 @@
 package es.eriktorr.train_station
-package vulcan
+package avro.infrastructure
 
 import time.Moment
 
-import _root_.vulcan._
+import vulcan._
 
 import java.time.ZoneOffset
 

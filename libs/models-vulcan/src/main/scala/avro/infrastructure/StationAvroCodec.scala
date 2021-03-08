@@ -1,10 +1,10 @@
 package es.eriktorr.train_station
-package vulcan
+package avro.infrastructure
 
 import station.Station
 
-import _root_.vulcan._
 import cats.implicits._
+import vulcan._
 
 trait StationAvroCodec {
   implicit def stationCodec[A <: Station.TravelDirection]: Codec[Station[A]] =

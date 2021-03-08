@@ -3,17 +3,17 @@ package arrival.infrastructure
 
 import arrival.ExpectedTrains
 import arrival.ExpectedTrains.ExpectedTrain
-import doobie._
+import jdbc.infrastructure.{StationMapping, TimeMapping, TrainMapping}
 import station.Station
 import station.Station.TravelDirection.Origin
 import time.Moment
 import time.Moment.When.Expected
 import train.TrainId
 
-import _root_.doobie._
-import _root_.doobie.implicits._
 import cats.effect._
 import cats.implicits._
+import doobie._
+import doobie.implicits._
 
 final class JdbcExpectedTrains[F[_]: Async] private (transactor: Transactor[F])
     extends ExpectedTrains[F]

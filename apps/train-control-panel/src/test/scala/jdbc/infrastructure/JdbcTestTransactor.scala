@@ -3,9 +3,9 @@ package jdbc.infrastructure
 
 import shared.infrastructure.TrainControlPanelTestConfig
 
-import _root_.doobie._
-import _root_.doobie.hikari._
-import _root_.doobie.implicits._
+import doobie._
+import doobie.hikari._
+import doobie.implicits._
 import cats.effect._
 import cats.implicits._
 import eu.timepit.refined.api.Refined

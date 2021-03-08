@@ -1,9 +1,9 @@
 package es.eriktorr.train_station
 package departure
 
-import circe.{MomentJsonProtocol, StationJsonProtocol, TrainJsonProtocol}
 import event.Event.Departed
 import event.EventId
+import json.infrastructure.{MomentJsonProtocol, StationJsonProtocol, TrainJsonProtocol}
 import messaging.EventSender
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin}

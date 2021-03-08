@@ -1,10 +1,10 @@
 package es.eriktorr.train_station
-package vulcan
+package avro.infrastructure
 
 import train.TrainId
 
-import _root_.vulcan._
 import cats.implicits._
+import vulcan._
 
 trait TrainAvroCodec {
   implicit val trainIdCodec: Codec[TrainId] = Codec.string.imapError(value =>

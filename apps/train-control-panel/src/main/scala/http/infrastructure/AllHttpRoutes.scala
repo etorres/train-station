@@ -3,9 +3,9 @@ package http.infrastructure
 
 import arrival.Arrivals
 import arrival.Arrivals.{Arrival, ArrivalError}
-import circe.EventJsonProtocol
 import departure.Departures
 import departure.Departures.{Departure, DepartureError}
+import json.infrastructure.EventJsonProtocol
 
 import cats.effect.Sync
 import cats.implicits._

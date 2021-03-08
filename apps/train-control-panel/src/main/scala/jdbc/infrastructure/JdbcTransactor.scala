@@ -4,7 +4,7 @@ package jdbc.infrastructure
 import TrainControlPanelConfig.JdbcConfig
 
 import cats.effect._
-import _root_.doobie.hikari._
+import doobie.hikari._
 
 import scala.concurrent.ExecutionContext
 

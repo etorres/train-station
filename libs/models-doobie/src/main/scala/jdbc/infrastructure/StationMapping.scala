@@ -1,9 +1,9 @@
 package es.eriktorr.train_station
-package doobie
+package jdbc.infrastructure
 
 import station.Station
 
-import _root_.doobie._
+import doobie._
 
 trait StationMapping {
   implicit def stationPut[A <: Station.TravelDirection]: Put[Station[A]] =

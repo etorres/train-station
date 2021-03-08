@@ -1,5 +1,5 @@
 package es.eriktorr.train_station
-package circe
+package json.infrastructure
 
 import time.Moment
 

@@ -5,10 +5,10 @@ import arrival.Arrivals.Arrival
 import arrival.ExpectedTrains.ExpectedTrain
 import arrival.infrastructure.FakeExpectedTrains
 import arrival.infrastructure.FakeExpectedTrains.ExpectedTrainsState
-import circe._
 import event.Event.Arrived
 import event.EventId
 import http.infrastructure.AllHttpRoutes
+import json.infrastructure.EventJsonProtocol
 import messaging.infrastructure.FakeEventSender
 import messaging.infrastructure.FakeEventSender.EventSenderState
 import shared.infrastructure.Generators.nDistinct
@@ -39,7 +39,11 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 import weaver._
 import weaver.scalacheck._
 
-object ArrivalsSuite extends SimpleIOSuite with Checkers with HttpRoutesIOCheckers {
+object ArrivalsSuite
+    extends SimpleIOSuite
+    with Checkers
+    with HttpRoutesIOCheckers
+    with EventJsonProtocol {
 
   test("create train arrivals") {
     final case class TestCase(

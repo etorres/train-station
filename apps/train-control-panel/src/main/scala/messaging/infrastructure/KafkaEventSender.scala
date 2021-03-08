@@ -9,7 +9,7 @@ import cats.effect._
 import cats.implicits._
 import fs2.kafka._
 
-final class KafkaEventSender[F[_]: Sync] /* private[infrastructure] */ (
+final class KafkaEventSender[F[_]: Sync] private[infrastructure] (
   producer: KafkaProducer[F, String, Event],
   topicPrefix: String
 ) extends EventSender[F] {

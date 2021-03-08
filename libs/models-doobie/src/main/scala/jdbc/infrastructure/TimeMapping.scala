@@ -1,10 +1,10 @@
 package es.eriktorr.train_station
-package doobie
+package jdbc.infrastructure
 
 import time.Moment
 
-import _root_.doobie._
-import _root_.doobie.implicits.javatime._
+import doobie._
+import doobie.implicits.javatime._
 
 import java.time.OffsetDateTime
 

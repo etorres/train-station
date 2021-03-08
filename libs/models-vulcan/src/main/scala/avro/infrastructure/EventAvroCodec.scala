@@ -1,11 +1,11 @@
 package es.eriktorr.train_station
-package vulcan
+package avro.infrastructure
 
 import event.Event.{Arrived, Departed}
 import event.{Event, EventId}
 
-import _root_.vulcan._
 import cats.implicits._
+import vulcan._
 
 trait EventAvroCodec extends MomentAvroCodec with TrainAvroCodec with StationAvroCodec {
   implicit val eventIdCodec: Codec[EventId] = Codec.string.imapError(value =>
