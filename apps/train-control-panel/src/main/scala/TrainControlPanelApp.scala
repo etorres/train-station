@@ -41,7 +41,7 @@ object TrainControlPanelApp extends IOApp {
             .compile
             .drain
 
-          logger.info(s"Started train station ${config.station.toString}") *> (
+          _logger.info(s"Started train station ${config.station.toString}") *> (
             departureListener,
             httpServer
           ).parMapN((_, _) => ()).as(ExitCode.Success)
