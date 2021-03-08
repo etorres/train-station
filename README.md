@@ -15,5 +15,15 @@ curl --request POST
              }'
 ```
 
+```commandline
+curl --request POST 
+     --url http://localhost:8082/arrival 
+     --header 'Content-Type: application/json' 
+     --data '{
+              "trainId": "2b424db4-b111-4f27-8c7c-70f866c3cc50",
+              "actual": {"moment":"2021-03-08T22:05:42Z"}
+             }'
+```
+
 Useful links:
 * [http4s-body-missing-test](https://github.com/bastewart/http4s-body-missing-test).
