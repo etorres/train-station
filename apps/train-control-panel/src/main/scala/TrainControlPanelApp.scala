@@ -18,9 +18,9 @@ object TrainControlPanelApp extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
     def program(
-      implicit ec: ExecutionContext,
+      implicit _executionContext: ExecutionContext,
       _blocker: Blocker,
-      logger: Logger[IO]
+      _logger: Logger[IO]
     ): IO[ExitCode] =
       TrainControlPanelResources.impl[IO].use {
         case TrainControlPanelResources(config, consumer, producer, transactor) =>
