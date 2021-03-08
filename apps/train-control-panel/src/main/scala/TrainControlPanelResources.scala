@@ -1,74 +1,33 @@
 package es.eriktorr.train_station
 
-import TrainControlPanelConfig.KafkaConfig
 import event.Event
-import station.Station
-import station.Station.TravelDirection.Destination
+import jdbc.infrastructure.JdbcTransactor
+import messaging.infrastructure.KafkaClient
 import vulcan.EventAvroCodec
 
-import cats.data.NonEmptyList
-import cats.effect.{Async, ConcurrentEffect, ContextShift, Resource, Timer}
-import cats.implicits._
+import _root_.doobie.Transactor
+import cats.effect._
 import fs2.kafka._
-import fs2.kafka.vulcan._
+
+import scala.concurrent.ExecutionContext
 
 final case class TrainControlPanelResources[F[_]](
   config: TrainControlPanelConfig,
   consumer: KafkaConsumer[F, String, Event],
-  producer: KafkaProducer[F, String, Event]
+  producer: KafkaProducer[F, String, Event],
+  transactor: Transactor[F]
 )
 
 object TrainControlPanelResources extends EventAvroCodec {
-  def impl[F[_]: Async: ContextShift: ConcurrentEffect: Timer]
-    : Resource[F, TrainControlPanelResources[F]] = {
-
-    def settingsFrom(kafkaConfig: KafkaConfig) = {
-      val avroSettingsSharedClient =
-        SchemaRegistryClientSettings[F](kafkaConfig.schemaRegistry.value).createSchemaRegistryClient
-          .map(AvroSettings(_))
-
-      avroSettingsSharedClient.map { avroSettings =>
-        implicit def eventDeserializer: RecordDeserializer[F, Event] =
-          avroDeserializer[Event].using(avroSettings)
-
-        implicit val eventSerializer: RecordSerializer[F, Event] =
-          avroSerializer[Event].using(avroSettings)
-
-        val consumerSettings = ConsumerSettings[F, String, Event]
-          .withAutoOffsetReset(AutoOffsetReset.Earliest)
-          .withBootstrapServers(kafkaConfig.bootstrapServersAsString)
-          .withGroupId(kafkaConfig.consumerGroup.value)
-
-        val producerSettings = ProducerSettings[F, String, Event]
-          .withBootstrapServers(kafkaConfig.bootstrapServersAsString)
-
-        (consumerSettings, producerSettings)
-      }
-    }
-
-    def consumer(
-      topicPrefix: String,
-      consumerSettings: ConsumerSettings[F, String, Event],
-      destinations: NonEmptyList[Station[Destination]]
-    ) =
-      KafkaConsumer
-        .resource(consumerSettings)
-        .evalTap(
-          _.subscribe(
-            destinations.map(destination => s"$topicPrefix-${destination.unStation.value}")
-          )
-        )
-
-    def producer(producerSettings: ProducerSettings[F, String, Event]) =
-      KafkaProducer.resource(producerSettings)
-
+  def impl[F[_]: Async: ConcurrentEffect](
+    implicit executionContext: ExecutionContext,
+    contextShift: ContextShift[F],
+    blocker: Blocker,
+    timer: Timer[F]
+  ): Resource[F, TrainControlPanelResources[F]] =
     for {
       config <- Resource.liftF(TrainControlPanelConfig.load[F])
-      (consumerSettings, producerSettings) <- Resource.liftF(settingsFrom(config.kafkaConfig))
-      (consumer, producer) <- (
-        consumer(config.kafkaConfig.topic.value, consumerSettings, config.connectedTo),
-        producer(producerSettings)
-      ).tupled
-    } yield TrainControlPanelResources(config, consumer, producer)
-  }
+      (consumer, producer) <- KafkaClient.clientsFor(config.kafkaConfig, config.connectedTo)
+      transactor <- JdbcTransactor.impl[F](config.jdbcConfig).transactorResource
+    } yield TrainControlPanelResources(config, consumer, producer, transactor)
 }

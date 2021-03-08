@@ -21,8 +21,6 @@ trait JdbcIOSuiteWithCheckers extends SimpleIOSuite with Checkers {
 
   def currentSchema: String
 
-  val testResources: Resource[IO, Transactor[IO]] = JdbcTestTransactor.testTransactorResource(
-    JdbcTestTransactor.testJdbcConfig,
-    currentSchema
-  )
+  val testResources: Resource[IO, Transactor[IO]] =
+    JdbcTestTransactor.testTransactorResource(currentSchema)
 }

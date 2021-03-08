@@ -1,23 +1,30 @@
 package es.eriktorr.train_station
 
-import arrival.{Arrivals, ExpectedTrains}
+import arrival.Arrivals
+import arrival.infrastructure.JdbcExpectedTrains
 import departure.{DepartureTracker, Departures}
 import http.infrastructure.HttpServer
 import messaging.infrastructure.{KafkaDepartureListener, KafkaEventSender}
 import station.Station.TravelDirection.Destination
 
-import cats.effect.{ExitCode, IO, IOApp}
+import cats.effect.{Blocker, ExitCode, IO, IOApp}
 import cats.implicits._
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
-object TrainControlPanelApp extends IOApp {
-  override def run(args: List[String]): IO[ExitCode] = {
+import scala.concurrent.ExecutionContext
 
-    def program(implicit logger: Logger[IO]): IO[ExitCode] =
+object TrainControlPanelApp extends IOApp {
+
+  override def run(args: List[String]): IO[ExitCode] = {
+    def program(
+      implicit ec: ExecutionContext,
+      _blocker: Blocker,
+      logger: Logger[IO]
+    ): IO[ExitCode] =
       TrainControlPanelResources.impl[IO].use {
-        case TrainControlPanelResources(config, consumer, producer) =>
-          val expectedTrains = ExpectedTrains.impl[IO]
+        case TrainControlPanelResources(config, consumer, producer, transactor) =>
+          val expectedTrains = JdbcExpectedTrains.impl[IO](transactor)
           val departureTracker =
             DepartureTracker.impl[IO](config.station.asStation[Destination], expectedTrains)
 
@@ -43,6 +50,8 @@ object TrainControlPanelApp extends IOApp {
     for {
       logger <- Slf4jLogger.create[IO]
       result <- {
+        implicit val _executionContext: ExecutionContext = executionContext
+        implicit val _blocker: Blocker = Blocker.liftExecutionContext(_executionContext)
         implicit val _logger: Logger[IO] = logger
         program
       }

@@ -9,7 +9,6 @@ import time.Moment.When.Expected
 import train.TrainId
 
 import cats.derived.semiauto
-import cats.effect.Sync
 import cats.{Eq, Show}
 
 trait ExpectedTrains[F[_]] {
@@ -29,6 +28,4 @@ object ExpectedTrains {
     implicit val eqExpectedTrain: Eq[ExpectedTrain] = semiauto.eq
     implicit val showExpectedTrain: Show[ExpectedTrain] = semiauto.show
   }
-
-  def impl[F[_]: Sync]: ExpectedTrains[F] = ???
 }
