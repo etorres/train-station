@@ -11,10 +11,14 @@
         </encoder>
     </appender>
 
-    <logger name="org.apache.kafka.common" level="warn"/>
-    <logger name="org.apache.kafka.clients" level="warn"/>
+<!--    <logger name="org.http4s.blaze" level="warn"/>-->
+<!--    <logger name="org.http4s.server.blaze" level="warn"/>-->
+<!--    <logger name="com.zaxxer.hikari" level="warn"/>-->
+<!--    <logger name="org.apache.kafka.common" level="warn"/>-->
+<!--    <logger name="org.apache.kafka.clients" level="warn"/>-->
+    <logger name="org.apache.kafka.clients.consumer.ConsumerConfig" level="warn"/>
+    <logger name="org.apache.kafka.clients.producer.ProducerConfig" level="warn"/>
     <logger name="io.confluent.kafka.serializers" level="warn"/>
-    <logger name="com.zaxxer.hikari.HikariDataSource" level="warn"/>
 
     <root level="info">
         <appender-ref ref="STDOUT" />
