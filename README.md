@@ -3,5 +3,17 @@ This is an adaptation of the blog entry [Event-driven railway network based on P
 * [Apache Kafka](https://kafka.apache.org/).
 * [Weaver Test](https://disneystreaming.github.io/weaver-test/).
 
+```commandline
+curl --request POST 
+     --url http://localhost:8082/departure 
+     --header 'content-type: application/json' 
+     --data '{
+              "trainId": "456", 
+              "to": {"station": "Valencia"}, 
+              "expected": {"moment": "2020-10-04T21:21:15Z"}, 
+              "actual": {"moment": "2020-09-18T22:05:42Z"}
+             }'
+```
+
 Useful links:
 * [http4s-body-missing-test](https://github.com/bastewart/http4s-body-missing-test).
