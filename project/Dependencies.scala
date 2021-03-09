@@ -152,12 +152,10 @@ trait ScalaCheck {
   val scalaCheck = organization %% "scalacheck" % version
 }
 
-trait ScalaReflect {
-  private[this] val organization = "org.scala-lang"
-
-  private[this] val version = "2.13.4"
-
-  val scalaReflect = organization % "scala-reflect" % version
+trait ScalaLang {
+  private val org = "org.scala-lang"
+  val projectScalaVersion = "2.13.4"
+  val scalaReflect = org % "scala-reflect" % projectScalaVersion
 }
 
 trait Shapeless {
@@ -210,7 +208,7 @@ object Dependencies
     with NewType
     with Refined
     with ScalaCheck
-    with ScalaReflect
+    with ScalaLang
     with Shapeless
     with Slf4j
     with Vulcan
