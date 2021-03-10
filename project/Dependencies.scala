@@ -153,9 +153,10 @@ trait ScalaCheck {
 }
 
 trait ScalaLang {
-  private val org = "org.scala-lang"
+  private[this] val organization = "org.scala-lang"
+
   val projectScalaVersion = "2.13.4"
-  val scalaReflect = org % "scala-reflect" % projectScalaVersion
+  val scalaReflect = organization % "scala-reflect" % projectScalaVersion
 }
 
 trait Shapeless {
