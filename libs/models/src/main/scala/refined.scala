@@ -10,6 +10,8 @@ object refined {
 
   type NonBlankString = String Refined NonBlank
 
+  type InUserPortRange = Not[Less[1024]] And Not[Greater[49151]]
+
   implicit def evNonBlankString[A]: Coercible[String Refined MatchesRegex[NonBlank], A] =
     Coercible.instance[String Refined MatchesRegex[NonBlank], A]
 

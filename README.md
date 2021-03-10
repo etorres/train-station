@@ -15,7 +15,7 @@ CONNECTED_STATIONS=Madrid,Valencia
 JDBC_PASSWORD=changeme
 ```
 
-## Examples:
+## Examples
 
 ```commandline
 curl --request POST 
@@ -39,5 +39,5 @@ curl --request POST
              }'
 ```
 
-## Useful links:
+## Useful Links
 * [http4s-body-missing-test](https://github.com/bastewart/http4s-body-missing-test).
