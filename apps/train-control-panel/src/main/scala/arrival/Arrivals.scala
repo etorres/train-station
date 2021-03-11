@@ -13,9 +13,10 @@ import time.Moment.When.{Actual, Created}
 import train.TrainId
 import uuid.UUIDGenerator
 
-import cats.Applicative
+import cats.derived.semiauto
 import cats.effect.Sync
 import cats.implicits._
+import cats.{Applicative, Show}
 import io.circe._
 import io.circe.generic.semiauto._
 import org.http4s._
@@ -35,6 +36,8 @@ object Arrivals {
 
     implicit val arrivalEncoder: Encoder[Arrival] = deriveEncoder
     implicit def arrivalEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Arrival] = jsonEncoderOf
+
+    implicit val showArrival: Show[Arrival] = semiauto.show
   }
 
   sealed trait ArrivalError
@@ -70,7 +73,7 @@ object Arrivals {
               .map(_.asRight)
           case None =>
             val error = ArrivalError.UnexpectedTrain(arrival.trainId)
-            F.error(s"Tried to create arrival of an unexpected train: ${arrival.toString}")
+            F.error(s"Tried to create arrival of an unexpected train: ${arrival.show}")
               .as(error.asLeft)
         }
       } yield arrived

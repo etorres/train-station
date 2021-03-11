@@ -7,11 +7,12 @@ import messaging.EventSender
 
 import cats.effect._
 import cats.implicits._
+import eu.timepit.refined.types.string.NonEmptyString
 import fs2.kafka._
 
 final class KafkaEventSender[F[_]: Sync] private[infrastructure] (
   producer: KafkaProducer[F, String, Event],
-  topicPrefix: String
+  topicPrefix: NonEmptyString
 ) extends EventSender[F] {
   override def send(event: Event): F[Unit] = event match {
     case departed: Departed =>
@@ -19,7 +20,7 @@ final class KafkaEventSender[F[_]: Sync] private[infrastructure] (
         .produce(
           ProducerRecords.one(
             ProducerRecord(
-              s"$topicPrefix-${departed.from.unStation.value}",
+              s"${topicPrefix.value}-${departed.from.unStation.value}",
               departed.id.unEventId.value,
               departed
             )
@@ -30,6 +31,6 @@ final class KafkaEventSender[F[_]: Sync] private[infrastructure] (
 }
 
 object KafkaEventSender {
-  def impl[F[_]: Sync](producer: KafkaProducer[F, String, Event], topicPrefix: String) =
+  def impl[F[_]: Sync](producer: KafkaProducer[F, String, Event], topicPrefix: NonEmptyString) =
     new KafkaEventSender[F](producer, topicPrefix)
 }

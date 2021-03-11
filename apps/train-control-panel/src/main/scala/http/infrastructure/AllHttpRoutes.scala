@@ -27,7 +27,7 @@ object AllHttpRoutes extends EventJsonProtocol {
             error =>
               error match {
                 case ArrivalError.UnexpectedTrain(trainId) =>
-                  BadRequest(s"Unexpected train ${trainId.toString}")
+                  BadRequest(s"Unexpected train ${trainId.show}")
               },
             arrivalEvent => Created(arrivalEvent.id)
           )
@@ -48,7 +48,7 @@ object AllHttpRoutes extends EventJsonProtocol {
             error =>
               error match {
                 case DepartureError.UnexpectedDestination(destination) =>
-                  BadRequest(s"Unexpected destination ${destination.toString}")
+                  BadRequest(s"Unexpected destination ${destination.show}")
               },
             departureEvent => Created(departureEvent.id)
           )

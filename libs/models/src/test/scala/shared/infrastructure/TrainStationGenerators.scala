@@ -14,9 +14,7 @@ object TrainStationGenerators extends TimeGenerators {
   def afterGen[A <: Moment.When](moment: Moment[A]): Gen[Moment[A]] =
     Gen.choose(1L, 480L).map(minutes => Moment(moment.unMoment.plusMinutes(minutes)))
 
-  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
-  val eventIdGen: Gen[EventId] =
-    Gen.uuid.map(uuid => EventId.fromString(uuid.toString).toOption.get)
+  val eventIdGen: Gen[EventId] = Gen.uuid.map(uuid => EventId.fromUuid(uuid))
 
   def momentGen[A <: Moment.When]: Gen[Moment[A]] =
     Arbitrary.arbitrary[OffsetDateTime].map(Moment[A])

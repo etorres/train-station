@@ -10,5 +10,5 @@ trait StationJsonProtocol extends StringFieldDecoder {
     decode[Station[A]]("station", Station.fromString[A])
 
   implicit def stationEncoder[A <: Station.TravelDirection]: Encoder[Station[A]] =
-    (station: Station[A]) => Json.obj(("station", Json.fromString(station.unStation.toString)))
+    (station: Station[A]) => Json.obj(("station", Json.fromString(station.unStation.value)))
 }

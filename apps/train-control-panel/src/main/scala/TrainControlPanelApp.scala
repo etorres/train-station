@@ -16,8 +16,8 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 import scala.concurrent.ExecutionContext
 
 object TrainControlPanelApp extends IOApp {
-
   override def run(args: List[String]): IO[ExitCode] = {
+
     def program[F[_]: ConcurrentEffect: ContextShift: Timer: NonEmptyParallel: Logger](
       executionContext: ExecutionContext,
       blocker: Blocker
@@ -31,7 +31,7 @@ object TrainControlPanelApp extends IOApp {
           val departureListener =
             KafkaDepartureListener.stream[F](consumer, departureTracker).compile.drain
 
-          val eventSender = KafkaEventSender.impl[F](producer, config.kafkaConfig.topic.value)
+          val eventSender = KafkaEventSender.impl[F](producer, config.kafkaConfig.topic)
           val arrivals =
             Arrivals.impl[F](config.station.asStation[Destination], expectedTrains, eventSender)
           val departures = Departures.impl[F](config.station, config.connectedTo, eventSender)
@@ -41,7 +41,7 @@ object TrainControlPanelApp extends IOApp {
             .compile
             .drain
 
-          F.info(s"Started train station ${config.station.toString}") *> (
+          F.info(s"Started train station ${config.station.show}") *> (
             departureListener,
             httpServer
           ).parMapN((_, _) => ())

@@ -12,10 +12,11 @@ import time.Moment.When.{Actual, Created, Expected}
 import train.TrainId
 import uuid.UUIDGenerator
 
-import cats.Applicative
 import cats.data.NonEmptyList
+import cats.derived.semiauto
 import cats.effect.Sync
 import cats.implicits._
+import cats.{Applicative, Show}
 import io.circe._
 import io.circe.generic.semiauto._
 import org.http4s._
@@ -43,6 +44,8 @@ object Departures {
     implicit val departureEncoder: Encoder[Departure] = deriveEncoder
     implicit def departureEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Departure] =
       jsonEncoderOf
+
+    implicit val showDeparture: Show[Departure] = semiauto.show
   }
 
   sealed trait DepartureError
@@ -77,7 +80,7 @@ object Departures {
           case None =>
             val error = DepartureError.UnexpectedDestination(departure.to)
             F.error(
-                s"Tried to create departure to an unexpected destination: ${departure.toString}"
+                s"Tried to create departure to an unexpected destination: ${departure.show}"
               )
               .as(error.asLeft)
         }
