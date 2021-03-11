@@ -8,10 +8,10 @@ import doobie.hikari._
 
 import scala.concurrent.ExecutionContext
 
-final class JdbcTransactor[F[_]: Async] private[infrastructure] (jdbcConfig: JdbcConfig)(
-  implicit connectEc: ExecutionContext,
-  blocker: Blocker,
-  contextShift: ContextShift[F]
+final class JdbcTransactor[F[_]: Async: ContextShift] private[infrastructure] (
+  jdbcConfig: JdbcConfig,
+  connectEc: ExecutionContext,
+  blocker: Blocker
 ) {
   val transactorResource: Resource[F, HikariTransactor[F]] =
     for {
@@ -27,9 +27,10 @@ final class JdbcTransactor[F[_]: Async] private[infrastructure] (jdbcConfig: Jdb
 }
 
 object JdbcTransactor {
-  def impl[F[_]: Async](jdbcConfig: JdbcConfig)(
-    implicit connectEc: ExecutionContext,
-    blocker: Blocker,
-    contextShift: ContextShift[F]
-  ): JdbcTransactor[F] = new JdbcTransactor(jdbcConfig)
+  def impl[F[_]: Async: ContextShift](
+    jdbcConfig: JdbcConfig,
+    connectEc: ExecutionContext,
+    blocker: Blocker
+  ): JdbcTransactor[F] =
+    new JdbcTransactor(jdbcConfig, connectEc, blocker)
 }

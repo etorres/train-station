@@ -14,7 +14,7 @@ import fs2.kafka._
 import fs2.kafka.vulcan._
 
 object KafkaClient extends EventAvroCodec {
-  def clientsFor[F[_]: Async: ConcurrentEffect: ContextShift: Timer](
+  def clientsFor[F[_]: ConcurrentEffect: ContextShift: Timer](
     kafkaConfig: KafkaConfig,
     connectedTo: NonEmptyList[Station[Destination]]
   ): Resource[F, (KafkaConsumer[F, String, Event], KafkaProducer[F, String, Event])] = {
