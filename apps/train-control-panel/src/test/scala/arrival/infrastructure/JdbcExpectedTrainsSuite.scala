@@ -15,7 +15,7 @@ import cats.implicits._
 object JdbcExpectedTrainsSuite extends JdbcIOSuiteWithCheckers {
   override def currentSchema: String = "test_expected_trains"
 
-  test("find expected train by Id") {
+  test("insert, find and delete expected train by Id") {
     final case class TestCase(expectedTrain: ExpectedTrain)
 
     object TestCase {
@@ -34,8 +34,10 @@ object JdbcExpectedTrainsSuite extends JdbcIOSuiteWithCheckers {
           val expectedTrains = JdbcExpectedTrains.impl[IO](transactor)
           for {
             _ <- expectedTrains.update(expectedTrain)
-            result <- expectedTrains.findBy(expectedTrain.trainId)
-          } yield expect(result === expectedTrain.some)
+            created <- expectedTrains.findBy(expectedTrain.trainId)
+            _ <- expectedTrains.removeAllIdentifiedBy(expectedTrain.trainId)
+            deleted <- expectedTrains.findBy(expectedTrain.trainId)
+          } yield expect(created === expectedTrain.some) && expect(deleted === none[ExpectedTrain])
         }
     }
   }

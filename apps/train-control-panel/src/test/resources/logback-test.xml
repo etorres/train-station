@@ -17,6 +17,8 @@
     <logger name="org.apache.kafka.common" level="warn"/>
     <logger name="org.apache.kafka.clients" level="warn"/>
     <logger name="io.confluent.kafka.serializers" level="warn"/>
+    <logger name="es.eriktorr.train_station.arrival.ArrivalsSuite" level="off"/>
+    <logger name="es.eriktorr.train_station.departure.DeparturesSuite" level="off"/>
 
     <root level="info">
         <appender-ref ref="STDOUT" />

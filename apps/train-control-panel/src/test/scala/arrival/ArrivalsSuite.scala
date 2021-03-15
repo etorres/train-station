@@ -5,8 +5,9 @@ import arrival.Arrivals.Arrival
 import arrival.ExpectedTrains.ExpectedTrain
 import arrival.infrastructure.FakeExpectedTrains
 import arrival.infrastructure.FakeExpectedTrains.ExpectedTrainsState
+import effect._
 import event.Event.Arrived
-import event.EventId
+import event.{Event, EventId}
 import http.infrastructure.AllHttpRoutes
 import json.infrastructure.EventJsonProtocol
 import messaging.infrastructure.FakeEventSender
@@ -17,7 +18,6 @@ import shared.infrastructure.TrainStationGenerators._
 import spec.HttpRoutesIOCheckers
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin => StationOrigin}
-import time.Moment
 import time.Moment.When.{Actual, Created}
 import uuid.UUIDGenerator
 import uuid.infrastructure.FakeUUIDGenerator
@@ -48,9 +48,11 @@ object ArrivalsSuite
   test("create train arrivals") {
     final case class TestCase(
       destination: Station[Destination],
-      expectedTrains: NonEmptyList[ExpectedTrain],
-      actual: Moment[Actual],
-      eventId: EventId
+      expectedTrain: ExpectedTrain,
+      allTrains: NonEmptyList[ExpectedTrain],
+      arrival: Arrival,
+      eventId: EventId,
+      expectedEvents: List[Event]
     )
 
     object TestCase {
@@ -58,60 +60,110 @@ object ArrivalsSuite
     }
 
     val gen = for {
-      destination <- stationGen[Destination]
+      (destination, origins) <- nDistinct(4, stationGen[StationOrigin]).map {
+        _.splitAt(1) match {
+          case (xs, ys) =>
+            (
+              NonEmptyList.fromListUnsafe(xs.map(_.asStation[Destination])).head,
+              NonEmptyList.fromListUnsafe(ys)
+            )
+        }
+      }
       trainIds <- nDistinct(3, trainIdGen)
-      origins <- nDistinct(2, stationGen[StationOrigin])
-      expectedTrains <- trainIds.traverse(trainId => expectedTrainGen(trainId, Gen.oneOf(origins)))
+      (expectedTrain, otherExpectedTrains) <- trainIds
+        .traverse(expectedTrainGen(_, Gen.oneOf(origins.toList)))
+        .map {
+          _.splitAt(1) match {
+            case (xs, ys) => (NonEmptyList.fromListUnsafe(xs).head, NonEmptyList.fromListUnsafe(ys))
+          }
+        }
       actual <- momentGen[Actual]
       eventId <- eventIdGen
-    } yield TestCase(destination, NonEmptyList.fromListUnsafe(expectedTrains), actual, eventId)
+      (allExpectedTrains, expectedEvents) <- Gen
+        .oneOf(true, false)
+        .map {
+          if (_)
+            (
+              expectedTrain :: otherExpectedTrains,
+              List(
+                Arrived(
+                  id = eventId,
+                  trainId = expectedTrain.trainId,
+                  from = expectedTrain.from,
+                  to = destination,
+                  expected = expectedTrain.expected,
+                  created = actual.asMoment[Created]
+                )
+              )
+            )
+          else (otherExpectedTrains, List.empty[Event])
+        }
+    } yield TestCase(
+      destination,
+      expectedTrain,
+      allExpectedTrains,
+      Arrival(expectedTrain.trainId, actual),
+      eventId,
+      expectedEvents
+    )
+
+    def checkArrival[A](
+      arrival: Arrival,
+      httpRoutes: HttpRoutes[IO],
+      expectedStatus: Status,
+      expectedBody: Option[A]
+    )(implicit ev: EntityDecoder[IO, A]) = check(
+      httpRoutes = httpRoutes,
+      request = Request(
+        method = Method.POST,
+        uri = uri"arrival",
+        headers = Headers.of(`Content-Type`(MediaType.application.json)),
+        body = Arrival
+          .arrivalEntityEncoder[IO]
+          .toEntity(arrival)
+          .body
+      ),
+      expectedStatus = expectedStatus,
+      expectedBody = expectedBody
+    )
 
     forall(gen) {
-      case TestCase(destination, expectedTrains, actual, eventId) =>
+      case TestCase(
+          destination,
+          expectedTrain,
+          allExpectedTrains,
+          arrival,
+          eventId,
+          expectedEvents
+          ) =>
         for {
-          logger <- Slf4jLogger.create[IO]
-          expectedTrainsRef <- ExpectedTrainsState.refFrom(expectedTrains.toList)
+          expectedTrainsRef <- ExpectedTrainsState.refFrom(allExpectedTrains.toList)
           uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
           eventSenderStateRef <- EventSenderState.refEmpty
-          train = expectedTrains.head
+          implicit0(logger: Logger[IO]) <- Slf4jLogger.create[IO]
+          implicit0(uuidGenerator: UUIDGenerator[IO]) = FakeUUIDGenerator.impl[IO](
+            uuidGeneratorStateRef
+          )
           httpExpectations <- {
-            implicit val testLogger: Logger[IO] = logger
-            implicit val uuidGenerator: UUIDGenerator[IO] =
-              FakeUUIDGenerator.impl[IO](uuidGeneratorStateRef)
-            check(
-              httpRoutes = AllHttpRoutes.arrivalRoutes[IO](
-                Arrivals.impl[IO](
-                  destination,
-                  FakeExpectedTrains.impl[IO](expectedTrainsRef),
-                  FakeEventSender.impl[IO](eventSenderStateRef)
-                )
-              ),
-              request = Request(
-                method = Method.POST,
-                uri = uri"arrival",
-                headers = Headers.of(`Content-Type`(MediaType.application.json)),
-                body = Arrival
-                  .arrivalEntityEncoder[IO]
-                  .toEntity(Arrival(train.trainId, actual))
-                  .body
-              ),
-              expectedStatus = Status.Created,
-              expectedBody = eventId.some
+            val httpRoutes = AllHttpRoutes.arrivalRoutes[IO](
+              Arrivals.impl[IO](
+                destination,
+                FakeExpectedTrains.impl[IO](expectedTrainsRef),
+                FakeEventSender.impl[IO](eventSenderStateRef)
+              )
             )
+            if (allExpectedTrains.contains_(expectedTrain))
+              checkArrival(arrival, httpRoutes, Status.Created, eventId.some)
+            else
+              checkArrival(
+                arrival,
+                httpRoutes,
+                Status.BadRequest,
+                s"Unexpected train ${expectedTrain.trainId.unTrainId.value}".some
+              )
           }
           sentEvents <- eventSenderStateRef.get
-        } yield httpExpectations && expect(
-          sentEvents.events === List(
-            Arrived(
-              id = eventId,
-              trainId = train.trainId,
-              from = train.from,
-              to = destination,
-              expected = train.expected,
-              created = actual.asMoment[Created]
-            )
-          )
-        )
+        } yield httpExpectations && expect(sentEvents.events === expectedEvents)
     }
   }
 }

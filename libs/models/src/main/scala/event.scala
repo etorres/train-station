@@ -60,5 +60,6 @@ object event {
     ) extends Event
 
     implicit val eqEvent: Eq[Event] = semiauto.eq
+    implicit val showEvent: Show[Event] = semiauto.show
   }
 }

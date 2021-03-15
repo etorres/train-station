@@ -4,6 +4,7 @@ import sbt.Keys._
 import sbt._
 import sbt.nio.Keys._
 import sbtide.Keys._
+import scoverage.ScoverageKeys._
 import wartremover.Wart
 import wartremover.WartRemover.autoImport._
 
@@ -86,7 +87,14 @@ object Settings {
     private[this] def module(path: String): Project =
       project.in(file(path)).settings(commonSettings(project.id))
 
-    def application(path: String): Project = module(s"apps/$path")
+    def application(path: String): Project =
+      module(s"apps/$path").settings(
+        Seq(
+          coverageMinimum := 70,
+          coverageFailOnMinimum := true,
+          coverageExcludedPackages := "es.eriktorr.train_station.*App;es.eriktorr.train_station.*Resources"
+        )
+      )
     def library(path: String): Project = module("libs/" ++ path)
 
     private[this] def dependencies_(dependencies: Seq[ModuleID]): Project =

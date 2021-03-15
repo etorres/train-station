@@ -39,5 +39,11 @@ curl --request POST
              }'
 ```
 
+## Test with Coverage
+
+```commandline
+jenv exec sbt clean coverage test coverageReport
+```
+
 ## Useful Links
 * [http4s-body-missing-test](https://github.com/bastewart/http4s-body-missing-test).

@@ -7,14 +7,14 @@ import arrival.infrastructure.FakeExpectedTrains.ExpectedTrainsState
 import departure.DepartureTracker
 import event.Event.Departed
 import shared.infrastructure.GeneratorSyntax._
+import shared.infrastructure.TrainControlPanelTestConfig
 import shared.infrastructure.TrainStationGenerators.{afterGen, eventIdGen, momentGen, trainIdGen}
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin}
 import time.Moment.When.{Created, Expected}
 
-import cats.effect.IO
+import cats.effect.{IO, Resource}
 import cats.implicits._
-import fs2.kafka.{ProducerRecord, ProducerRecords}
 import org.scalacheck.Gen
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
@@ -48,17 +48,14 @@ object KafkaDepartureListenerSuite extends SimpleIOSuite with Checkers {
           expectedTrainsRef <- ExpectedTrainsState.refFrom(List.empty)
           expectedTrains = FakeExpectedTrains.impl[IO](expectedTrainsRef)
           departureTracker = DepartureTracker.impl[IO](destination, expectedTrains)
-          _ <- KafkaTestClient.testKafkaClientResource.use {
-            case (consumer, producer) =>
-              producer.produce(
-                ProducerRecords.one(
-                  ProducerRecord(
-                    s"train-arrivals-and-departures-${origin.unStation.value}",
-                    eventId.unEventId.value,
-                    Departed(eventId, trainId, origin, destination, expected, created)
-                  )
-                )
-              ) *> KafkaDepartureListener
+          _ <- (
+            KafkaTestClient.testKafkaClientResource,
+            Resource.liftF(IO.pure(TrainControlPanelTestConfig.testConfig))
+          ).tupled.use {
+            case ((consumer, producer), config) =>
+              KafkaEventSender
+                .impl[IO](producer, config.kafkaConfig.topic)
+                .send(Departed(eventId, trainId, origin, destination, expected, created)) *> KafkaDepartureListener
                 .stream[IO](consumer, departureTracker)
                 .timeout(30.seconds)
                 .take(1)

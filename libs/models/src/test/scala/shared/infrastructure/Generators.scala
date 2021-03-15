@@ -1,10 +1,11 @@
 package es.eriktorr.train_station
 package shared.infrastructure
 
+import cats.data.NonEmptyList
 import org.scalacheck.Gen
 
 object Generators {
-  def nDistinct[T](number: Int, elementGen: Gen[T]): Gen[List[T]] = {
+  def nDistinct[T](number: Int, elementGen: Gen[T]): Gen[NonEmptyList[T]] = {
     @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
     def generate(accumulator: List[T]): Gen[List[T]] =
       if (accumulator.size == number) Gen.const(accumulator)
@@ -16,6 +17,6 @@ object Generators {
           )
         } yield result
 
-    generate(List.empty)
+    generate(List.empty).map(NonEmptyList.fromListUnsafe)
   }
 }
