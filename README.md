@@ -15,6 +15,11 @@ CONNECTED_STATIONS=Madrid,Valencia
 JDBC_PASSWORD=changeme
 ```
 
+Optional properties:
+```properties
+CI=true
+```
+
 ## Examples
 
 ```commandline
@@ -37,12 +42,6 @@ curl --request POST
               "trainId": "2b424db4-b111-4f27-8c7c-70f866c3cc50",
               "actual": {"moment":"2021-03-08T22:05:42Z"}
              }'
-```
-
-## Test with Coverage
-
-```commandline
-jenv exec sbt clean coverage test coverageReport
 ```
 
 ## Useful Links

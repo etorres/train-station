@@ -9,14 +9,16 @@ import wartremover.Wart
 import wartremover.WartRemover.autoImport._
 
 object Settings {
-  def sbtSettings: Seq[Def.Setting[_]] = addCommandAlias(
-    "check",
-    "; undeclaredCompileDependenciesTest; unusedCompileDependenciesTest; scalafmtSbtCheck; scalafmtCheckAll"
-  )
+  def sbtSettings: Seq[Def.Setting[_]] =
+    addCommandAlias(
+      "check",
+      "; undeclaredCompileDependenciesTest; unusedCompileDependenciesTest; scalafmtSbtCheck; scalafmtCheckAll"
+    ) ++ addCommandAlias("testWithCoverage", "; test; coverage; coverageReport")
 
   def welcomeMessage: Def.Setting[String] = onLoadMessage := {
     s"""Custom tasks:
        |check - run all project checks
+       |testWithCoverage - test with coverage
        |""".stripMargin
   }
 
@@ -82,7 +84,7 @@ object Settings {
 
   implicit class ProjectSyntax(project: Project) {
     def root(rootName: String): Project =
-      project.in(file(".")).settings(Seq(name := rootName, skip in publish := true))
+      project.in(file(".")).settings(Seq(name := rootName, skip in publish := true, welcomeMessage))
 
     private[this] def module(path: String): Project =
       project.in(file(path)).settings(commonSettings(project.id))
