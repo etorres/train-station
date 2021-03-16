@@ -59,14 +59,12 @@ object DeparturesSuite
       implicit val showTestCase: Show[TestCase] = semiauto.show
     }
 
+    @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
     val gen = for {
       (origin, allDestinations) <- nDistinct(4, stationGen[Destination]).map {
         _.splitAt(1) match {
           case (xs, ys) =>
-            (
-              NonEmptyList.fromListUnsafe(xs.map(_.asStation[StationOrigin])).head,
-              NonEmptyList.fromListUnsafe(ys)
-            )
+            (xs.map(_.asStation[StationOrigin]).head, NonEmptyList.fromListUnsafe(ys))
         }
       }
       trainId <- trainIdGen
