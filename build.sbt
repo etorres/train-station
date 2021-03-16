@@ -77,4 +77,4 @@ lazy val `train-control-panel` =
       slf4jApi,
       vulcan
     )
-    .testDependencies(catsScalaCheck, weaverCats, weaverScalaCheck)
+    .testDependencies(caffeine, catsScalaCheck, weaverCats, weaverScalaCheck)

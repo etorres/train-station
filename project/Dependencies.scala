@@ -8,6 +8,14 @@ trait Avro {
   val avro = organization % "avro" % version
 }
 
+trait Caffeine {
+  private[this] val organization = "com.github.blemale"
+
+  private[this] val version = "4.0.2"
+
+  val caffeine = organization %% "scaffeine" % version
+}
+
 trait Cats {
   private[this] val organization = "org.typelevel"
 
@@ -194,6 +202,7 @@ trait Weaver {
 
 object Dependencies
     extends Avro
+    with Caffeine
     with Cats
     with CatsScalaCheck
     with Circe
