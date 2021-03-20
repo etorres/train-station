@@ -51,16 +51,17 @@ object KafkaDepartureListenerSuite extends SimpleIOSuite with Checkers {
           _ <- (
             KafkaTestClient.testKafkaClientResource,
             Resource.liftF(IO.pure(TrainControlPanelTestConfig.testConfig))
-          ).tupled.use {
-            case ((consumer, producer), config) =>
-              KafkaEventSender
-                .impl[IO](producer, config.kafkaConfig.topic)
-                .send(Departed(eventId, trainId, origin, destination, expected, created)) *> KafkaDepartureListener
-                .stream[IO](consumer, departureTracker)
-                .timeout(30.seconds)
-                .take(1)
-                .compile
-                .drain
+          ).tupled.use { case ((consumer, producer), config) =>
+            KafkaEventSender
+              .impl[IO](producer, config.kafkaConfig.topic)
+              .send(
+                Departed(eventId, trainId, origin, destination, expected, created)
+              ) *> KafkaDepartureListener
+              .stream[IO](consumer, departureTracker)
+              .timeout(30.seconds)
+              .take(1)
+              .compile
+              .drain
           }
           departedTrains <- expectedTrainsRef.get
         } yield departedTrains

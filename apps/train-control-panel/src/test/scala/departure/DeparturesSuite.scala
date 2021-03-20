@@ -119,32 +119,31 @@ object DeparturesSuite
       expectedBody = expectedBody
     )
 
-    forall(gen) {
-      case TestCase(origin, connectedStations, departure, eventId, expectedEvents) =>
-        for {
-          uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
-          eventSenderStateRef <- EventSenderState.refEmpty
-          implicit0(logger: Logger[IO]) <- Slf4jLogger.create[F]
-          implicit0(uuidGenerator: UUIDGenerator[IO]) = FakeUUIDGenerator.impl[IO](
-            uuidGeneratorStateRef
+    forall(gen) { case TestCase(origin, connectedStations, departure, eventId, expectedEvents) =>
+      for {
+        uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
+        eventSenderStateRef <- EventSenderState.refEmpty
+        implicit0(logger: Logger[IO]) <- Slf4jLogger.create[F]
+        implicit0(uuidGenerator: UUIDGenerator[IO]) = FakeUUIDGenerator.impl[IO](
+          uuidGeneratorStateRef
+        )
+        httpExpectations <- {
+          val httpRoutes = AllHttpRoutes.departureRoutes[IO](
+            Departures
+              .impl[IO](origin, connectedStations, FakeEventSender.impl[IO](eventSenderStateRef))
           )
-          httpExpectations <- {
-            val httpRoutes = AllHttpRoutes.departureRoutes[IO](
-              Departures
-                .impl[IO](origin, connectedStations, FakeEventSender.impl[IO](eventSenderStateRef))
+          if (connectedStations.contains_(departure.to))
+            checkDeparture(departure, httpRoutes, Status.Created, eventId.some)
+          else
+            checkDeparture(
+              departure,
+              httpRoutes,
+              Status.BadRequest,
+              s"Unexpected destination ${departure.to.unStation.value}".some
             )
-            if (connectedStations.contains_(departure.to))
-              checkDeparture(departure, httpRoutes, Status.Created, eventId.some)
-            else
-              checkDeparture(
-                departure,
-                httpRoutes,
-                Status.BadRequest,
-                s"Unexpected destination ${departure.to.unStation.value}".some
-              )
-          }
-          sentEvents <- eventSenderStateRef.get
-        } yield httpExpectations && expect(sentEvents.events === expectedEvents)
+        }
+        sentEvents <- eventSenderStateRef.get
+      } yield httpExpectations && expect(sentEvents.events === expectedEvents)
     }
   }
 }

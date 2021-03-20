@@ -21,8 +21,8 @@ final class JdbcExpectedTrains[F[_]: Async] private (transactor: Transactor[F])
     with TimeMapping
     with TrainMapping {
   implicit val expectedTrainRead: Read[ExpectedTrain] =
-    Read[(TrainId, Station[Origin], Moment[Expected])].map {
-      case (trainId, from, expected) => ExpectedTrain(trainId, from, expected)
+    Read[(TrainId, Station[Origin], Moment[Expected])].map { case (trainId, from, expected) =>
+      ExpectedTrain(trainId, from, expected)
     }
 
   override def findBy(trainId: TrainId): F[Option[ExpectedTrain]] =

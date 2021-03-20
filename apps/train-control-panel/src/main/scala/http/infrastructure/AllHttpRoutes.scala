@@ -18,20 +18,19 @@ object AllHttpRoutes extends EventJsonProtocol {
     val dsl = new Http4sDsl[F] {}
     import dsl._
 
-    HttpRoutes.of[F] {
-      case req @ POST -> Root / "arrival" =>
-        for {
-          arrival <- req.as[Arrival]
-          result <- A.register(arrival)
-          response <- result.fold(
-            error =>
-              error match {
-                case ArrivalError.UnexpectedTrain(trainId) =>
-                  BadRequest(s"Unexpected train ${trainId.show}")
-              },
-            arrivalEvent => Created(arrivalEvent.id)
-          )
-        } yield response
+    HttpRoutes.of[F] { case req @ POST -> Root / "arrival" =>
+      for {
+        arrival <- req.as[Arrival]
+        result <- A.register(arrival)
+        response <- result.fold(
+          error =>
+            error match {
+              case ArrivalError.UnexpectedTrain(trainId) =>
+                BadRequest(s"Unexpected train ${trainId.show}")
+            },
+          arrivalEvent => Created(arrivalEvent.id)
+        )
+      } yield response
     }
   }
 
@@ -39,20 +38,19 @@ object AllHttpRoutes extends EventJsonProtocol {
     val dsl = new Http4sDsl[F] {}
     import dsl._
 
-    HttpRoutes.of[F] {
-      case req @ POST -> Root / "departure" =>
-        for {
-          departure <- req.as[Departure]
-          result <- D.register(departure)
-          response <- result.fold(
-            error =>
-              error match {
-                case DepartureError.UnexpectedDestination(destination) =>
-                  BadRequest(s"Unexpected destination ${destination.show}")
-              },
-            departureEvent => Created(departureEvent.id)
-          )
-        } yield response
+    HttpRoutes.of[F] { case req @ POST -> Root / "departure" =>
+      for {
+        departure <- req.as[Departure]
+        result <- D.register(departure)
+        response <- result.fold(
+          error =>
+            error match {
+              case DepartureError.UnexpectedDestination(destination) =>
+                BadRequest(s"Unexpected destination ${destination.show}")
+            },
+          departureEvent => Created(departureEvent.id)
+        )
+      } yield response
     }
   }
 }

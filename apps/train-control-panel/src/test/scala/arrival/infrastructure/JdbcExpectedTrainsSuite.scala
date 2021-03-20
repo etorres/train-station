@@ -28,17 +28,16 @@ object JdbcExpectedTrainsSuite extends JdbcIOSuiteWithCheckers {
       expected <- momentGen[Expected]
     } yield TestCase(ExpectedTrain(trainId, origin, expected))
 
-    forall(gen) {
-      case TestCase(expectedTrain) =>
-        testResources.use { transactor =>
-          val expectedTrains = JdbcExpectedTrains.impl[IO](transactor)
-          for {
-            _ <- expectedTrains.update(expectedTrain)
-            created <- expectedTrains.findBy(expectedTrain.trainId)
-            _ <- expectedTrains.removeAllIdentifiedBy(expectedTrain.trainId)
-            deleted <- expectedTrains.findBy(expectedTrain.trainId)
-          } yield expect(created === expectedTrain.some) && expect(deleted === none[ExpectedTrain])
-        }
+    forall(gen) { case TestCase(expectedTrain) =>
+      testResources.use { transactor =>
+        val expectedTrains = JdbcExpectedTrains.impl[IO](transactor)
+        for {
+          _ <- expectedTrains.update(expectedTrain)
+          created <- expectedTrains.findBy(expectedTrain.trainId)
+          _ <- expectedTrains.removeAllIdentifiedBy(expectedTrain.trainId)
+          deleted <- expectedTrains.findBy(expectedTrain.trainId)
+        } yield expect(created === expectedTrain.some) && expect(deleted === none[ExpectedTrain])
+      }
     }
   }
 }

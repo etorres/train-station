@@ -126,12 +126,12 @@ object ArrivalsSuite
 
     forall(gen) {
       case TestCase(
-          destination,
-          expectedTrain,
-          allExpectedTrains,
-          arrival,
-          eventId,
-          expectedEvents
+            destination,
+            expectedTrain,
+            allExpectedTrains,
+            arrival,
+            eventId,
+            expectedEvents
           ) =>
         for {
           expectedTrainsRef <- ExpectedTrainsState.refFrom(allExpectedTrains.toList)
