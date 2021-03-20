@@ -3,6 +3,11 @@ on: [ pull_request, push ]
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      STATION: Barcelona
+      CONNECTED_STATIONS: Madrid,Valencia
+      JDBC_PASSWORD: changeme
+      CI: true
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
