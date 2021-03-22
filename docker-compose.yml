@@ -16,7 +16,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_SYNC_LIMIT: 2
   kafka:
-    image: confluentinc/cp-kafka:6.1.0
+    image: confluentinc/cp-kafka:6.1.1
     hostname: kafka
     container_name: kafka
     depends_on:
@@ -31,7 +31,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   kafka-setup:
-    image: confluentinc/cp-kafka:6.1.0
+    image: confluentinc/cp-kafka:6.1.1
     hostname: kafka-setup
     container_name: kafka-setup
     depends_on:
