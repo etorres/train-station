@@ -13,7 +13,7 @@ object Settings {
     addCommandAlias(
       "check",
       "; undeclaredCompileDependenciesTest; unusedCompileDependenciesTest; scalafmtSbtCheck; scalafmtCheckAll"
-    ) ++ addCommandAlias("testWithCoverage", "; test; coverage; coverageReport")
+    ) ++ addCommandAlias("testWithCoverage", "; coverage; test; coverageReport")
 
   def welcomeMessage: Def.Setting[String] = onLoadMessage := {
     s"""Custom tasks:
