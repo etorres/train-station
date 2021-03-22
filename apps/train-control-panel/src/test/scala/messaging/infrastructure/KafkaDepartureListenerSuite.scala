@@ -50,7 +50,7 @@ object KafkaDepartureListenerSuite extends SimpleIOSuite with Checkers {
           departureTracker = DepartureTracker.impl[IO](destination, expectedTrains)
           _ <- (
             KafkaTestClient.testKafkaClientResource,
-            Resource.liftF(IO.pure(TrainControlPanelTestConfig.testConfig))
+            Resource.eval(IO.pure(TrainControlPanelTestConfig.testConfig))
           ).tupled.use { case ((consumer, producer), config) =>
             KafkaEventSender
               .impl[IO](producer, config.kafkaConfig.topic)

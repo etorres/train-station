@@ -59,7 +59,7 @@ object KafkaClient extends EventAvroCodec {
       KafkaProducer.resource(producerSettings)
 
     for {
-      (consumerSettings, producerSettings) <- Resource.liftF(settingsFrom(kafkaConfig))
+      (consumerSettings, producerSettings) <- Resource.eval(settingsFrom(kafkaConfig))
       (consumer, producer) <- (
         consumer(kafkaConfig.topic.value, consumerSettings, connectedTo),
         producer(producerSettings)

@@ -24,7 +24,7 @@ object TrainControlPanelResources extends EventAvroCodec {
     blocker: Blocker
   ): Resource[F, TrainControlPanelResources[F]] =
     for {
-      config <- Resource.liftF(TrainControlPanelConfig.load[F])
+      config <- Resource.eval(TrainControlPanelConfig.load[F])
       (consumer, producer) <- KafkaClient.clientsFor(config.kafkaConfig, config.connectedTo)
       transactor <- JdbcTransactor
         .impl[F](config.jdbcConfig, executionContext, blocker)
