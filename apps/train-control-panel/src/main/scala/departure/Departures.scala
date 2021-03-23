@@ -80,7 +80,7 @@ object Departures {
           case None =>
             val error = DepartureError.UnexpectedDestination(departure.to)
             F.error(
-              s"Tried to create departure to an unexpected destination: ${departure.show}"
+              show"Tried to create departure to an unexpected destination: $departure"
             ).as(error.asLeft)
         }
       } yield departed

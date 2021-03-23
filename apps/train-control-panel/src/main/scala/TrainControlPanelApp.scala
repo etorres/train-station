@@ -41,7 +41,7 @@ object TrainControlPanelApp extends IOApp {
             .compile
             .drain
 
-          F.info(s"Started train station ${config.station.show}") *> (
+          F.info(show"Started train station ${config.station}") *> (
             departureListener,
             httpServer
           ).parMapN((_, _) => ())

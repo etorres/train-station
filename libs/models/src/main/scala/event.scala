@@ -31,7 +31,7 @@ object event {
     def fromUuid(uuid: UUID): EventId = EventId.fromString(uuid.toString).toOption.get
 
     implicit val eqEventId: Eq[EventId] = Eq.fromUniversalEquals
-    implicit val showEventId: Show[EventId] = Show.show(_.toString)
+    implicit val showEventId: Show[EventId] = Show.fromToString
   }
 
   sealed trait Event {

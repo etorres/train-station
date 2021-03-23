@@ -21,6 +21,6 @@ object train {
       }
 
     implicit val eqTrainId: Eq[TrainId] = Eq.fromUniversalEquals
-    implicit val showTrainId: Show[TrainId] = Show.show(_.toString)
+    implicit val showTrainId: Show[TrainId] = Show.fromToString
   }
 }

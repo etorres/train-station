@@ -26,5 +26,5 @@ object time {
   }
 
   implicit def eqMoment[A <: Moment.When]: Eq[Moment[A]] = Eq.fromUniversalEquals
-  implicit def showMoment[A <: Moment.When]: Show[Moment[A]] = Show.show(_.toString)
+  implicit def showMoment[A <: Moment.When]: Show[Moment[A]] = Show.fromToString
 }
