@@ -69,7 +69,7 @@ object DeparturesSuite
       }
       trainId <- trainIdGen
       (destination, otherDestinations) = allDestinations.splitAt(1) match {
-        case (xs, ys) => (NonEmptyList.fromListUnsafe(xs).head, NonEmptyList.fromListUnsafe(ys))
+        case (xs, ys) => (xs.head, NonEmptyList.fromListUnsafe(ys))
       }
       actual <- momentGen[Actual]
       expected <- afterGen(actual).map(_.asMoment[Expected])

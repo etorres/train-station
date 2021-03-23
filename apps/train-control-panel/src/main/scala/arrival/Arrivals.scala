@@ -73,7 +73,7 @@ object Arrivals {
               .map(_.asRight)
           case None =>
             val error = ArrivalError.UnexpectedTrain(arrival.trainId)
-            F.error(s"Tried to create arrival of an unexpected train: ${arrival.show}")
+            F.error(show"Tried to create arrival of an unexpected train: $arrival")
               .as(error.asLeft)
         }
       } yield arrived

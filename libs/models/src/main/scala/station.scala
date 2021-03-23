@@ -33,7 +33,7 @@ object station {
       Coercible.instance[String Refined MatchesRegex[NonBlank], Station[A]]
 
     implicit def eqStation[A <: Station.TravelDirection]: Eq[Station[A]] = Eq.fromUniversalEquals
-    implicit def showStation[A <: Station.TravelDirection]: Show[Station[A]] = Show.show(_.toString)
+    implicit def showStation[A <: Station.TravelDirection]: Show[Station[A]] = Show.fromToString
 
     def fromString[A <: TravelDirection](
       str: String

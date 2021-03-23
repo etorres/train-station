@@ -71,7 +71,7 @@ object ArrivalsSuite
         .traverse(expectedTrainGen(_, Gen.oneOf(origins.toList)))
         .map {
           _.splitAt(1) match {
-            case (xs, ys) => (NonEmptyList.fromListUnsafe(xs).head, NonEmptyList.fromListUnsafe(ys))
+            case (xs, ys) => (xs.head, NonEmptyList.fromListUnsafe(ys))
           }
         }
       actual <- momentGen[Actual]
