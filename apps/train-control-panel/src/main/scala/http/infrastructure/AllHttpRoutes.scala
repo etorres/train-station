@@ -4,7 +4,8 @@ package http.infrastructure
 import arrival.Arrivals
 import arrival.Arrivals.{Arrival, ArrivalError}
 import departure.Departures
-import departure.Departures.{Departure, DepartureError}
+import departure.Departures.Departure
+import departure.Departures.DepartureError.UnexpectedDestination
 import json.infrastructure.EventJsonProtocol
 
 import cats.effect.Sync
@@ -21,15 +22,12 @@ object AllHttpRoutes extends EventJsonProtocol {
     HttpRoutes.of[F] { case req @ POST -> Root / "arrival" =>
       for {
         arrival <- req.as[Arrival]
-        result <- A.register(arrival)
-        response <- result.fold(
-          error =>
-            error match {
-              case ArrivalError.UnexpectedTrain(trainId) =>
-                BadRequest(show"Unexpected train $trainId")
-            },
-          arrivalEvent => Created(arrivalEvent.id)
-        )
+        response <- A
+          .register(arrival)
+          .flatMap(arrivalEvent => Created(arrivalEvent.id))
+          .recoverWith { case ArrivalError.UnexpectedTrain(trainId) =>
+            BadRequest(show"Unexpected train $trainId")
+          }
       } yield response
     }
   }
@@ -41,15 +39,12 @@ object AllHttpRoutes extends EventJsonProtocol {
     HttpRoutes.of[F] { case req @ POST -> Root / "departure" =>
       for {
         departure <- req.as[Departure]
-        result <- D.register(departure)
-        response <- result.fold(
-          error =>
-            error match {
-              case DepartureError.UnexpectedDestination(destination) =>
-                BadRequest(show"Unexpected destination $destination")
-            },
-          departureEvent => Created(departureEvent.id)
-        )
+        response <- D
+          .register(departure)
+          .flatMap(departureEvent => Created(departureEvent.id))
+          .recoverWith { case UnexpectedDestination(destination) =>
+            BadRequest(show"Unexpected destination $destination")
+          }
       } yield response
     }
   }

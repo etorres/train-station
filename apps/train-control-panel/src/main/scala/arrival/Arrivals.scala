@@ -1,7 +1,8 @@
 package es.eriktorr.train_station
 package arrival
 
-import arrival.Arrivals.{Arrival, ArrivalError}
+import arrival.Arrivals.Arrival
+import arrival.Arrivals.ArrivalError.UnexpectedTrain
 import event.Event.Arrived
 import event.EventId
 import json.infrastructure.{MomentJsonProtocol, TrainJsonProtocol}
@@ -23,8 +24,10 @@ import org.http4s._
 import org.http4s.circe._
 import org.typelevel.log4cats.Logger
 
+import scala.util.control.NoStackTrace
+
 trait Arrivals[F[_]] {
-  def register(arrival: Arrival): F[Either[ArrivalError, Arrived]]
+  def register(arrival: Arrival): F[Arrived]
 }
 
 object Arrivals {
@@ -40,7 +43,7 @@ object Arrivals {
     implicit val showArrival: Show[Arrival] = semiauto.show
   }
 
-  sealed trait ArrivalError
+  sealed trait ArrivalError extends NoStackTrace
 
   object ArrivalError {
     final case class UnexpectedTrain(trainId: TrainId) extends ArrivalError
@@ -56,7 +59,7 @@ object Arrivals {
         maybeTrain <- expectedTrains.findBy(arrival.trainId)
         arrived <- maybeTrain match {
           case Some(expectedTrain) =>
-            F.next
+            F.nextUuid
               .map(EventId.fromUuid)
               .map(eventId =>
                 Arrived(
@@ -70,11 +73,10 @@ object Arrivals {
               )
               .flatTap(arrived => expectedTrains.removeAllIdentifiedBy(arrived.trainId))
               .flatTap(eventSender.send)
-              .map(_.asRight)
           case None =>
-            val error = ArrivalError.UnexpectedTrain(arrival.trainId)
-            F.error(show"Tried to create arrival of an unexpected train: $arrival")
-              .as(error.asLeft)
+            F.error(
+              show"Tried to create arrival of an unexpected train: $arrival"
+            ) *> UnexpectedTrain(arrival.trainId).raiseError[F, Arrived]
         }
       } yield arrived
 }

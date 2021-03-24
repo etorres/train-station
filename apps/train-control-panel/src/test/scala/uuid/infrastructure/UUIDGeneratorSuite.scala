@@ -15,7 +15,7 @@ object UUIDGeneratorSuite extends SimpleIOSuite {
     }
 
     object UuidConsumer {
-      def impl[F[_]: Functor: UUIDGenerator]: FakeUuidConsumer[F] = () => F.next.map(_.toString)
+      def impl[F[_]: Functor: UUIDGenerator]: FakeUuidConsumer[F] = () => F.nextUuid.map(_.toString)
     }
 
     UuidConsumer.impl[IO].doSomething().map(uuid => not(expect(uuid.isBlank)))

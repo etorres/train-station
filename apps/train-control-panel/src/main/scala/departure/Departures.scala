@@ -1,6 +1,8 @@
 package es.eriktorr.train_station
 package departure
 
+import departure.Departures.Departure
+import departure.Departures.DepartureError.UnexpectedDestination
 import event.Event.Departed
 import event.EventId
 import json.infrastructure.{MomentJsonProtocol, StationJsonProtocol, TrainJsonProtocol}
@@ -23,10 +25,10 @@ import org.http4s._
 import org.http4s.circe._
 import org.typelevel.log4cats.Logger
 
-trait Departures[F[_]] {
-  import Departures.{Departure, DepartureError}
+import scala.util.control.NoStackTrace
 
-  def register(departure: Departure): F[Either[DepartureError, Departed]]
+trait Departures[F[_]] {
+  def register(departure: Departure): F[Departed]
 }
 
 object Departures {
@@ -48,7 +50,7 @@ object Departures {
     implicit val showDeparture: Show[Departure] = semiauto.show
   }
 
-  sealed trait DepartureError
+  sealed trait DepartureError extends NoStackTrace
 
   object DepartureError {
     final case class UnexpectedDestination(station: Station[Destination]) extends DepartureError
@@ -63,7 +65,7 @@ object Departures {
       for {
         departed <- connectedStations.find(_ === departure.to) match {
           case Some(_) =>
-            F.next
+            F.nextUuid
               .map(EventId.fromUuid)
               .map(eventId =>
                 Departed(
@@ -76,12 +78,10 @@ object Departures {
                 )
               )
               .flatTap(eventSender.send)
-              .map(_.asRight)
           case None =>
-            val error = DepartureError.UnexpectedDestination(departure.to)
             F.error(
               show"Tried to create departure to an unexpected destination: $departure"
-            ).as(error.asLeft)
+            ) *> UnexpectedDestination(departure.to).raiseError[F, Departed]
         }
       } yield departed
 }

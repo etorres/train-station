@@ -15,7 +15,7 @@ final class FakeUUIDGenerator[F[_]: Sync] private[infrastructure] (
   val ref: Ref[F, UUIDGeneratorState]
 ) extends UUIDGenerator[F] {
   @SuppressWarnings(Array("org.wartremover.warts.ListAppend"))
-  override def next: F[UUID] =
+  override def nextUuid: F[UUID] =
     for {
       current <- ref.get
       (uuidsHead, uuidsTail) = (current.uuids.head, current.uuids.tail)
