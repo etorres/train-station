@@ -20,15 +20,14 @@ object AllHttpRoutes extends EventJsonProtocol {
     import dsl._
 
     HttpRoutes.of[F] { case req @ POST -> Root / "arrival" =>
-      for {
-        arrival <- req.as[Arrival]
-        response <- A
-          .register(arrival)
-          .flatMap(arrivalEvent => Created(arrivalEvent.id))
-          .recoverWith { case ArrivalError.UnexpectedTrain(trainId) =>
-            BadRequest(show"Unexpected train $trainId")
-          }
-      } yield response
+      req
+        .as[Arrival]
+        .flatMap { arrival =>
+          A.register(arrival).flatMap(arrivalEvent => Created(arrivalEvent.id))
+        }
+        .recoverWith { case ArrivalError.UnexpectedTrain(trainId) =>
+          BadRequest(show"Unexpected train $trainId")
+        }
     }
   }
 
@@ -37,15 +36,14 @@ object AllHttpRoutes extends EventJsonProtocol {
     import dsl._
 
     HttpRoutes.of[F] { case req @ POST -> Root / "departure" =>
-      for {
-        departure <- req.as[Departure]
-        response <- D
-          .register(departure)
-          .flatMap(departureEvent => Created(departureEvent.id))
-          .recoverWith { case UnexpectedDestination(destination) =>
-            BadRequest(show"Unexpected destination $destination")
-          }
-      } yield response
+      req
+        .as[Departure]
+        .flatMap { departure =>
+          D.register(departure).flatMap(departureEvent => Created(departureEvent.id))
+        }
+        .recoverWith { case UnexpectedDestination(destination) =>
+          BadRequest(show"Unexpected destination $destination")
+        }
     }
   }
 }
