@@ -60,6 +60,17 @@ trait Ciris {
   val cirisRefined = organization %% "ciris-refined" % version
 }
 
+//trait Derevo {
+//  private[this] val organization = "tf.tofu"
+//
+//  private[this] val version = "0.12.2"
+//
+//  val derevoCats = organization %% "derevo-cats" % version
+//  val derevoCirce = organization %% "derevo-circe" % version
+//  val derevoCiris = organization %% "derevo-ciris" % version
+//  val derevoScalacheck = organization %% "derevo-scalacheck" % version
+//}
+
 trait Doobie {
   private[this] val organization = "org.tpolecat"
 
