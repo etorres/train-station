@@ -5,7 +5,7 @@ import TrainControlPanelConfig.HttpServerConfig
 import arrival.Arrivals
 import departure.Departures
 
-import cats.effect.{ConcurrentEffect, Timer}
+import cats.effect.ConcurrentEffect
 import cats.implicits._
 import fs2.Stream
 import org.http4s.implicits._
@@ -13,9 +13,10 @@ import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.Logger
 
 import scala.concurrent.ExecutionContext
+import cats.effect.Temporal
 
 object HttpServer {
-  def stream[F[_]: ConcurrentEffect: Timer](
+  def stream[F[_]: ConcurrentEffect: Temporal](
     arrivals: Arrivals[F],
     departures: Departures[F],
     executionContext: ExecutionContext,

@@ -10,6 +10,7 @@ import doobie.Transactor
 import fs2.kafka._
 
 import scala.concurrent.ExecutionContext
+import cats.effect.Temporal
 
 final case class TrainControlPanelResources[F[_]](
   config: TrainControlPanelConfig,
@@ -19,10 +20,8 @@ final case class TrainControlPanelResources[F[_]](
 )
 
 object TrainControlPanelResources extends EventAvroCodec {
-  def impl[F[_]: ConcurrentEffect: ContextShift: Timer](
-    executionContext: ExecutionContext,
-    blocker: Blocker
-  ): Resource[F, TrainControlPanelResources[F]] =
+  def impl[F[_]: ConcurrentEffect: ContextShift: Temporal](
+    executionContext: ExecutionContext): Resource[F, TrainControlPanelResources[F]] =
     for {
       config <- Resource.eval(TrainControlPanelConfig.load[F])
       (consumer, producer) <- KafkaClient.clientsFor(config.kafkaConfig, config.connectedTo)
