@@ -30,6 +30,7 @@ import cats.data.NonEmptyList
 import cats.derived._
 import cats.effect._
 import cats.implicits._
+import io.janstenpickle.trace4cats.inject.Trace
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers._
@@ -127,8 +128,9 @@ object DeparturesSuite
         implicit0(uuidGenerator: UUIDGenerator[IO]) = FakeUUIDGenerator.impl[IO](
           uuidGeneratorStateRef
         )
+        implicit0(trace: Trace[IO]) = Trace.Implicits.noop[IO]
         httpExpectations <- {
-          val httpRoutes = AllHttpRoutes.departureRoutes[IO](
+          val httpRoutes = AllHttpRoutes.routes[IO](
             Departures
               .impl[IO](origin, connectedStations, FakeEventSender.impl[IO](eventSenderStateRef))
           )

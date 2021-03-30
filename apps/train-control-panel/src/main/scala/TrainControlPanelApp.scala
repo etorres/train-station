@@ -10,20 +10,24 @@ import station.Station.TravelDirection.Destination
 import cats.NonEmptyParallel
 import cats.effect._
 import cats.implicits._
+import io.janstenpickle.trace4cats.inject.Trace
+import io.janstenpickle.trace4cats.model.TraceProcess
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.concurrent.ExecutionContext
 
 object TrainControlPanelApp extends IOApp {
+
   override def run(args: List[String]): IO[ExitCode] = {
 
     def program[F[_]: ConcurrentEffect: ContextShift: Timer: NonEmptyParallel: Logger](
       executionContext: ExecutionContext,
-      blocker: Blocker
+      blocker: Blocker,
+      traceProcess: TraceProcess
     ): F[Unit] =
-      TrainControlPanelResources.impl[F](executionContext, blocker).use {
-        case TrainControlPanelResources(config, consumer, producer, transactor) =>
+      TrainControlPanelResources.impl[F](executionContext, blocker, traceProcess).use {
+        case TrainControlPanelResources(entryPoint, config, consumer, producer, transactor) =>
           val expectedTrains = JdbcExpectedTrains.impl[F](transactor)
           val departureTracker =
             DepartureTracker.impl[F](config.station.asStation[Destination], expectedTrains)
@@ -36,8 +40,16 @@ object TrainControlPanelApp extends IOApp {
             Arrivals.impl[F](config.station.asStation[Destination], expectedTrains, eventSender)
           val departures = Departures.impl[F](config.station, config.connectedTo, eventSender)
 
+          implicit val trace: Trace[F] = Trace.Implicits.noop[F]
+
           val httpServer = HttpServer
-            .stream[F](arrivals, departures, executionContext, config.httpServerConfig)
+            .stream[F](
+              arrivals,
+              departures,
+              config.httpServerConfig,
+              executionContext,
+              entryPoint
+            )
             .compile
             .drain
 
@@ -49,7 +61,11 @@ object TrainControlPanelApp extends IOApp {
 
     (for {
       implicit0(logger: Logger[IO]) <- Slf4jLogger.create[IO]
-      result <- program[IO](executionContext, Blocker.liftExecutionContext(executionContext))
+      result <- program[IO](
+        executionContext,
+        Blocker.liftExecutionContext(executionContext),
+        TraceProcess("train-control-panel")
+      )
     } yield result).as(ExitCode.Success)
   }
 }

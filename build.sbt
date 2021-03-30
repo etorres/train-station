@@ -75,6 +75,14 @@ lazy val `train-control-panel` =
       scalaReflect,
       shapeless,
       slf4jApi,
+      trace4CatsBase,
+      trace4CatsCore,
+      trace4CatsHttp4sCommon,
+      trace4CatsHttp4sServer,
+      trace4CatsInject,
+      trace4CatsKernel,
+      trace4CatsLogExporter,
+      trace4CatsModel,
       vulcan
     )
     .testDependencies(caffeine, catsScalaCheck, weaverCats, weaverScalaCheck)

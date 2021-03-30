@@ -103,7 +103,7 @@ trait Fs2Kafka {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.21.19"
+  private[this] val version = "0.21.20"
 
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
@@ -139,7 +139,7 @@ trait Logback {
 trait Log4Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "1.2.0"
+  private[this] val version = "1.2.1"
 
   val log4CatsCore = organization %% "log4cats-core" % version
   val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
@@ -194,6 +194,21 @@ trait Slf4j {
   val slf4jApi = organization % "slf4j-api" % version
 }
 
+trait Trace4Cats {
+  private[this] val organization = "io.janstenpickle"
+
+  private[this] val version = "0.9.0+187-262fdf38"
+
+  val trace4CatsBase = organization %% "trace4cats-base" % version
+  val trace4CatsCore = organization %% "trace4cats-core" % version
+  val trace4CatsHttp4sCommon = organization %% "trace4cats-http4s-common" % version
+  val trace4CatsHttp4sServer = organization %% "trace4cats-http4s-server" % version
+  val trace4CatsInject = organization %% "trace4cats-inject" % version
+  val trace4CatsKernel = organization %% "trace4cats-kernel" % version
+  val trace4CatsLogExporter = organization %% "trace4cats-log-exporter" % version
+  val trace4CatsModel = organization %% "trace4cats-model" % version
+}
+
 trait Vulcan {
   private[this] val organization = "com.github.fd4s"
 
@@ -232,5 +247,6 @@ object Dependencies
     with ScalaLang
     with Shapeless
     with Slf4j
+    with Trace4Cats
     with Vulcan
     with Weaver
