@@ -8,16 +8,12 @@ import messaging.infrastructure.KafkaClient
 import cats.effect._
 import doobie.Transactor
 import fs2.kafka._
-import io.janstenpickle.trace4cats.inject.EntryPoint
-import io.janstenpickle.trace4cats.kernel.SpanSampler
-import io.janstenpickle.trace4cats.log.LogSpanCompleter
 import io.janstenpickle.trace4cats.model.TraceProcess
 import org.typelevel.log4cats.Logger
 
 import scala.concurrent.ExecutionContext
 
 final case class TrainControlPanelResources[F[_]](
-  entryPoint: EntryPoint[F],
   config: TrainControlPanelConfig,
   consumer: KafkaConsumer[F, String, Event],
   producer: KafkaProducer[F, String, Event],
@@ -31,13 +27,10 @@ object TrainControlPanelResources extends EventAvroCodec {
     traceProcess: TraceProcess
   ): Resource[F, TrainControlPanelResources[F]] =
     for {
-      entryPoint <- Resource.pure(
-        EntryPoint[F](SpanSampler.probabilistic[F](0.05), LogSpanCompleter[F](traceProcess))
-      )
       config <- Resource.eval(TrainControlPanelConfig.load[F])
       (consumer, producer) <- KafkaClient.clientsFor(config.kafkaConfig, config.connectedTo)
       transactor <- JdbcTransactor
         .impl[F](config.jdbcConfig, executionContext, blocker)
         .transactorResource
-    } yield TrainControlPanelResources(entryPoint, config, consumer, producer, transactor)
+    } yield TrainControlPanelResources(config, consumer, producer, transactor)
 }

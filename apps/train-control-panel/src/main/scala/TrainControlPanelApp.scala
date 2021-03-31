@@ -10,7 +10,10 @@ import station.Station.TravelDirection.Destination
 import cats.NonEmptyParallel
 import cats.effect._
 import cats.implicits._
-import io.janstenpickle.trace4cats.inject.Trace
+import io.janstenpickle.trace4cats.ToHeaders
+import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
+import io.janstenpickle.trace4cats.kernel.SpanSampler
+import io.janstenpickle.trace4cats.log.LogSpanCompleter
 import io.janstenpickle.trace4cats.model.TraceProcess
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
@@ -21,13 +24,13 @@ object TrainControlPanelApp extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
 
-    def program[F[_]: ConcurrentEffect: ContextShift: Timer: NonEmptyParallel: Logger](
+    def program[F[_]: ConcurrentEffect: ContextShift: Timer: NonEmptyParallel: Logger: Trace](
       executionContext: ExecutionContext,
       blocker: Blocker,
       traceProcess: TraceProcess
     ): F[Unit] =
       TrainControlPanelResources.impl[F](executionContext, blocker, traceProcess).use {
-        case TrainControlPanelResources(entryPoint, config, consumer, producer, transactor) =>
+        case TrainControlPanelResources(config, consumer, producer, transactor) =>
           val expectedTrains = JdbcExpectedTrains.impl[F](transactor)
           val departureTracker =
             DepartureTracker.impl[F](config.station.asStation[Destination], expectedTrains)
@@ -40,7 +43,12 @@ object TrainControlPanelApp extends IOApp {
             Arrivals.impl[F](config.station.asStation[Destination], expectedTrains, eventSender)
           val departures = Departures.impl[F](config.station, config.connectedTo, eventSender)
 
-          implicit val trace: Trace[F] = Trace.Implicits.noop[F]
+          val entryPoint =
+            EntryPoint[F](
+              SpanSampler.probabilistic[F](0.05),
+              LogSpanCompleter[F](traceProcess),
+              ToHeaders.b3
+            )
 
           val httpServer = HttpServer
             .stream[F](
@@ -61,6 +69,7 @@ object TrainControlPanelApp extends IOApp {
 
     (for {
       implicit0(logger: Logger[IO]) <- Slf4jLogger.create[IO]
+      implicit0(trace: Trace[IO]) = Trace.Implicits.noop[IO]
       result <- program[IO](
         executionContext,
         Blocker.liftExecutionContext(executionContext),
