@@ -1,14 +1,14 @@
 package es.eriktorr.train_station
 package http.infrastructure
 
-import cats.{Defer, Monad}
 import cats.data.Kleisli
 import cats.effect.BracketThrow
 import cats.implicits._
+import cats.{Defer, Monad}
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.base.context.Provide
 import io.janstenpickle.trace4cats.model.SampleDecision
-import org.http4s.{Header, HttpRoutes, Request, Response}
+import org.http4s._
 
 object B3Middleware {
   def make[F[_]: Monad, G[_]: Defer: BracketThrow](
@@ -32,6 +32,9 @@ object B3Middleware {
           )
         } yield parentSpanIdHeader
           .fold(List.empty)(List(_)) ++ List(traceIdHeader, spanIdHeader, sampledHeader)
+        // TODO
+        val xxx = headers.map(response.putHeaders(_: _*))
+        // TODO
         val yyy: G[Response[G]] = headers.map(response.putHeaders(_: _*))
         val kk: Response[G] = response.putHeaders(???)
         kk
