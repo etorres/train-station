@@ -6,7 +6,6 @@ import arrival.Arrivals
 import arrival.syntax._
 import departure.Departures
 import departure.syntax._
-import uuid.UUIDGenerator
 
 import cats.data.Kleisli
 import cats.effect.{ConcurrentEffect, Timer}
@@ -23,22 +22,24 @@ import org.http4s.server.middleware.{CORS, GZip, Logger => Http4sLogger}
 import scala.concurrent.ExecutionContext
 
 object HttpServer {
-  def stream[F[_]: ConcurrentEffect: Timer: Trace: UUIDGenerator](
+  def stream[F[_]: ConcurrentEffect: Timer: Trace](
     arrivals: Arrivals[F],
     departures: Departures[F],
+    entryPoint: EntryPoint[F],
     httpServerConfig: HttpServerConfig,
-    executionContext: ExecutionContext,
-    entryPoint: EntryPoint[F]
+    executionContext: ExecutionContext
   ): Stream[F, Nothing] = {
 
-    val httpApp = (AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
-      arrivals.liftTrace[Kleisli[F, Span[F], *]]
-    ) <+> AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
-      departures.liftTrace[Kleisli[F, Span[F], *]]
-    )).inject(
-      entryPoint,
-      requestFilter = Http4sRequestFilter.kubernetesPrometheus
-    ).orNotFound
+    val httpApp = B3Propagation
+      .make[F, Kleisli[F, Span[F], *]](
+        AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
+          arrivals.liftTrace[Kleisli[F, Span[F], *]]
+        ) <+> AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
+          departures.liftTrace[Kleisli[F, Span[F], *]]
+        )
+      )
+      .inject(entryPoint, requestFilter = Http4sRequestFilter.kubernetesPrometheus)
+      .orNotFound
 
     val finalHttpApp = Http4sLogger.httpApp(logHeaders = true, logBody = true)(httpApp)
 

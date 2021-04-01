@@ -54,9 +54,9 @@ object TrainControlPanelApp extends IOApp {
             .stream[F](
               arrivals,
               departures,
+              entryPoint,
               config.httpServerConfig,
-              executionContext,
-              entryPoint
+              executionContext
             )
             .compile
             .drain
