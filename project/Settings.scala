@@ -53,40 +53,6 @@ object Settings {
       dependencyOverrides ++= Seq(catsCore, catsEffect, fs2Core, scalaCheck),
       unusedCompileDependenciesFilter -= moduleFilter("ch.qos.logback", "logback-classic"),
       unusedCompileDependenciesFilter -= moduleFilter("org.tpolecat", "doobie-postgres"),
-      undeclaredCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-base"),
-      undeclaredCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-core"),
-      undeclaredCompileDependenciesFilter -= moduleFilter(
-        "io.janstenpickle",
-        "trace4cats-http4s-common"
-      ),
-      undeclaredCompileDependenciesFilter -= moduleFilter(
-        "io.janstenpickle",
-        "trace4cats-http4s-server"
-      ),
-      undeclaredCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-inject"),
-      undeclaredCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-kernel"),
-      undeclaredCompileDependenciesFilter -= moduleFilter(
-        "io.janstenpickle",
-        "trace4cats-log-exporter"
-      ),
-      undeclaredCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-model"),
-      unusedCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-base"),
-      unusedCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-core"),
-      unusedCompileDependenciesFilter -= moduleFilter(
-        "io.janstenpickle",
-        "trace4cats-http4s-common"
-      ),
-      unusedCompileDependenciesFilter -= moduleFilter(
-        "io.janstenpickle",
-        "trace4cats-http4s-server"
-      ),
-      unusedCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-inject"),
-      unusedCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-kernel"),
-      unusedCompileDependenciesFilter -= moduleFilter(
-        "io.janstenpickle",
-        "trace4cats-log-exporter"
-      ),
-      unusedCompileDependenciesFilter -= moduleFilter("io.janstenpickle", "trace4cats-model"),
       testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
       wartremoverErrors in (Compile, compile) ++= warts,
       wartremoverErrors in (Test, compile) ++= warts,

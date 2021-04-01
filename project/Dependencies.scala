@@ -103,7 +103,7 @@ trait Fs2Kafka {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.21.20"
+  private[this] val version = "0.21.21"
 
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
@@ -197,7 +197,7 @@ trait Slf4j {
 trait Trace4Cats {
   private[this] val organization = "io.janstenpickle"
 
-  private[this] val version = "0.9.0+187-262fdf38"
+  private[this] val version = "0.10.0"
 
   val trace4CatsBase = organization %% "trace4cats-base" % version
   val trace4CatsCore = organization %% "trace4cats-core" % version
