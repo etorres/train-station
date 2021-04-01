@@ -93,7 +93,7 @@ object Settings {
       module(s"apps/$path").settings(
         Seq(
           coverageMinimum := 90,
-          coverageFailOnMinimum := true,
+          coverageFailOnMinimum := false,
           coverageExcludedPackages := "es.eriktorr.train_station.*App;es.eriktorr.train_station.*Resources"
         )
       )

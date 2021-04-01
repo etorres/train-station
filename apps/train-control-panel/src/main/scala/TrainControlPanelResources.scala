@@ -8,6 +8,8 @@ import messaging.infrastructure.KafkaClient
 import cats.effect._
 import doobie.Transactor
 import fs2.kafka._
+import io.janstenpickle.trace4cats.model.TraceProcess
+import org.typelevel.log4cats.Logger
 
 import scala.concurrent.ExecutionContext
 
@@ -19,9 +21,10 @@ final case class TrainControlPanelResources[F[_]](
 )
 
 object TrainControlPanelResources extends EventAvroCodec {
-  def impl[F[_]: ConcurrentEffect: ContextShift: Timer](
+  def impl[F[_]: ConcurrentEffect: ContextShift: Timer: Logger](
     executionContext: ExecutionContext,
-    blocker: Blocker
+    blocker: Blocker,
+    traceProcess: TraceProcess
   ): Resource[F, TrainControlPanelResources[F]] =
     for {
       config <- Resource.eval(TrainControlPanelConfig.load[F])
