@@ -54,7 +54,11 @@ curl -v --url http://localhost:8080/arrival
         -H 'X-B3-SpanId: e457b5a2e4d86bd1' 
         -H 'X-B3-Sampled: 1' 
         -H 'Content-Type: application/json' 
-        --compressed --data '{"trainId":"2b424db4-b111-4f27-8c7c-70f866c3cc50","actual":{"moment":"2021-03-08T22:05:42Z"}}'
+        --compressed 
+        --data '{
+                 "trainId":"2b424db4-b111-4f27-8c7c-70f866c3cc50",
+                 "actual":{"moment":"2021-03-08T22:05:42Z"}
+                }'
 ```
 
 ## Useful Links

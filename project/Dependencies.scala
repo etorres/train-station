@@ -3,7 +3,7 @@ import sbt._
 trait Avro {
   private[this] val organization = "org.apache.avro"
 
-  private[this] val version = "1.10.1"
+  private[this] val version = "1.10.2"
 
   val avro = organization % "avro" % version
 }
@@ -74,7 +74,7 @@ trait Ciris {
 trait Doobie {
   private[this] val organization = "org.tpolecat"
 
-  private[this] val version = "0.10.0"
+  private[this] val version = "0.12.1"
 
   val doobieCore = organization %% "doobie-core" % version
   val doobieFree = organization %% "doobie-free" % version
@@ -86,7 +86,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "2.5.2"
+  private[this] val version = "2.5.4"
 
   val fs2Core = organization %% "fs2-core" % version
 }
@@ -94,7 +94,7 @@ trait Fs2 {
 trait Fs2Kafka {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.4.1"
+  private[this] val version = "1.4.2"
 
   val fs2Kafka = organization %% "fs2-kafka" % version
   val fs2KafkaVulcan = organization %% "fs2-kafka-vulcan" % version
@@ -115,7 +115,7 @@ trait Http4s {
 trait Hikari {
   private[this] val organization = "com.zaxxer"
 
-  private[this] val version = "3.4.5"
+  private[this] val version = "4.0.3"
 
   val hikariCP = organization % "HikariCP" % version
 }
@@ -123,7 +123,7 @@ trait Hikari {
 trait Kafka {
   private[this] val organization = "io.confluent"
 
-  private[this] val version = "6.1.0"
+  private[this] val version = "6.1.1"
 
   val kafkaSchemaRegistryClient = organization % "kafka-schema-registry-client" % version
 }
@@ -156,7 +156,7 @@ trait NewType {
 trait Refined {
   private[this] val organization = "eu.timepit"
 
-  private[this] val version = "0.9.21"
+  private[this] val version = "0.9.22"
 
   val refined = organization %% "refined" % version
   val refinedCats = organization %% "refined-cats" % version
@@ -197,7 +197,7 @@ trait Slf4j {
 trait Trace4Cats {
   private[this] val organization = "io.janstenpickle"
 
-  private[this] val version = "0.10.0"
+  private[this] val version = "0.10.1"
 
   val trace4CatsBase = organization %% "trace4cats-base" % version
   val trace4CatsCore = organization %% "trace4cats-core" % version
@@ -212,7 +212,7 @@ trait Trace4Cats {
 trait Vulcan {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.4.1"
+  private[this] val version = "1.5.0"
 
   val vulcan = organization %% "vulcan" % version
 }
@@ -220,7 +220,7 @@ trait Vulcan {
 trait Weaver {
   private[this] val organization = "com.disneystreaming"
 
-  private[this] val version = "0.6.0-M6"
+  private[this] val version = "0.6.0-M7"
 
   val weaverCats = organization %% "weaver-cats" % version
   val weaverScalaCheck = organization %% "weaver-scalacheck" % version

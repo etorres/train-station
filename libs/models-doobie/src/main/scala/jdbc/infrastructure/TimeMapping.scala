@@ -4,7 +4,7 @@ package jdbc.infrastructure
 import time.Moment
 
 import doobie._
-import doobie.implicits.javatime._
+import doobie.postgres.implicits._
 
 import java.time.OffsetDateTime
 

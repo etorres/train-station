@@ -26,7 +26,7 @@ lazy val `models-circe` = project
 lazy val `models-doobie` = project
   .library("models-doobie")
   .dependsOn(models)
-  .mainDependencies(doobieCore, refined)
+  .mainDependencies(doobieCore, doobiePostgres, refined)
 
 lazy val `models-vulcan` = project
   .library("models-vulcan")
