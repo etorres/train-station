@@ -15,6 +15,7 @@ import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.http4s.common.Http4sRequestFilter
 import io.janstenpickle.trace4cats.http4s.server.syntax._
 import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
+import org.http4s.HttpApp
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.{CORS, GZip, Logger => Http4sLogger}
@@ -30,22 +31,28 @@ object HttpServer {
     executionContext: ExecutionContext
   ): Stream[F, Nothing] = {
 
-    val httpApp = B3Propagation
-      .make[F, Kleisli[F, Span[F], *]](
-        AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
-          arrivals.liftTrace[Kleisli[F, Span[F], *]]
-        ) <+> AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
-          departures.liftTrace[Kleisli[F, Span[F], *]]
-        )
-      )
-      .inject(entryPoint, requestFilter = Http4sRequestFilter.kubernetesPrometheus)
-      .orNotFound
-
-    val finalHttpApp = Http4sLogger.httpApp(logHeaders = true, logBody = true)(httpApp)
+    val finalHttpApp = Http4sLogger.httpApp(logHeaders = true, logBody = true)(
+      httpApp(arrivals, departures, entryPoint)
+    )
 
     BlazeServerBuilder[F](executionContext)
       .bindHttp(httpServerConfig.port.value, httpServerConfig.host.value)
       .withHttpApp(CORS(GZip(finalHttpApp)))
       .serve
   }.drain
+
+  def httpApp[F[_]: ConcurrentEffect: Timer: Trace](
+    arrivals: Arrivals[F],
+    departures: Departures[F],
+    entryPoint: EntryPoint[F]
+  ): HttpApp[F] = B3Propagation
+    .make[F, Kleisli[F, Span[F], *]](
+      AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
+        arrivals.liftTrace[Kleisli[F, Span[F], *]]
+      ) <+> AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
+        departures.liftTrace[Kleisli[F, Span[F], *]]
+      )
+    )
+    .inject(entryPoint, requestFilter = Http4sRequestFilter.kubernetesPrometheus)
+    .orNotFound
 }

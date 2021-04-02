@@ -1,11 +1,12 @@
 package es.eriktorr.train_station
 package departure
 
+import arrival.infrastructure.FakeArrivals
 import departure.Departures.Departure
 import effect._
 import event.Event.Departed
 import event.{Event, EventId}
-import http.infrastructure.AllHttpRoutes
+import http.infrastructure.HttpServer
 import json.infrastructure.EventJsonProtocol
 import messaging.infrastructure.FakeEventSender
 import messaging.infrastructure.FakeEventSender.EventSenderState
@@ -21,6 +22,7 @@ import spec.HttpRoutesIOCheckers
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin => StationOrigin}
 import time.Moment.When.{Actual, Created, Expected}
+import trace.TraceEntryPoint
 import uuid.UUIDGenerator
 import uuid.infrastructure.FakeUUIDGenerator
 import uuid.infrastructure.FakeUUIDGenerator.UUIDGeneratorState
@@ -31,6 +33,7 @@ import cats.derived._
 import cats.effect._
 import cats.implicits._
 import io.janstenpickle.trace4cats.inject.Trace
+import io.janstenpickle.trace4cats.model.TraceProcess
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers._
@@ -102,12 +105,12 @@ object DeparturesSuite
 
     def checkDeparture[A](
       departure: Departure,
-      httpRoutes: HttpRoutes[IO],
+      httpApp: HttpApp[IO],
       expectedStatus: Status,
       expectedBody: Option[A]
     )(implicit ev: EntityDecoder[IO, A]) = check(
-      httpRoutes = httpRoutes,
-      request = Request(
+      httpApp,
+      Request(
         method = Method.POST,
         uri = uri"departure",
         headers = Headers.of(`Content-Type`(MediaType.application.json)),
@@ -116,8 +119,8 @@ object DeparturesSuite
           .toEntity(departure)
           .body
       ),
-      expectedStatus = expectedStatus,
-      expectedBody = expectedBody
+      expectedStatus,
+      expectedBody
     )
 
     forall(gen) { case TestCase(origin, connectedStations, departure, eventId, expectedEvents) =>
@@ -130,16 +133,18 @@ object DeparturesSuite
         )
         implicit0(trace: Trace[IO]) = Trace.Implicits.noop[IO]
         httpExpectations <- {
-          val httpRoutes = AllHttpRoutes.routes[IO](
+          val httpApp = HttpServer.httpApp(
+            FakeArrivals.impl[IO],
             Departures
-              .impl[IO](origin, connectedStations, FakeEventSender.impl[IO](eventSenderStateRef))
+              .impl[IO](origin, connectedStations, FakeEventSender.impl[IO](eventSenderStateRef)),
+            TraceEntryPoint.impl[IO](TraceProcess("departures-suite"))
           )
           if (connectedStations.contains_(departure.to))
-            checkDeparture(departure, httpRoutes, Status.Created, eventId.some)
+            checkDeparture(departure, httpApp, Status.Created, eventId.some)
           else
             checkDeparture(
               departure,
-              httpRoutes,
+              httpApp,
               Status.BadRequest,
               s"Unexpected destination ${departure.to.unStation.value}".some
             )
