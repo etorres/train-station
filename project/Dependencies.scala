@@ -115,7 +115,7 @@ trait Http4s {
 trait Hikari {
   private[this] val organization = "com.zaxxer"
 
-  private[this] val version = "4.0.3"
+  private[this] val version = "3.4.5"
 
   val hikariCP = organization % "HikariCP" % version
 }
