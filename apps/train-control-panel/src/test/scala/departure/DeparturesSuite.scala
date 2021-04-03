@@ -6,11 +6,12 @@ import departure.Departures.Departure
 import effect._
 import event.Event.Departed
 import event.{Event, EventId}
-import http.infrastructure.HttpServer
+import http.infrastructure.{B3Headers, HttpServer}
 import json.infrastructure.EventJsonProtocol
 import messaging.infrastructure.FakeEventSender
 import messaging.infrastructure.FakeEventSender.EventSenderState
 import shared.infrastructure.Generators.nDistinct
+import shared.infrastructure.TraceGenerators.b3Gen
 import shared.infrastructure.TrainStationGenerators.{
   afterGen,
   eventIdGen,
@@ -56,7 +57,8 @@ object DeparturesSuite
       connectedStations: NonEmptyList[Station[Destination]],
       departure: Departure,
       eventId: EventId,
-      expectedEvents: List[Event]
+      expectedEvents: List[Event],
+      b3Headers: Option[B3Headers]
     )
 
     object TestCase {
@@ -95,62 +97,70 @@ object DeparturesSuite
           )
         else (otherDestinations, List.empty[Event])
       }
+      b3Headers <- Gen.option(b3Gen)
     } yield TestCase(
       origin,
       connectedStations,
       Departure(trainId, destination, expected, actual),
       eventId,
-      expectedEvents
+      expectedEvents,
+      b3Headers
     )
 
     def checkDeparture[A](
       departure: Departure,
       httpApp: HttpApp[IO],
       expectedStatus: Status,
-      expectedBody: Option[A]
+      expectedBody: Option[A],
+      requestB3Headers: Option[B3Headers]
     )(implicit ev: EntityDecoder[IO, A]) = check(
       httpApp,
       Request(
         method = Method.POST,
         uri = uri"departure",
-        headers = Headers.of(`Content-Type`(MediaType.application.json)),
+        headers = Headers.of(
+          `Content-Type`(MediaType.application.json) :: B3Headers.toHeaders(requestB3Headers): _*
+        ),
         body = Departure
           .departureEntityEncoder[IO]
           .toEntity(departure)
           .body
       ),
+      requestB3Headers,
       expectedStatus,
       expectedBody
     )
 
-    forall(gen) { case TestCase(origin, connectedStations, departure, eventId, expectedEvents) =>
-      for {
-        uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
-        eventSenderStateRef <- EventSenderState.refEmpty
-        implicit0(logger: Logger[IO]) <- Slf4jLogger.create[F]
-        implicit0(uuidGenerator: UUIDGenerator[IO]) = FakeUUIDGenerator.impl[IO](
-          uuidGeneratorStateRef
-        )
-        implicit0(trace: Trace[IO]) = Trace.Implicits.noop[IO]
-        httpExpectations <- {
-          val httpApp = HttpServer.httpApp(
-            FakeArrivals.impl[IO],
-            Departures
-              .impl[IO](origin, connectedStations, FakeEventSender.impl[IO](eventSenderStateRef)),
-            TraceEntryPoint.impl[IO](TraceProcess("departures-suite"))
+    forall(gen) {
+      case TestCase(origin, connectedStations, departure, eventId, expectedEvents, b3Headers) =>
+        for {
+          uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
+          eventSenderStateRef <- EventSenderState.refEmpty
+          implicit0(logger: Logger[IO]) <- Slf4jLogger.create[F]
+          implicit0(uuidGenerator: UUIDGenerator[IO]) = FakeUUIDGenerator.impl[IO](
+            uuidGeneratorStateRef
           )
-          if (connectedStations.contains_(departure.to))
-            checkDeparture(departure, httpApp, Status.Created, eventId.some)
-          else
-            checkDeparture(
-              departure,
-              httpApp,
-              Status.BadRequest,
-              s"Unexpected destination ${departure.to.unStation.value}".some
+          implicit0(trace: Trace[IO]) = Trace.Implicits.noop[IO]
+          httpExpectations <- {
+            val httpApp = HttpServer.httpApp(
+              FakeArrivals.impl[IO],
+              Departures
+                .impl[IO](origin, connectedStations, FakeEventSender.impl[IO](eventSenderStateRef)),
+              TraceEntryPoint.impl[IO](TraceProcess("departures-suite"))
             )
-        }
-        sentEvents <- eventSenderStateRef.get
-      } yield httpExpectations && expect(sentEvents.events === expectedEvents)
+            if (connectedStations.contains_(departure.to))
+              checkDeparture(departure, httpApp, Status.Created, eventId.some, b3Headers)
+            else
+              checkDeparture(
+                departure,
+                httpApp,
+                Status.BadRequest,
+                s"Unexpected destination ${departure.to.unStation.value}".some,
+                b3Headers
+              )
+          }
+          sentEvents <- eventSenderStateRef.get
+        } yield httpExpectations && expect(sentEvents.events === expectedEvents)
     }
   }
 }

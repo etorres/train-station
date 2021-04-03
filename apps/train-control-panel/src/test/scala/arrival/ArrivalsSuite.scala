@@ -9,11 +9,12 @@ import departure.infrastructure.FakeDepartures
 import effect._
 import event.Event.Arrived
 import event.{Event, EventId}
-import http.infrastructure.HttpServer
+import http.infrastructure.{B3Headers, HttpServer}
 import json.infrastructure.EventJsonProtocol
 import messaging.infrastructure.FakeEventSender
 import messaging.infrastructure.FakeEventSender.EventSenderState
 import shared.infrastructure.Generators.nDistinct
+import shared.infrastructure.TraceGenerators.b3Gen
 import shared.infrastructure.TrainControlPanelGenerators.expectedTrainGen
 import shared.infrastructure.TrainStationGenerators._
 import spec.HttpRoutesIOCheckers
@@ -56,7 +57,8 @@ object ArrivalsSuite
       allTrains: NonEmptyList[ExpectedTrain],
       arrival: Arrival,
       eventId: EventId,
-      expectedEvents: List[Event]
+      expectedEvents: List[Event],
+      b3Headers: Option[B3Headers]
     )
 
     object TestCase {
@@ -99,31 +101,37 @@ object ArrivalsSuite
             )
           else (otherExpectedTrains, List.empty[Event])
         }
+      b3Headers <- Gen.option(b3Gen)
     } yield TestCase(
       destination,
       expectedTrain,
       allExpectedTrains,
       Arrival(expectedTrain.trainId, actual),
       eventId,
-      expectedEvents
+      expectedEvents,
+      b3Headers
     )
 
     def checkArrival[A](
       arrival: Arrival,
       httpApp: HttpApp[IO],
       expectedStatus: Status,
-      expectedBody: Option[A]
+      expectedBody: Option[A],
+      requestB3Headers: Option[B3Headers]
     )(implicit ev: EntityDecoder[IO, A]) = check(
       httpApp,
       Request(
         method = Method.POST,
         uri = uri"arrival",
-        headers = Headers.of(`Content-Type`(MediaType.application.json)),
+        headers = Headers.of(
+          `Content-Type`(MediaType.application.json) :: B3Headers.toHeaders(requestB3Headers): _*
+        ),
         body = Arrival
           .arrivalEntityEncoder[IO]
           .toEntity(arrival)
           .body
       ),
+      requestB3Headers,
       expectedStatus,
       expectedBody
     )
@@ -135,7 +143,8 @@ object ArrivalsSuite
             allExpectedTrains,
             arrival,
             eventId,
-            expectedEvents
+            expectedEvents,
+            b3Headers
           ) =>
         for {
           expectedTrainsRef <- ExpectedTrainsState.refFrom(allExpectedTrains.toList)
@@ -158,13 +167,14 @@ object ArrivalsSuite
               TraceEntryPoint.impl[IO](TraceProcess("arrivals-suite"))
             )
             if (allExpectedTrains.contains_(expectedTrain))
-              checkArrival(arrival, httpApp, Status.Created, eventId.some)
+              checkArrival(arrival, httpApp, Status.Created, eventId.some, b3Headers)
             else
               checkArrival(
                 arrival,
                 httpApp,
                 Status.BadRequest,
-                s"Unexpected train ${expectedTrain.trainId.unTrainId.value}".some
+                s"Unexpected train ${expectedTrain.trainId.unTrainId.value}".some,
+                b3Headers
               )
           }
           sentEvents <- eventSenderStateRef.get
