@@ -139,7 +139,7 @@ trait Logback {
 trait Log4Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "1.2.1"
+  private[this] val version = "1.2.2"
 
   val log4CatsCore = organization %% "log4cats-core" % version
   val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
