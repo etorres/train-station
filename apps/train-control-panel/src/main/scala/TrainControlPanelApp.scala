@@ -11,7 +11,7 @@ import trace.TraceEntryPoint
 import cats.NonEmptyParallel
 import cats.effect._
 import cats.implicits._
-import io.janstenpickle.trace4cats.inject.Trace
+import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
 import io.janstenpickle.trace4cats.model.TraceProcess
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
@@ -25,9 +25,9 @@ object TrainControlPanelApp extends IOApp {
     def program[F[_]: ConcurrentEffect: ContextShift: Timer: NonEmptyParallel: Logger: Trace](
       executionContext: ExecutionContext,
       blocker: Blocker,
-      traceProcess: TraceProcess
+      entryPoint: EntryPoint[F]
     ): F[Unit] =
-      TrainControlPanelResources.impl[F](executionContext, blocker, traceProcess).use {
+      TrainControlPanelResources.impl[F](executionContext, blocker).use {
         case TrainControlPanelResources(config, consumer, producer, transactor) =>
           val expectedTrains = JdbcExpectedTrains.impl[F](transactor)
           val departureTracker =
@@ -40,8 +40,6 @@ object TrainControlPanelApp extends IOApp {
           val arrivals =
             Arrivals.impl[F](config.station.asStation[Destination], expectedTrains, eventSender)
           val departures = Departures.impl[F](config.station, config.connectedTo, eventSender)
-
-          val entryPoint = TraceEntryPoint.impl(traceProcess)
 
           val httpServer = HttpServer
             .stream[F](
@@ -63,10 +61,11 @@ object TrainControlPanelApp extends IOApp {
     (for {
       implicit0(logger: Logger[IO]) <- Slf4jLogger.create[IO]
       implicit0(trace: Trace[IO]) = Trace.Implicits.noop[IO]
+      entryPoint <- TraceEntryPoint.make[IO](TraceProcess("train-control-panel"))
       result <- program[IO](
         executionContext,
         Blocker.liftExecutionContext(executionContext),
-        TraceProcess("train-control-panel")
+        entryPoint
       )
     } yield result).as(ExitCode.Success)
   }

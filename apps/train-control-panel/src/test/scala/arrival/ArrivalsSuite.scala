@@ -150,6 +150,7 @@ object ArrivalsSuite
           expectedTrainsRef <- ExpectedTrainsState.refFrom(allExpectedTrains.toList)
           uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
           eventSenderStateRef <- EventSenderState.refEmpty
+          entryPoint <- TraceEntryPoint.make[IO](TraceProcess("arrivals-suite"))
           implicit0(logger: Logger[IO]) <- Slf4jLogger.create[IO]
           implicit0(uuidGenerator: UUIDGenerator[IO]) = FakeUUIDGenerator.impl[IO](
             uuidGeneratorStateRef
@@ -164,7 +165,7 @@ object ArrivalsSuite
                   FakeEventSender.impl[IO](eventSenderStateRef)
                 ),
               FakeDepartures.impl[IO],
-              TraceEntryPoint.impl[IO](TraceProcess("arrivals-suite"))
+              entryPoint
             )
             if (allExpectedTrains.contains_(expectedTrain))
               checkArrival(arrival, httpApp, Status.Created, eventId.some, b3Headers)

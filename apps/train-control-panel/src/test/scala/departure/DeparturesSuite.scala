@@ -137,6 +137,7 @@ object DeparturesSuite
           uuidGeneratorStateRef <- UUIDGeneratorState.refFrom(eventId.unEventId.value)
           eventSenderStateRef <- EventSenderState.refEmpty
           implicit0(logger: Logger[IO]) <- Slf4jLogger.create[F]
+          entryPoint <- TraceEntryPoint.make[IO](TraceProcess("departures-suite"))
           implicit0(uuidGenerator: UUIDGenerator[IO]) = FakeUUIDGenerator.impl[IO](
             uuidGeneratorStateRef
           )
@@ -146,7 +147,7 @@ object DeparturesSuite
               FakeArrivals.impl[IO],
               Departures
                 .impl[IO](origin, connectedStations, FakeEventSender.impl[IO](eventSenderStateRef)),
-              TraceEntryPoint.impl[IO](TraceProcess("departures-suite"))
+              entryPoint
             )
             if (connectedStations.contains_(departure.to))
               checkDeparture(departure, httpApp, Status.Created, eventId.some, b3Headers)
