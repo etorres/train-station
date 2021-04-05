@@ -54,8 +54,8 @@ object Settings {
       unusedCompileDependenciesFilter -= moduleFilter("ch.qos.logback", "logback-classic"),
       unusedCompileDependenciesFilter -= moduleFilter("org.tpolecat", "doobie-postgres"),
       testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
-      wartremoverErrors in (Compile, compile) ++= warts,
-      wartremoverErrors in (Test, compile) ++= warts,
+      Compile / compile / wartremoverErrors ++= warts,
+      Test / compile / wartremoverErrors ++= warts,
       scalacOptions ++= Seq(
         "-encoding",
         "utf8",
@@ -84,7 +84,7 @@ object Settings {
 
   implicit class ProjectSyntax(project: Project) {
     def root(rootName: String): Project =
-      project.in(file(".")).settings(Seq(name := rootName, skip in publish := true, welcomeMessage))
+      project.in(file(".")).settings(Seq(name := rootName, publish / skip := true, welcomeMessage))
 
     private[this] def module(path: String): Project =
       project.in(file(path)).settings(commonSettings(project.id))

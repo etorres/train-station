@@ -8,7 +8,7 @@ lazy val `train-station` = project
   .aggregate(models, `models-circe`, `models-doobie`, `models-vulcan`, `train-control-panel`)
   .dependsOn(models, `models-circe`, `models-doobie`, `models-vulcan`, `train-control-panel`)
   .enablePlugins(JavaAppPackaging)
-  .settings(mainClass in Compile := Some("es.eriktorr.train_station.TrainControlPanelApp"))
+  .settings(Compile / mainClass := Some("es.eriktorr.train_station.TrainControlPanelApp"))
 
 lazy val effect = project.library("effect").mainDependencies(catsCore)
 
