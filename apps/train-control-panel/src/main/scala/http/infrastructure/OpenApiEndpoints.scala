@@ -18,13 +18,13 @@ import io.circe.syntax._
 import org.http4s.HttpRoutes
 import sttp.capabilities.WebSockets
 import sttp.capabilities.fs2.Fs2Streams
+import sttp.model.StatusCode
 import sttp.tapir.CodecFormat.Json
 import sttp.tapir._
 import sttp.tapir.codec.newtype._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 import sttp.tapir.openapi.OpenAPI
-import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 
 import java.time.OffsetDateTime
@@ -66,20 +66,14 @@ object OpenApiEndpoints extends EventJsonProtocol with TrainJsonProtocol {
       .post
       .in("api" / "v1" / "arrival")
       .in(arrivalBody)
-      .out(eventIdResponse)
+      .out(statusCode(StatusCode.Created).and(eventIdResponse))
       .errorOut(jsonBody[ArrivalError])
   }
-
-  def arrivalServerEndpoint[F[_]: Sync](
-    A: Arrivals[F]
-  ): ServerEndpoint[Arrival, ArrivalError, EventId, Fs2Streams[
-    F
-  ] with WebSockets, F] = arrivalEndpoint.serverLogicRecoverErrors(A.register(_).map(_.id))
 
   def routes[F[_]: Sync](
     A: Arrivals[F]
   )(implicit fs: Concurrent[F], fcs: ContextShift[F], timer: Timer[F]): HttpRoutes[F] =
-    Http4sServerInterpreter.toRoutes(arrivalServerEndpoint[F](A))
+    Http4sServerInterpreter.toRouteRecoverErrors(arrivalEndpoint)(A.register(_).map(_.id))
 
   import sttp.tapir.docs.openapi._
   import sttp.tapir.openapi.circe.yaml._
