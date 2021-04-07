@@ -19,25 +19,16 @@ import org.http4s.HttpRoutes
 import sttp.capabilities.WebSockets
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.model.StatusCode
-import sttp.tapir.CodecFormat.Json
 import sttp.tapir._
 import sttp.tapir.codec.newtype._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
-import sttp.tapir.openapi.OpenAPI
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 
 import java.time.OffsetDateTime
 
 @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 object OpenApiEndpoints extends EventJsonProtocol with TrainJsonProtocol {
-  implicit val eventIdCodec: Codec[String, EventId, Json] = Codec.json[EventId] { str =>
-    EventId.fromString(str) match {
-      case Left(error) => DecodeResult.Error(str, error)
-      case Right(value) => DecodeResult.Value(value)
-    }
-  }(_.unEventId.value)
-  implicitly[Schema[EventId]]
 
   implicit val arrivalErrorEncoder: Encoder[ArrivalError] = Encoder.instance {
     case unexpectedTrain @ UnexpectedTrain(_) => unexpectedTrain.asJson
@@ -70,21 +61,14 @@ object OpenApiEndpoints extends EventJsonProtocol with TrainJsonProtocol {
       .errorOut(jsonBody[ArrivalError])
   }
 
-  def routes[F[_]: Sync](
-    A: Arrivals[F]
-  )(implicit fs: Concurrent[F], fcs: ContextShift[F], timer: Timer[F]): HttpRoutes[F] =
+  def routes[F[_]: Sync: Concurrent: ContextShift: Timer](A: Arrivals[F]): HttpRoutes[F] =
     Http4sServerInterpreter.toRouteRecoverErrors(arrivalEndpoint)(A.register(_).map(_.id))
 
   import sttp.tapir.docs.openapi._
   import sttp.tapir.openapi.circe.yaml._
   import sttp.tapir.swagger.http4s.SwaggerHttp4s
 
-  def docs[F[_]: Sync]: OpenAPI =
-    OpenAPIDocsInterpreter.toOpenAPI(List(arrivalEndpoint), "Train Control Panel", "v1")
-
-  def docsAsYaml[F[_]: Sync]: String = docs.toYaml
-
   def swaggerRoute[F[_]: Sync: ContextShift]: HttpRoutes[F] = new SwaggerHttp4s(
-    docsAsYaml
+    OpenAPIDocsInterpreter.toOpenAPI(List(arrivalEndpoint), "Train Control Panel", "v1").toYaml
   ).routes
 }

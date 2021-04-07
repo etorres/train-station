@@ -46,7 +46,7 @@ object HttpServer {
     departures: Departures[F],
     entryPoint: EntryPoint[F]
   ): HttpApp[F] =
-    (logicRoutes(arrivals, departures, entryPoint) <+> docRoute(entryPoint)).orNotFound
+    (logicRoutes(arrivals, departures, entryPoint) <+> docsRoute(entryPoint)).orNotFound
 
   def logicRoutes[F[_]: ConcurrentEffect: Timer: Trace](
     arrivals: Arrivals[F],
@@ -62,7 +62,7 @@ object HttpServer {
     )
     .inject(entryPoint, requestFilter = Http4sRequestFilter.kubernetesPrometheus)
 
-  def docRoute[F[_]: Sync: ContextShift: Trace](
+  def docsRoute[F[_]: Sync: ContextShift: Trace](
     entryPoint: EntryPoint[F]
   ): HttpRoutes[F] =
     OpenApiEndpoints.swaggerRoute[Kleisli[F, Span[F], *]].inject(entryPoint)

@@ -203,14 +203,17 @@ trait Slf4j {
 }
 
 trait Tapir {
+  private[this] val modelOrganization = "com.softwaremill.sttp.model"
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
+  private[this] val modelVersion = "1.4.0"
   private[this] val sharedVersion = "1.1.1"
   private[this] val tapirVersion = "0.18.0-M2"
 
-  val sttpCore = sharedOrganization %% "core" % sharedVersion
-  val sttpFs2 = sharedOrganization %% "fs2" % sharedVersion
+  val sttpModelCore = modelOrganization %% "core" % modelVersion
+  val sttpSharedCore = sharedOrganization %% "core" % sharedVersion
+  val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedVersion
   val tapirCore = tapirOrganization %% "tapir-core" % tapirVersion
   val tapirHttp4sServer = tapirOrganization %% "tapir-http4s-server" % tapirVersion
   val tapirJsonCirce = tapirOrganization %% "tapir-json-circe" % tapirVersion
