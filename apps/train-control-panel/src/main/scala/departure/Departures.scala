@@ -53,7 +53,8 @@ object Departures {
   sealed trait DepartureError extends NoStackTrace
 
   object DepartureError {
-    final case class UnexpectedDestination(station: Station[Destination]) extends DepartureError
+    final case class UnexpectedDestination(message: String, destination: Station[Destination])
+        extends DepartureError
   }
 
   def impl[F[_]: Sync: Logger: UUIDGenerator](
@@ -80,8 +81,9 @@ object Departures {
               .flatTap(eventSender.send)
           case None =>
             F.error(
-              show"Tried to create departure to an unexpected destination: $departure"
-            ) *> UnexpectedDestination(departure.to).raiseError[F, Departed]
+              show"Tried to create departure to an unreachable station: $departure"
+            ) *> UnexpectedDestination("Destination is not connected to this station", departure.to)
+              .raiseError[F, Departed]
         }
       } yield departed
 }

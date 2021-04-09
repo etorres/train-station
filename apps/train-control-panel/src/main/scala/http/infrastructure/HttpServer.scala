@@ -8,14 +8,14 @@ import departure.Departures
 import departure.syntax._
 
 import cats.data.Kleisli
-import cats.effect.{ConcurrentEffect, Timer}
+import cats.effect.{ConcurrentEffect, ContextShift, Sync, Timer}
 import cats.implicits._
 import fs2.Stream
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.http4s.common.Http4sRequestFilter
 import io.janstenpickle.trace4cats.http4s.server.syntax._
 import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
-import org.http4s.HttpApp
+import org.http4s._
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.{CORS, GZip, Logger => Http4sLogger}
@@ -23,7 +23,7 @@ import org.http4s.server.middleware.{CORS, GZip, Logger => Http4sLogger}
 import scala.concurrent.ExecutionContext
 
 object HttpServer {
-  def stream[F[_]: ConcurrentEffect: Timer: Trace](
+  def stream[F[_]: ConcurrentEffect: ContextShift: Timer: Trace](
     arrivals: Arrivals[F],
     departures: Departures[F],
     entryPoint: EntryPoint[F],
@@ -41,18 +41,29 @@ object HttpServer {
       .serve
   }.drain
 
-  def httpApp[F[_]: ConcurrentEffect: Timer: Trace](
+  def httpApp[F[_]: ConcurrentEffect: ContextShift: Timer: Trace](
     arrivals: Arrivals[F],
     departures: Departures[F],
     entryPoint: EntryPoint[F]
-  ): HttpApp[F] = B3Propagation
-    .make[F, Kleisli[F, Span[F], *]](
-      AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
-        arrivals.liftTrace[Kleisli[F, Span[F], *]]
-      ) <+> AllHttpRoutes.routes[Kleisli[F, Span[F], *]](
-        departures.liftTrace[Kleisli[F, Span[F], *]]
+  ): HttpApp[F] =
+    (logicRoutes(arrivals, departures, entryPoint) <+> docsRoute(entryPoint)).orNotFound
+
+  def logicRoutes[F[_]: ConcurrentEffect: ContextShift: Timer: Trace](
+    arrivals: Arrivals[F],
+    departures: Departures[F],
+    entryPoint: EntryPoint[F]
+  ): HttpRoutes[F] =
+    B3Propagation
+      .make[F, Kleisli[F, Span[F], *]](
+        OpenApiEndpoints.routes(
+          arrivals.liftTrace[Kleisli[F, Span[F], *]],
+          departures.liftTrace[Kleisli[F, Span[F], *]]
+        )
       )
-    )
-    .inject(entryPoint, requestFilter = Http4sRequestFilter.kubernetesPrometheus)
-    .orNotFound
+      .inject(entryPoint, requestFilter = Http4sRequestFilter.kubernetesPrometheus)
+
+  def docsRoute[F[_]: Sync: ContextShift: Trace](
+    entryPoint: EntryPoint[F]
+  ): HttpRoutes[F] =
+    OpenApiEndpoints.swaggerRoute[Kleisli[F, Span[F], *]].inject(entryPoint)
 }

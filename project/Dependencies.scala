@@ -145,6 +145,14 @@ trait Log4Cats {
   val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
 }
 
+trait Magnolia {
+  private[this] val organization = "com.propensive"
+
+  private[this] val version = "0.17.0"
+
+  val magnolia = organization %% "magnolia" % version
+}
+
 trait NewType {
   private[this] val organization = "io.estatico"
 
@@ -194,6 +202,28 @@ trait Slf4j {
   val slf4jApi = organization % "slf4j-api" % version
 }
 
+trait Tapir {
+  private[this] val modelOrganization = "com.softwaremill.sttp.model"
+  private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
+  private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
+
+  private[this] val modelVersion = "1.4.0"
+  private[this] val sharedVersion = "1.1.1"
+  private[this] val tapirVersion = "0.18.0-M2"
+
+  val sttpModelCore = modelOrganization %% "core" % modelVersion
+  val sttpSharedCore = sharedOrganization %% "core" % sharedVersion
+  val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedVersion
+  val tapirCore = tapirOrganization %% "tapir-core" % tapirVersion
+  val tapirHttp4sServer = tapirOrganization %% "tapir-http4s-server" % tapirVersion
+  val tapirJsonCirce = tapirOrganization %% "tapir-json-circe" % tapirVersion
+  val tapirNewType = tapirOrganization %% "tapir-newtype" % tapirVersion
+  val tapirOpenApiCirceYaml = tapirOrganization %% "tapir-openapi-circe-yaml" % tapirVersion
+  val tapirOpenApiDocs = tapirOrganization %% "tapir-openapi-docs" % tapirVersion
+  val tapirOpenApiModel = tapirOrganization %% "tapir-openapi-model" % tapirVersion
+  val tapirSwaggerUI = tapirOrganization %% "tapir-swagger-ui-http4s" % tapirVersion
+}
+
 trait Trace4Cats {
   private[this] val organization = "io.janstenpickle"
 
@@ -220,7 +250,7 @@ trait Vulcan {
 trait Weaver {
   private[this] val organization = "com.disneystreaming"
 
-  private[this] val version = "0.6.0-M7"
+  private[this] val version = "0.6.0"
 
   val weaverCats = organization %% "weaver-cats" % version
   val weaverScalaCheck = organization %% "weaver-scalacheck" % version
@@ -241,12 +271,14 @@ object Dependencies
     with Kafka
     with Logback
     with Log4Cats
+    with Magnolia
     with NewType
     with Refined
     with ScalaCheck
     with ScalaLang
     with Shapeless
     with Slf4j
+    with Tapir
     with Trace4Cats
     with Vulcan
     with Weaver
