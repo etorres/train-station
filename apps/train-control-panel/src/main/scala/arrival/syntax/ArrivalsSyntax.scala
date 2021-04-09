@@ -22,7 +22,7 @@ trait ArrivalsSyntax {
             _.child(
               arrival.show,
               SpanKind.Internal,
-              { case UnexpectedTrain(trainId) =>
+              { case UnexpectedTrain(_, trainId) =>
                 SpanStatus.Internal(show"Unexpected train $trainId")
               }
             )

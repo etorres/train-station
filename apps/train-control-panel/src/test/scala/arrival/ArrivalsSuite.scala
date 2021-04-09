@@ -2,6 +2,7 @@ package es.eriktorr.train_station
 package arrival
 
 import arrival.Arrivals.Arrival
+import arrival.Arrivals.ArrivalError.UnexpectedTrain
 import arrival.ExpectedTrains.ExpectedTrain
 import arrival.infrastructure.FakeExpectedTrains
 import arrival.infrastructure.FakeExpectedTrains.ExpectedTrainsState
@@ -10,7 +11,7 @@ import effect._
 import event.Event.Arrived
 import event.{Event, EventId}
 import http.infrastructure.{B3Headers, HttpServer}
-import json.infrastructure.EventJsonProtocol
+import json.infrastructure.{EventJsonProtocol, TrainJsonProtocol}
 import messaging.infrastructure.FakeEventSender
 import messaging.infrastructure.FakeEventSender.EventSenderState
 import shared.infrastructure.Generators.nDistinct
@@ -31,6 +32,8 @@ import cats.data.NonEmptyList
 import cats.derived._
 import cats.effect._
 import cats.implicits._
+import io.circe._
+import io.circe.generic.semiauto._
 import io.janstenpickle.trace4cats.inject.Trace
 import io.janstenpickle.trace4cats.model.TraceProcess
 import org.http4s._
@@ -48,7 +51,8 @@ object ArrivalsSuite
     extends SimpleIOSuite
     with Checkers
     with HttpRoutesIOCheckers
-    with EventJsonProtocol {
+    with EventJsonProtocol
+    with TrainJsonProtocol {
 
   test("create train arrivals") {
     final case class TestCase(
@@ -122,7 +126,7 @@ object ArrivalsSuite
       httpApp,
       Request(
         method = Method.POST,
-        uri = uri"arrival",
+        uri = uri"api/v1/arrival",
         headers = Headers.of(
           `Content-Type`(MediaType.application.json) :: B3Headers.toHeaders(requestB3Headers): _*
         ),
@@ -135,6 +139,8 @@ object ArrivalsSuite
       expectedStatus,
       expectedBody
     )
+
+    implicit val unexpectedTrainDecoder: Decoder[UnexpectedTrain] = deriveDecoder
 
     forall(gen) {
       case TestCase(
@@ -174,7 +180,10 @@ object ArrivalsSuite
                 arrival,
                 httpApp,
                 Status.BadRequest,
-                s"Unexpected train ${expectedTrain.trainId.unTrainId.value}".some,
+                UnexpectedTrain(
+                  "There is no recorded departure for the train",
+                  expectedTrain.trainId
+                ).some,
                 b3Headers
               )
           }

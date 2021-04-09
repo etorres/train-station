@@ -46,7 +46,7 @@ object Arrivals {
   sealed trait ArrivalError extends NoStackTrace
 
   object ArrivalError {
-    final case class UnexpectedTrain(trainId: TrainId) extends ArrivalError
+    final case class UnexpectedTrain(message: String, trainId: TrainId) extends ArrivalError
   }
 
   def impl[F[_]: Sync: Logger: UUIDGenerator](
@@ -76,7 +76,8 @@ object Arrivals {
           case None =>
             F.error(
               show"Tried to create arrival of an unexpected train: $arrival"
-            ) *> UnexpectedTrain(arrival.trainId).raiseError[F, Arrived]
+            ) *> UnexpectedTrain("There is no recorded departure for the train", arrival.trainId)
+              .raiseError[F, Arrived]
         }
       } yield arrived
 }

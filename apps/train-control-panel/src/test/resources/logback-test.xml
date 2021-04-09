@@ -1,7 +1,7 @@
 <configuration>
     <turboFilter class="es.eriktorr.train_station.shared.infrastructure.SimilarMessageFilter">
         <includedLoggers>es.eriktorr.train_station.arrival.ArrivalsSuite,es.eriktorr.train_station.departure.DeparturesSuite</includedLoggers>
-        <prefixes>Tried to create arrival of an unexpected train,Tried to create departure to an unexpected destination</prefixes>
+        <prefixes>Tried to create arrival of an unexpected train,Tried to create departure to an unreachable station</prefixes>
     </turboFilter>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

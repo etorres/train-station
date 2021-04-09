@@ -62,7 +62,6 @@ lazy val `train-control-panel` =
       http4sBlazeServer,
       http4sCirce,
       http4sCore,
-      http4sDsl,
       http4sServer,
       hikariCP,
       kafkaSchemaRegistryClient,

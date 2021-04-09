@@ -22,7 +22,7 @@ trait DeparturesSyntax {
             _.child(
               departure.show,
               SpanKind.Internal,
-              { case UnexpectedDestination(destination) =>
+              { case UnexpectedDestination(_, destination) =>
                 SpanStatus.Internal(show"Unexpected destination $destination")
               }
             )

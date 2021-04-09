@@ -3,11 +3,12 @@ package departure
 
 import arrival.infrastructure.FakeArrivals
 import departure.Departures.Departure
+import departure.Departures.DepartureError.UnexpectedDestination
 import effect._
 import event.Event.Departed
 import event.{Event, EventId}
 import http.infrastructure.{B3Headers, HttpServer}
-import json.infrastructure.EventJsonProtocol
+import json.infrastructure.{EventJsonProtocol, StationJsonProtocol}
 import messaging.infrastructure.FakeEventSender
 import messaging.infrastructure.FakeEventSender.EventSenderState
 import shared.infrastructure.Generators.nDistinct
@@ -33,6 +34,8 @@ import cats.data.NonEmptyList
 import cats.derived._
 import cats.effect._
 import cats.implicits._
+import io.circe._
+import io.circe.generic.semiauto._
 import io.janstenpickle.trace4cats.inject.Trace
 import io.janstenpickle.trace4cats.model.TraceProcess
 import org.http4s._
@@ -49,7 +52,8 @@ object DeparturesSuite
     extends SimpleIOSuite
     with Checkers
     with HttpRoutesIOCheckers
-    with EventJsonProtocol {
+    with EventJsonProtocol
+    with StationJsonProtocol {
 
   test("create train departures") {
     final case class TestCase(
@@ -117,7 +121,7 @@ object DeparturesSuite
       httpApp,
       Request(
         method = Method.POST,
-        uri = uri"departure",
+        uri = uri"api/v1/departure",
         headers = Headers.of(
           `Content-Type`(MediaType.application.json) :: B3Headers.toHeaders(requestB3Headers): _*
         ),
@@ -130,6 +134,8 @@ object DeparturesSuite
       expectedStatus,
       expectedBody
     )
+
+    implicit val unexpectedDestinationDecoder: Decoder[UnexpectedDestination] = deriveDecoder
 
     forall(gen) {
       case TestCase(origin, connectedStations, departure, eventId, expectedEvents, b3Headers) =>
@@ -156,7 +162,10 @@ object DeparturesSuite
                 departure,
                 httpApp,
                 Status.BadRequest,
-                s"Unexpected destination ${departure.to.unStation.value}".some,
+                UnexpectedDestination(
+                  "Destination is not connected to this station",
+                  departure.to
+                ).some,
                 b3Headers
               )
           }

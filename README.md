@@ -27,7 +27,7 @@ CI=true
 
 ```commandline
 curl --request POST 
-     --url http://localhost:8080/departure 
+     --url http://localhost:8080/api/v1/departure 
      --header 'content-type: application/json' 
      --data '{
               "trainId": "456", 
@@ -39,7 +39,7 @@ curl --request POST
 
 ```commandline
 curl --request POST 
-     --url http://localhost:8080/arrival 
+     --url http://localhost:8080/api/v1/arrival 
      --header 'Content-Type: application/json' 
      --data '{
               "trainId": "2b424db4-b111-4f27-8c7c-70f866c3cc50",
@@ -48,7 +48,7 @@ curl --request POST
 ```
 
 ```commandline
-curl -v --url http://localhost:8080/arrival 
+curl -v --url http://localhost:8080/api/v1/arrival 
         -H 'X-B3-TraceId: 80f198ee56343ba864fe8b2a57d3eff7' 
         -H 'X-B3-ParentSpanId: 05e3ac9a4f6e3b90' 
         -H 'X-B3-SpanId: e457b5a2e4d86bd1' 
@@ -59,6 +59,10 @@ curl -v --url http://localhost:8080/arrival
                  "trainId":"2b424db4-b111-4f27-8c7c-70f866c3cc50",
                  "actual":{"moment":"2021-03-08T22:05:42Z"}
                 }'
+```
+
+```commandline
+curl -v --url http://localhost:8080/docs
 ```
 
 ## Useful Links
