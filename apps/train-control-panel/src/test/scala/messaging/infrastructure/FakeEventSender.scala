@@ -6,8 +6,8 @@ import messaging.EventSender
 import messaging.infrastructure.FakeEventSender.EventSenderState
 
 import cats.effect.Sync
-import cats.effect.concurrent.Ref
 import cats.implicits._
+import cats.effect.Ref
 
 final class FakeEventSender[F[_]: Sync] private[messaging] (val ref: Ref[F, EventSenderState])
     extends EventSender[F] {
