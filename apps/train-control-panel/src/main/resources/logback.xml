@@ -14,6 +14,7 @@
     <logger name="org.apache.kafka.clients.consumer.ConsumerConfig" level="warn"/>
     <logger name="org.apache.kafka.clients.producer.ProducerConfig" level="warn"/>
     <logger name="io.confluent.kafka.serializers" level="warn"/>
+    <logger name="org.http4s.server.middleware.Logger" level="off"/>
     <logger name="io.janstenpickle.trace4cats.log.LogSpanCompleter" level="info"/>
 
     <root level="info">
