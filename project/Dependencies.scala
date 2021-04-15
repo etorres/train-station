@@ -20,8 +20,8 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.5.0"
-  private[this] val catsEffectVersion = "3.0.2"
-  private[this] val kittensVersion = "2.2.1"
+  private[this] val catsEffectVersion = "2.4.1"
+  private[this] val kittensVersion = "2.2.2"
 
   val catsCore = organization %% "cats-core" % catsVersion
   val catsEffect = organization %% "cats-effect" % catsEffectVersion
@@ -189,7 +189,7 @@ trait ScalaLang {
 trait Shapeless {
   private[this] val organization = "com.chuusai"
 
-  private[this] val version = "2.3.3"
+  private[this] val version = "2.3.4"
 
   val shapeless = organization %% "shapeless" % version
 }
