@@ -1,4 +1,4 @@
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.7.2")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.7.3")
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
 addSbtPlugin("com.github.cb372" % "sbt-explicit-dependencies" % "0.2.16")
 addSbtPlugin("org.jetbrains" % "sbt-ide-settings" % "1.1.0")
