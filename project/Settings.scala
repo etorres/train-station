@@ -92,7 +92,7 @@ object Settings {
     def application(path: String): Project =
       module(s"apps/$path").settings(
         Seq(
-          coverageMinimum := 90,
+          coverageMinimumStmtTotal := 90,
           coverageFailOnMinimum := true,
           coverageExcludedPackages := "es.eriktorr.train_station.*App;es.eriktorr.train_station.*Resources"
         )
