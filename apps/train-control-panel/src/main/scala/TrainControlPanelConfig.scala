@@ -6,7 +6,7 @@ import station.Station
 import station.Station.TravelDirection.{Destination, Origin}
 
 import cats.data.NonEmptyList
-import cats.effect.{Async, ContextShift}
+import cats.effect.Async
 import cats.implicits._
 import ciris._
 import ciris.refined._
