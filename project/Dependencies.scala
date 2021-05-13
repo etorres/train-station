@@ -19,9 +19,9 @@ trait Caffeine {
 trait Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val catsVersion = "2.6.0"
-  private[this] val catsEffectVersion = "2.5.0"
-  private[this] val kittensVersion = "2.3.1"
+  private[this] val catsVersion = "2.6.1"
+  private[this] val catsEffectVersion = "2.5.1"
+  private[this] val kittensVersion = "2.3.0"
 
   val catsCore = organization %% "cats-core" % catsVersion
   val catsEffect = organization %% "cats-effect" % catsEffectVersion
@@ -210,7 +210,7 @@ trait Tapir {
   private[this] val modelVersion = "1.4.6"
   private[this] val sharedCoreVersion = "1.2.3"
   private[this] val sharedFs2Version = "1.1.1"
-  private[this] val tapirVersion = "0.18.0-M9"
+  private[this] val tapirVersion = "0.18.0-M10"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedCore = sharedOrganization %% "core" % sharedCoreVersion
