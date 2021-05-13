@@ -20,7 +20,7 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.6.1"
-  private[this] val catsEffectVersion = "2.5.1"
+  private[this] val catsEffectVersion = "3.1.1"
   private[this] val kittensVersion = "2.3.0"
 
   val catsCore = organization %% "cats-core" % catsVersion
