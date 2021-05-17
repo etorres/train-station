@@ -182,7 +182,7 @@ trait ScalaCheck {
 trait ScalaLang {
   private[this] val organization = "org.scala-lang"
 
-  val projectScalaVersion = "2.13.5"
+  val projectScalaVersion = "2.13.6"
   val scalaReflect = organization % "scala-reflect" % projectScalaVersion
 }
 
