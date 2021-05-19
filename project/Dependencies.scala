@@ -103,7 +103,7 @@ trait Fs2Kafka {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.21.22"
+  private[this] val version = "0.21.23"
 
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
@@ -210,7 +210,7 @@ trait Tapir {
   private[this] val modelVersion = "1.4.7"
   private[this] val sharedCoreVersion = "1.2.5"
   private[this] val sharedFs2Version = "1.1.1"
-  private[this] val tapirVersion = "0.18.0-M10"
+  private[this] val tapirVersion = "0.18.0-M11"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedCore = sharedOrganization %% "core" % sharedCoreVersion
