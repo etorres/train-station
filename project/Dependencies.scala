@@ -189,7 +189,7 @@ trait ScalaLang {
 trait Shapeless {
   private[this] val organization = "com.chuusai"
 
-  private[this] val version = "2.3.5"
+  private[this] val version = "2.3.7"
 
   val shapeless = organization %% "shapeless" % version
 }
