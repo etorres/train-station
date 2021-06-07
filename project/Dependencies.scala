@@ -40,7 +40,7 @@ trait CatsScalaCheck {
 
 trait Circe {
   private[this] val organization = "io.circe"
-  private[this] val version = "0.13.0"
+  private[this] val version = "0.14.1"
 
   val circeCore = organization %% "circe-core" % version
   // for auto-derivation of JSON codecs
@@ -103,7 +103,7 @@ trait Fs2Kafka {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.21.23"
+  private[this] val version = "0.21.24"
 
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
@@ -210,7 +210,7 @@ trait Tapir {
   private[this] val modelVersion = "1.4.7"
   private[this] val sharedCoreVersion = "1.2.5"
   private[this] val sharedFs2Version = "1.1.1"
-  private[this] val tapirVersion = "0.18.0-M11"
+  private[this] val tapirVersion = "0.18.0-M15"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedCore = sharedOrganization %% "core" % sharedCoreVersion
