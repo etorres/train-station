@@ -29,8 +29,6 @@ final class JdbcTransactor[F[_]: Async: ContextShift] private[infrastructure] (
 object JdbcTransactor {
   def impl[F[_]: Async: ContextShift](
     jdbcConfig: JdbcConfig,
-    connectEc: ExecutionContext,
-    blocker: Blocker
-  ): JdbcTransactor[F] =
+    connectEc: ExecutionContext): JdbcTransactor[F] =
     new JdbcTransactor(jdbcConfig, connectEc, blocker)
 }
