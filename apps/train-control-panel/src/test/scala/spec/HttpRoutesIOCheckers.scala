@@ -24,10 +24,10 @@ trait HttpRoutesIOCheckers {
       (traceIdResponseHeader, sampledResponseHeader) = requestB3Headers match {
         case Some(_) =>
           (
-            response.headers.find(_.is(`X-B3-TraceId`)).map(_.value),
-            response.headers.find(_.is(`X-B3-Sampled`)).map(_.value)
+            response.headers.get[`X-B3-TraceId`].map(_.asUUID.show),
+            response.headers.get[`X-B3-Sampled`].map(h => if (h.sampled) "1" else "0")
           )
-        case None => (none[Header], none[Header])
+        case None => (none[String], none[String])
       }
     } yield expect(response.status == expectedStatus) && expect(body == expectedBody) && expect(
       requestB3Headers.map(_.traceId.show) == traceIdResponseHeader
