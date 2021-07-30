@@ -20,7 +20,7 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.6.1"
-  private[this] val catsEffectVersion = "2.5.1"
+  private[this] val catsEffectVersion = "2.5.2"
   private[this] val kittensVersion = "2.3.2"
 
   val catsCore = organization %% "cats-core" % catsVersion
@@ -136,7 +136,7 @@ trait Logback {
 trait Log4Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "1.3.0"
+  private[this] val version = "1.3.1"
 
   val log4CatsCore = organization %% "log4cats-core" % version
   val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
@@ -225,7 +225,7 @@ trait Tapir {
 trait Trace4Cats {
   private[this] val organization = "io.janstenpickle"
 
-  private[this] val version = "0.11.0"
+  private[this] val version = "0.11.1"
 
   val trace4CatsBase = organization %% "trace4cats-base" % version
   val trace4CatsCore = organization %% "trace4cats-core" % version
