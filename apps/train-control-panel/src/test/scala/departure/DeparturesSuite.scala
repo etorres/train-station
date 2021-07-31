@@ -39,6 +39,7 @@ import io.circe._
 import io.circe.generic.semiauto._
 import io.janstenpickle.trace4cats.inject.Trace
 import io.janstenpickle.trace4cats.model.TraceProcess
+import org.http4s.MediaType.application
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers._
@@ -75,7 +76,7 @@ object DeparturesSuite
       (origin, allDestinations) <- nDistinct(4, stationGen[Destination]).map {
         _.splitAt(1) match {
           case (xs, ys) =>
-            (xs.map(_.asStation[StationOrigin]).head, NonEmptyList.fromListUnsafe(ys))
+            (xs.map(_.as[StationOrigin]).head, NonEmptyList.fromListUnsafe(ys))
         }
       }
       trainId <- trainIdGen
@@ -83,7 +84,7 @@ object DeparturesSuite
         case (xs, ys) => (xs.head, NonEmptyList.fromListUnsafe(ys))
       }
       actual <- momentGen[Actual]
-      expected <- afterGen(actual).map(_.asMoment[Expected])
+      expected <- afterGen(actual).map(_.as[Expected])
       eventId <- eventIdGen
       (connectedStations, expectedEvents) <- Gen.oneOf(true, false).map {
         if (_)
@@ -96,7 +97,7 @@ object DeparturesSuite
                 from = origin,
                 to = destination,
                 expected = expected,
-                created = actual.asMoment[Created]
+                created = actual.as[Created]
               )
             )
           )
@@ -124,8 +125,7 @@ object DeparturesSuite
       Request(
         method = Method.POST,
         uri = uri"api/v1/departure",
-        headers =
-          Headers(`Content-Type`(MediaType.application.json)) |+| toHeaders(requestB3Headers),
+        headers = Headers(`Content-Type`(application.json)) |+| toHeaders(requestB3Headers),
         body = Departure
           .departureEntityEncoder[IO]
           .toEntity(departure)

@@ -68,7 +68,7 @@ object Arrivals {
                   from = expectedTrain.from,
                   to = station,
                   expected = expectedTrain.expected,
-                  created = arrival.actual.asMoment[Created]
+                  created = arrival.actual.as[Created]
                 )
               )
               .flatTap(arrived => expectedTrains.removeAllIdentifiedBy(arrived.trainId))

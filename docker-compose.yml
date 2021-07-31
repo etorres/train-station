@@ -6,7 +6,7 @@
 version: "3"
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.1.2
+    image: confluentinc/cp-zookeeper:6.2.0
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -58,7 +58,7 @@ services:
     depends_on:
       - kafka
   postgres:
-    image: postgres:13.2-alpine
+    image: postgres:13.3-alpine
     hostname: postgres
     container_name: postgres
     ports:

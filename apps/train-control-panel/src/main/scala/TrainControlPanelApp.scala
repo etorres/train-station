@@ -31,14 +31,14 @@ object TrainControlPanelApp extends IOApp {
         case TrainControlPanelResources(config, consumer, producer, transactor) =>
           val expectedTrains = JdbcExpectedTrains.impl[F](transactor)
           val departureTracker =
-            DepartureTracker.impl[F](config.station.asStation[Destination], expectedTrains)
+            DepartureTracker.impl[F](config.station.as[Destination], expectedTrains)
 
           val departureListener =
             KafkaDepartureListener.stream[F](consumer, departureTracker).compile.drain
 
           val eventSender = KafkaEventSender.impl[F](producer, config.kafkaConfig.topic)
           val arrivals =
-            Arrivals.impl[F](config.station.asStation[Destination], expectedTrains, eventSender)
+            Arrivals.impl[F](config.station.as[Destination], expectedTrains, eventSender)
           val departures = Departures.impl[F](config.station, config.connectedTo, eventSender)
 
           val httpServer = HttpServer

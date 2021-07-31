@@ -36,7 +36,7 @@ object KafkaDepartureListenerSuite extends SimpleIOSuite with Checkers {
       eventId <- eventIdGen
       trainId <- trainIdGen
       created <- momentGen[Created]
-      expected <- afterGen(created).map(_.asMoment[Expected])
+      expected <- afterGen(created).map(_.as[Expected])
     } yield (origin, destination, eventId, trainId, expected, created))
       .sampleWithSeed("DepartureListenerSuite")
 
