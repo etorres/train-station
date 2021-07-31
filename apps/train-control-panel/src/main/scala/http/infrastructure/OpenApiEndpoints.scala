@@ -103,9 +103,9 @@ object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with 
     A: Arrivals[F],
     D: Departures[F]
   ): HttpRoutes[F] =
-    Http4sServerInterpreter.toRouteRecoverErrors(arrivalEndpoint)(
+    Http4sServerInterpreter[F]().toRouteRecoverErrors(arrivalEndpoint)(
       A.register(_).map(_.id)
-    ) <+> Http4sServerInterpreter.toRouteRecoverErrors(departureEndpoint)(
+    ) <+> Http4sServerInterpreter[F]().toRouteRecoverErrors(departureEndpoint)(
       D.register(_).map(_.id)
     )
 
@@ -114,7 +114,7 @@ object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with 
   import sttp.tapir.swagger.http4s.SwaggerHttp4s
 
   def swaggerRoute[F[_]: Sync: ContextShift]: HttpRoutes[F] = new SwaggerHttp4s(
-    OpenAPIDocsInterpreter
+    OpenAPIDocsInterpreter()
       .toOpenAPI(List(arrivalEndpoint, departureEndpoint), "Train Control Panel", "v1")
       .toYaml
   ).routes

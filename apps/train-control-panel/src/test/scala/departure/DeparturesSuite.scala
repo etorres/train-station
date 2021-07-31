@@ -7,6 +7,7 @@ import departure.Departures.DepartureError.UnexpectedDestination
 import effect._
 import event.Event.Departed
 import event.{Event, EventId}
+import http.infrastructure.B3Headers.toHeaders
 import http.infrastructure.{B3Headers, HttpServer}
 import json.infrastructure.{EventJsonProtocol, StationJsonProtocol}
 import messaging.infrastructure.FakeEventSender
@@ -111,6 +112,7 @@ object DeparturesSuite
       b3Headers
     )
 
+    @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
     def checkDeparture[A](
       departure: Departure,
       httpApp: HttpApp[IO],
@@ -122,9 +124,8 @@ object DeparturesSuite
       Request(
         method = Method.POST,
         uri = uri"api/v1/departure",
-        headers = Headers.of(
-          `Content-Type`(MediaType.application.json) :: B3Headers.toHeaders(requestB3Headers): _*
-        ),
+        headers =
+          Headers(`Content-Type`(MediaType.application.json)) |+| toHeaders(requestB3Headers),
         body = Departure
           .departureEntityEncoder[IO]
           .toEntity(departure)
