@@ -48,6 +48,7 @@ lazy val `train-control-panel` =
       catsEffect,
       catsFree,
       catsKernel,
+      caseInsensitive,
       circeCore,
       circeGeneric,
       ciris,

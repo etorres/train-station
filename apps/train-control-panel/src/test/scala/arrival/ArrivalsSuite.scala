@@ -10,6 +10,7 @@ import departure.infrastructure.FakeDepartures
 import effect._
 import event.Event.Arrived
 import event.{Event, EventId}
+import http.infrastructure.B3Headers.toHeaders
 import http.infrastructure.{B3Headers, HttpServer}
 import json.infrastructure.{EventJsonProtocol, TrainJsonProtocol}
 import messaging.infrastructure.FakeEventSender
@@ -116,6 +117,7 @@ object ArrivalsSuite
       b3Headers
     )
 
+    @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
     def checkArrival[A](
       arrival: Arrival,
       httpApp: HttpApp[IO],
@@ -127,9 +129,8 @@ object ArrivalsSuite
       Request(
         method = Method.POST,
         uri = uri"api/v1/arrival",
-        headers = Headers.of(
-          `Content-Type`(MediaType.application.json) :: B3Headers.toHeaders(requestB3Headers): _*
-        ),
+        headers =
+          Headers(`Content-Type`(MediaType.application.json)) |+| toHeaders(requestB3Headers),
         body = Arrival
           .arrivalEntityEncoder[IO]
           .toEntity(arrival)

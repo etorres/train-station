@@ -20,7 +20,7 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.6.1"
-  private[this] val catsEffectVersion = "2.5.1"
+  private[this] val catsEffectVersion = "2.5.2"
   private[this] val kittensVersion = "2.3.2"
 
   val catsCore = organization %% "cats-core" % catsVersion
@@ -36,6 +36,14 @@ trait CatsScalaCheck {
   private[this] val version = "0.3.0"
 
   val catsScalaCheck = organization %% "cats-scalacheck" % version
+}
+
+trait CaseInsensitive {
+  private[this] val organization = "org.typelevel"
+
+  private[this] val version = "1.1.4"
+
+  val caseInsensitive = organization %% "case-insensitive" % version
 }
 
 trait Circe {
@@ -60,17 +68,6 @@ trait Ciris {
   val cirisRefined = organization %% "ciris-refined" % version
 }
 
-//trait Derevo {
-//  private[this] val organization = "tf.tofu"
-//
-//  private[this] val version = "0.12.2"
-//
-//  val derevoCats = organization %% "derevo-cats" % version
-//  val derevoCirce = organization %% "derevo-circe" % version
-//  val derevoCiris = organization %% "derevo-ciris" % version
-//  val derevoScalacheck = organization %% "derevo-scalacheck" % version
-//}
-
 trait Doobie {
   private[this] val organization = "org.tpolecat"
 
@@ -86,7 +83,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "2.5.4"
+  private[this] val version = "2.5.9"
 
   val fs2Core = organization %% "fs2-core" % version
 }
@@ -100,24 +97,24 @@ trait Fs2Kafka {
   val fs2KafkaVulcan = organization %% "fs2-kafka-vulcan" % version
 }
 
-trait Http4s {
-  private[this] val organization = "org.http4s"
-
-  private[this] val version = "0.21.24"
-
-  val http4sBlazeServer = organization %% "http4s-blaze-server" % version
-  val http4sCirce = organization %% "http4s-circe" % version
-  val http4sCore = organization %% "http4s-core" % version
-  val http4sDsl = organization %% "http4s-dsl" % version
-  val http4sServer = organization %% "http4s-server" % version
-}
-
 trait Hikari {
   private[this] val organization = "com.zaxxer"
 
   private[this] val version = "3.4.5"
 
   val hikariCP = organization % "HikariCP" % version
+}
+
+trait Http4s {
+  private[this] val organization = "org.http4s"
+
+  private[this] val version = "0.22.0"
+
+  val http4sBlazeServer = organization %% "http4s-blaze-server" % version
+  val http4sCirce = organization %% "http4s-circe" % version
+  val http4sCore = organization %% "http4s-core" % version
+  val http4sDsl = organization %% "http4s-dsl" % version
+  val http4sServer = organization %% "http4s-server" % version
 }
 
 trait Kafka {
@@ -139,7 +136,7 @@ trait Logback {
 trait Log4Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "1.2.2"
+  private[this] val version = "1.3.1"
 
   val log4CatsCore = organization %% "log4cats-core" % version
   val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
@@ -197,7 +194,7 @@ trait Shapeless {
 trait Slf4j {
   private[this] val organization = "org.slf4j"
 
-  private[this] val version = "1.7.30"
+  private[this] val version = "1.7.31"
 
   val slf4jApi = organization % "slf4j-api" % version
 }
@@ -207,10 +204,10 @@ trait Tapir {
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
-  private[this] val modelVersion = "1.4.7"
+  private[this] val modelVersion = "1.4.9"
   private[this] val sharedCoreVersion = "1.2.5"
-  private[this] val sharedFs2Version = "1.2.5"
-  private[this] val tapirVersion = "0.18.0-M15"
+  private[this] val sharedFs2Version = "1.1.1"
+  private[this] val tapirVersion = "0.18.1"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedCore = sharedOrganization %% "core" % sharedCoreVersion
@@ -228,7 +225,7 @@ trait Tapir {
 trait Trace4Cats {
   private[this] val organization = "io.janstenpickle"
 
-  private[this] val version = "0.10.1"
+  private[this] val version = "0.11.1"
 
   val trace4CatsBase = organization %% "trace4cats-base" % version
   val trace4CatsCore = organization %% "trace4cats-core" % version
@@ -262,13 +259,14 @@ object Dependencies
     with Caffeine
     with Cats
     with CatsScalaCheck
+    with CaseInsensitive
     with Circe
     with Ciris
     with Doobie
     with Fs2
     with Fs2Kafka
-    with Http4s
     with Hikari
+    with Http4s
     with Kafka
     with Logback
     with Log4Cats

@@ -16,8 +16,8 @@ import io.janstenpickle.trace4cats.http4s.common.Http4sRequestFilter
 import io.janstenpickle.trace4cats.http4s.server.syntax._
 import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
 import org.http4s._
+import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.implicits._
-import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.{CORS, GZip, Logger => Http4sLogger}
 
 import scala.concurrent.ExecutionContext

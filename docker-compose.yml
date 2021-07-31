@@ -6,7 +6,7 @@
 version: "3"
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.1.1
+    image: confluentinc/cp-zookeeper:6.1.2
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -16,7 +16,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_SYNC_LIMIT: 2
   kafka:
-    image: confluentinc/cp-kafka:6.1.1
+    image: confluentinc/cp-kafka:6.2.0
     hostname: kafka
     container_name: kafka
     depends_on:
@@ -31,7 +31,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   kafka-setup:
-    image: confluentinc/cp-kafka:6.1.1
+    image: confluentinc/cp-kafka:6.2.0
     hostname: kafka-setup
     container_name: kafka-setup
     depends_on:
