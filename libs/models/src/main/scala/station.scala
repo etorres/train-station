@@ -14,7 +14,7 @@ import io.estatico.newtype.ops._
 
 object station {
   @newtype class Station[A <: Station.TravelDirection](val unStation: NonBlankString) {
-    def asStation[B <: Station.TravelDirection]: Station[B] = unStation.coerce[Station[B]]
+    def as[B <: Station.TravelDirection]: Station[B] = unStation.coerce[Station[B]]
   }
 
   object Station {

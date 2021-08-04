@@ -20,7 +20,7 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.6.1"
-  private[this] val catsEffectVersion = "3.2.1"
+  private[this] val catsEffectVersion = "2.5.3"
   private[this] val kittensVersion = "2.3.2"
 
   val catsCore = organization %% "cats-core" % catsVersion
@@ -205,13 +205,12 @@ trait Tapir {
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
   private[this] val modelVersion = "1.4.9"
-  private[this] val sharedCoreVersion = "1.2.5"
-  private[this] val sharedFs2Version = "1.1.1"
+  private[this] val sharedVersion = "1.2.5"
   private[this] val tapirVersion = "0.18.1"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
-  val sttpSharedCore = sharedOrganization %% "core" % sharedCoreVersion
-  val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedFs2Version
+  val sttpSharedCore = sharedOrganization %% "core" % sharedVersion
+  val sttpSharedFs2 = sharedOrganization %% "fs2-ce2" % sharedVersion
   val tapirCore = tapirOrganization %% "tapir-core" % tapirVersion
   val tapirHttp4sServer = tapirOrganization %% "tapir-http4s-server" % tapirVersion
   val tapirJsonCirce = tapirOrganization %% "tapir-json-circe" % tapirVersion

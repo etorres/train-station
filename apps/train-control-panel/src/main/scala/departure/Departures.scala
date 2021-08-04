@@ -75,7 +75,7 @@ object Departures {
                   from = station,
                   to = departure.to,
                   expected = departure.expected,
-                  created = departure.actual.asMoment[Created]
+                  created = departure.actual.as[Created]
                 )
               )
               .flatTap(eventSender.send)

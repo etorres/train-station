@@ -37,6 +37,7 @@ import io.circe._
 import io.circe.generic.semiauto._
 import io.janstenpickle.trace4cats.inject.Trace
 import io.janstenpickle.trace4cats.model.TraceProcess
+import org.http4s.MediaType.application
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers._
@@ -74,7 +75,7 @@ object ArrivalsSuite
     val gen = for {
       (destination, origins) <- nDistinct(4, stationGen[StationOrigin]).map {
         _.splitAt(1) match {
-          case (xs, ys) => (xs.map(_.asStation[Destination]).head, NonEmptyList.fromListUnsafe(ys))
+          case (xs, ys) => (xs.map(_.as[Destination]).head, NonEmptyList.fromListUnsafe(ys))
         }
       }
       trainIds <- nDistinct(3, trainIdGen)
@@ -100,7 +101,7 @@ object ArrivalsSuite
                   from = expectedTrain.from,
                   to = destination,
                   expected = expectedTrain.expected,
-                  created = actual.asMoment[Created]
+                  created = actual.as[Created]
                 )
               )
             )
@@ -129,8 +130,7 @@ object ArrivalsSuite
       Request(
         method = Method.POST,
         uri = uri"api/v1/arrival",
-        headers =
-          Headers(`Content-Type`(MediaType.application.json)) |+| toHeaders(requestB3Headers),
+        headers = Headers(`Content-Type`(application.json)) |+| toHeaders(requestB3Headers),
         body = Arrival
           .arrivalEntityEncoder[IO]
           .toEntity(arrival)
