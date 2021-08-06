@@ -11,9 +11,10 @@ import fs2.Stream
 import fs2.kafka._
 
 import scala.concurrent.duration._
+import cats.effect.Temporal
 
 object KafkaDepartureListener {
-  def stream[F[_]: Concurrent: Timer](
+  def stream[F[_]: Concurrent: Temporal](
     consumer: KafkaConsumer[F, String, Event],
     departureTracker: DepartureTracker[F]
   ): Stream[F, Unit] =

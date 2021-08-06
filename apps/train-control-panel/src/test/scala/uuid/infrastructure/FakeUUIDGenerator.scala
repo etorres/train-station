@@ -6,10 +6,10 @@ import uuid.infrastructure.FakeUUIDGenerator.UUIDGeneratorState
 
 import cats.data.NonEmptyList
 import cats.effect.Sync
-import cats.effect.concurrent.Ref
 import cats.implicits._
 
 import java.util.UUID
+import cats.effect.Ref
 
 final class FakeUUIDGenerator[F[_]: Sync] private[infrastructure] (
   val ref: Ref[F, UUIDGeneratorState]
