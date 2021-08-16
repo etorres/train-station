@@ -15,7 +15,7 @@ import time.Moment
 import time.Moment.When.{Actual, Expected}
 import train.TrainId
 
-import cats.effect.{Concurrent, ContextShift, Sync, Timer}
+import cats.effect.{Concurrent, Sync}
 import cats.implicits._
 import io.circe.Encoder
 import io.circe.generic.auto._
@@ -31,6 +31,7 @@ import sttp.tapir.json.circe._
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 
 import java.time.OffsetDateTime
+import cats.effect.Temporal
 
 @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with TrainJsonProtocol {
@@ -98,7 +99,7 @@ object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with 
       .errorOut(jsonBody[DepartureError])
   }
 
-  def routes[F[_]: Sync: Concurrent: ContextShift: Timer](
+  def routes[F[_]: Sync: Concurrent: ContextShift: Temporal](
     A: Arrivals[F],
     D: Departures[F]
   ): HttpRoutes[F] =

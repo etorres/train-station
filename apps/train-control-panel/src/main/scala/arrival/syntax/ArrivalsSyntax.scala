@@ -5,16 +5,16 @@ import arrival.Arrivals
 import arrival.Arrivals.Arrival
 import arrival.Arrivals.ArrivalError.UnexpectedTrain
 
-import cats.effect.BracketThrow
 import cats.implicits._
 import cats.{Defer, Monad}
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.base.context.Provide
 import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus}
+import cats.effect.MonadCancelThrow
 
 trait ArrivalsSyntax {
   implicit class ArrivalsOps[F[_]: Monad](self: Arrivals[F]) {
-    def liftTrace[G[_]: Defer: BracketThrow](implicit P: Provide[F, G, Span[F]]): Arrivals[G] =
+    def liftTrace[G[_]: Defer: MonadCancelThrow](implicit P: Provide[F, G, Span[F]]): Arrivals[G] =
       (arrival: Arrival) =>
         P
           .ask[Span[F]]
