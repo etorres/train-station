@@ -15,9 +15,7 @@ import scala.concurrent.ExecutionContext
 object JdbcTestTransactor {
   def testTransactorResource[F[_]: Async: ContextShift](
     currentSchema: String,
-    connectEc: ExecutionContext,
-    blocker: Blocker
-  ): Resource[F, HikariTransactor[F]] =
+    connectEc: ExecutionContext): Resource[F, HikariTransactor[F]] =
     for {
       transactor <- JdbcTransactor
         .impl[F](
