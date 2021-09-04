@@ -17,14 +17,14 @@ import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.concurrent.ExecutionContext
+import cats.effect.Temporal
 
 object TrainControlPanelApp extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
 
-    def program[F[_]: ConcurrentEffect: ContextShift: Timer: NonEmptyParallel: Logger: Trace](
+    def program[F[_]: ConcurrentEffect: ContextShift: Temporal: NonEmptyParallel: Logger: Trace](
       executionContext: ExecutionContext,
-      blocker: Blocker,
       entryPoint: EntryPoint[F]
     ): F[Unit] =
       TrainControlPanelResources.impl[F](executionContext, blocker).use {
