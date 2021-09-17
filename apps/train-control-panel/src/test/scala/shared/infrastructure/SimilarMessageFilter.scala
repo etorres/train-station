@@ -13,16 +13,16 @@ import scala.concurrent.duration._
 /**
  * Inefficient Logback filter to remove similar logs based on simple duplication rules.
  *
- * Calls to `decide` method (overridden from [[ch.qos.logback.classic.turbo.TurboFilter]]) could be synchronized.
+ * Calls to `decide` method (overridden from [[ch.qos.logback.classic.turbo.TurboFilter]]) could be
+ * synchronized.
  *
- * @example {{{
- * <turboFilter class="es.eriktorr.train_station.shared.infrastructure.SimilarMessageFilter">
- *   <includedLoggers>package.ClassA,package.ClassB</includedLoggers>
- *   <prefixes>prefix A,prefix B</prefixes>
- * </turboFilter>
- * }}}
+ * @example
+ *   {{{ <turboFilter class="es.eriktorr.train_station.shared.infrastructure.SimilarMessageFilter">
+ *   <includedLoggers>package.ClassA,package.ClassB</includedLoggers> <prefixes>prefix A,prefix
+ *   B</prefixes> </turboFilter> }}}
  *
- * @see See [[http://logback.qos.ch/manual/filters.html Logback Filters]].
+ * @see
+ *   See [[http://logback.qos.ch/manual/filters.html Logback Filters]].
  */
 final class SimilarMessageFilter extends TurboFilter {
 
