@@ -8,7 +8,7 @@ import departure.Departures
 import departure.syntax._
 
 import cats.data.Kleisli
-import cats.effect.{ConcurrentEffect, ContextShift, Sync, Timer}
+import cats.effect.{ConcurrentEffect, Sync}
 import cats.implicits._
 import fs2.Stream
 import io.janstenpickle.trace4cats.Span
@@ -21,9 +21,10 @@ import org.http4s.implicits._
 import org.http4s.server.middleware.{CORS, GZip, Logger => Http4sLogger}
 
 import scala.concurrent.ExecutionContext
+import cats.effect.Temporal
 
 object HttpServer {
-  def stream[F[_]: ConcurrentEffect: ContextShift: Timer: Trace](
+  def stream[F[_]: ConcurrentEffect: ContextShift: Temporal: Trace](
     arrivals: Arrivals[F],
     departures: Departures[F],
     entryPoint: EntryPoint[F],
@@ -41,14 +42,14 @@ object HttpServer {
       .serve
   }.drain
 
-  def httpApp[F[_]: ConcurrentEffect: ContextShift: Timer: Trace](
+  def httpApp[F[_]: ConcurrentEffect: ContextShift: Temporal: Trace](
     arrivals: Arrivals[F],
     departures: Departures[F],
     entryPoint: EntryPoint[F]
   ): HttpApp[F] =
     (logicRoutes(arrivals, departures, entryPoint) <+> docsRoute(entryPoint)).orNotFound
 
-  def logicRoutes[F[_]: ConcurrentEffect: ContextShift: Timer: Trace](
+  def logicRoutes[F[_]: ConcurrentEffect: ContextShift: Temporal: Trace](
     arrivals: Arrivals[F],
     departures: Departures[F],
     entryPoint: EntryPoint[F]
