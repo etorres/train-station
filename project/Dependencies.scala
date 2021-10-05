@@ -161,7 +161,7 @@ trait NewType {
 trait Refined {
   private[this] val organization = "eu.timepit"
 
-  private[this] val version = "0.9.22"
+  private[this] val version = "0.9.27"
 
   val refined = organization %% "refined" % version
   val refinedCats = organization %% "refined-cats" % version
