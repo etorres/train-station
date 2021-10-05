@@ -91,7 +91,7 @@ trait Fs2 {
 trait Fs2Kafka {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.4.2"
+  private[this] val version = "1.8.0"
 
   val fs2Kafka = organization %% "fs2-kafka" % version
   val fs2KafkaVulcan = organization %% "fs2-kafka-vulcan" % version
@@ -120,7 +120,7 @@ trait Http4s {
 trait Kafka {
   private[this] val organization = "io.confluent"
 
-  private[this] val version = "6.1.3"
+  private[this] val version = "6.2.0"
 
   val kafkaSchemaRegistryClient = organization % "kafka-schema-registry-client" % version
 }
