@@ -71,7 +71,7 @@ trait Ciris {
 trait Doobie {
   private[this] val organization = "org.tpolecat"
 
-  private[this] val version = "0.12.1"
+  private[this] val version = "0.13.4"
 
   val doobieCore = organization %% "doobie-core" % version
   val doobieFree = organization %% "doobie-free" % version
