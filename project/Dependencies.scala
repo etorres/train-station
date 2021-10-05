@@ -33,7 +33,7 @@ trait Cats {
 trait CatsScalaCheck {
   private[this] val organization = "io.chrisdavenport"
 
-  private[this] val version = "0.3.0"
+  private[this] val version = "0.3.1"
 
   val catsScalaCheck = organization %% "cats-scalacheck" % version
 }
