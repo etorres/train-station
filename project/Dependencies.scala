@@ -11,7 +11,7 @@ trait Avro {
 trait Caffeine {
   private[this] val organization = "com.github.blemale"
 
-  private[this] val version = "4.0.2"
+  private[this] val version = "4.1.0"
 
   val caffeine = organization %% "scaffeine" % version
 }
