@@ -224,7 +224,7 @@ trait Tapir {
 trait Trace4Cats {
   private[this] val organization = "io.janstenpickle"
 
-  private[this] val version = "0.11.1"
+  private[this] val version = "0.12.0"
 
   val trace4CatsBase = organization %% "trace4cats-base" % version
   val trace4CatsCore = organization %% "trace4cats-core" % version
