@@ -171,7 +171,7 @@ trait Refined {
 trait ScalaCheck {
   private[this] val organization = "org.scalacheck"
 
-  private[this] val version = "1.15.3"
+  private[this] val version = "1.15.4"
 
   val scalaCheck = organization %% "scalacheck" % version
 }
