@@ -62,7 +62,7 @@ trait Circe {
 trait Ciris {
   private[this] val organization = "is.cir"
 
-  private[this] val version = "1.2.1"
+  private[this] val version = "2.1.1"
 
   val ciris = organization %% "ciris" % version
   val cirisRefined = organization %% "ciris-refined" % version
