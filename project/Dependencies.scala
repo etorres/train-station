@@ -11,7 +11,7 @@ trait Avro {
 trait Caffeine {
   private[this] val organization = "com.github.blemale"
 
-  private[this] val version = "4.0.2"
+  private[this] val version = "4.1.0"
 
   val caffeine = organization %% "scaffeine" % version
 }
@@ -33,7 +33,7 @@ trait Cats {
 trait CatsScalaCheck {
   private[this] val organization = "io.chrisdavenport"
 
-  private[this] val version = "0.3.0"
+  private[this] val version = "0.3.1"
 
   val catsScalaCheck = organization %% "cats-scalacheck" % version
 }
@@ -120,7 +120,7 @@ trait Http4s {
 trait Kafka {
   private[this] val organization = "io.confluent"
 
-  private[this] val version = "6.1.1"
+  private[this] val version = "6.1.3"
 
   val kafkaSchemaRegistryClient = organization % "kafka-schema-registry-client" % version
 }
@@ -161,7 +161,7 @@ trait NewType {
 trait Refined {
   private[this] val organization = "eu.timepit"
 
-  private[this] val version = "0.9.22"
+  private[this] val version = "0.9.27"
 
   val refined = organization %% "refined" % version
   val refinedCats = organization %% "refined-cats" % version
@@ -171,7 +171,7 @@ trait Refined {
 trait ScalaCheck {
   private[this] val organization = "org.scalacheck"
 
-  private[this] val version = "1.15.3"
+  private[this] val version = "1.15.4"
 
   val scalaCheck = organization %% "scalacheck" % version
 }
@@ -204,7 +204,7 @@ trait Tapir {
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
-  private[this] val modelVersion = "1.4.13"
+  private[this] val modelVersion = "1.4.14"
   private[this] val sharedVersion = "1.2.6"
   private[this] val tapirVersion = "0.18.3"
 
@@ -239,7 +239,7 @@ trait Trace4Cats {
 trait Vulcan {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.5.0"
+  private[this] val version = "1.7.1"
 
   val vulcan = organization %% "vulcan" % version
 }
