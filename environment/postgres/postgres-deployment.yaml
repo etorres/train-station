@@ -1,0 +1,82 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: postgres-ingress
+  namespace: kube-system
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: postgres.test
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: kube-system
+spec:
+  type: ExternalName
+  externalName: postgres.default.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: default
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      nodePort: 5432
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - image: postgres:13.4-alpine
+          name: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              value: s3c4Et
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-initdb
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          livenessProbe:
+            exec:
+              command: ["PGPASSWORD=$POSTGRES_PASSWORD psql", "-U", "postgres", "-c", "SELECT 1"]
+            periodSeconds: 10
+            timeoutSeconds: 5
+          startupProbe:
+            exec:
+              command: ["PGPASSWORD=$POSTGRES_PASSWORD psql", "-U", "postgres", "-c", "SELECT 1"]
+            failureThreshold: 10
+            periodSeconds: 2
+      volumes:
+        - name: postgres-initdb
+          persistentVolumeClaim:
+            claimName: postgres-initdb-pv-claim
+            readOnly: true
