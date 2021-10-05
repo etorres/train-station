@@ -100,7 +100,7 @@ trait Fs2Kafka {
 trait Hikari {
   private[this] val organization = "com.zaxxer"
 
-  private[this] val version = "3.4.5"
+  private[this] val version = "5.0.0"
 
   val hikariCP = organization % "HikariCP" % version
 }
