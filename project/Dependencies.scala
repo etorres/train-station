@@ -120,7 +120,7 @@ trait Http4s {
 trait Kafka {
   private[this] val organization = "io.confluent"
 
-  private[this] val version = "6.1.1"
+  private[this] val version = "6.2.0"
 
   val kafkaSchemaRegistryClient = organization % "kafka-schema-registry-client" % version
 }
@@ -239,7 +239,7 @@ trait Trace4Cats {
 trait Vulcan {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.5.0"
+  private[this] val version = "1.7.1"
 
   val vulcan = organization %% "vulcan" % version
 }
