@@ -100,7 +100,7 @@ trait Fs2Kafka {
 trait Hikari {
   private[this] val organization = "com.zaxxer"
 
-  private[this] val version = "3.4.5"
+  private[this] val version = "4.0.3"
 
   val hikariCP = organization % "HikariCP" % version
 }
@@ -194,7 +194,7 @@ trait Shapeless {
 trait Slf4j {
   private[this] val organization = "org.slf4j"
 
-  private[this] val version = "1.7.31"
+  private[this] val version = "2.0.0-alpha1"
 
   val slf4jApi = organization % "slf4j-api" % version
 }
