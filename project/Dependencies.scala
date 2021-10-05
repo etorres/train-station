@@ -194,7 +194,7 @@ trait Shapeless {
 trait Slf4j {
   private[this] val organization = "org.slf4j"
 
-  private[this] val version = "1.7.31"
+  private[this] val version = "1.7.32"
 
   val slf4jApi = organization % "slf4j-api" % version
 }
