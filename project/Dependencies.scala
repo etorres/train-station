@@ -239,7 +239,7 @@ trait Trace4Cats {
 trait Vulcan {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.5.1"
+  private[this] val version = "1.7.1"
 
   val vulcan = organization %% "vulcan" % version
 }
