@@ -128,7 +128,7 @@ trait Kafka {
 trait Logback {
   private[this] val organization = "ch.qos.logback"
 
-  private[this] val version = "1.2.3"
+  private[this] val version = "1.2.6"
 
   val logback = organization % "logback-classic" % version
 }
