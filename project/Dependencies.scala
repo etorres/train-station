@@ -248,7 +248,7 @@ trait Vulcan {
 trait Weaver {
   private[this] val organization = "com.disneystreaming"
 
-  private[this] val version = "0.6.0"
+  private[this] val version = "0.6.6"
 
   val weaverCats = organization %% "weaver-cats" % version
   val weaverScalaCheck = organization %% "weaver-scalacheck" % version
