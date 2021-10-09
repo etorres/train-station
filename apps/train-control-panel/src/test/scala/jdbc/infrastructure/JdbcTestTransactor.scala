@@ -13,10 +13,9 @@ import eu.timepit.refined.api.Refined
 import scala.concurrent.ExecutionContext
 
 object JdbcTestTransactor {
-  def testTransactorResource[F[_]: Async: ContextShift](
+  def testTransactorResource[F[_]: Async](
     currentSchema: String,
-    connectEc: ExecutionContext,
-    blocker: Blocker
+    connectEc: ExecutionContext
   ): Resource[F, HikariTransactor[F]] =
     for {
       transactor <- JdbcTransactor
@@ -26,8 +25,7 @@ object JdbcTestTransactor {
               s"${TrainControlPanelTestConfig.testConfig.jdbcConfig.connectUrl.value}?currentSchema=$currentSchema"
             )
           ),
-          connectEc,
-          blocker
+          connectEc
         )
         .transactorResource
       _ <- truncateAllTablesIn(transactor, currentSchema)

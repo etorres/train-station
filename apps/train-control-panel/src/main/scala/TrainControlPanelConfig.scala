@@ -6,7 +6,7 @@ import station.Station
 import station.Station.TravelDirection.{Destination, Origin}
 
 import cats.data.NonEmptyList
-import cats.effect.{Async, ContextShift}
+import cats.effect.Async
 import cats.implicits._
 import ciris._
 import ciris.refined._
@@ -54,7 +54,7 @@ object TrainControlPanelConfig {
       }
     }
 
-  private def trainControlPanelConfig: ConfigValue[TrainControlPanelConfig] =
+  private def trainControlPanelConfig: ConfigValue[Effect, TrainControlPanelConfig] =
     (
       env("HTTP_HOST").as[NonEmptyString].option,
       env("HTTP_PORT").as[UserPortNumber].option,
@@ -102,5 +102,5 @@ object TrainControlPanelConfig {
         )
     }
 
-  def load[F[_]: Async: ContextShift]: F[TrainControlPanelConfig] = trainControlPanelConfig.load[F]
+  def load[F[_]: Async]: F[TrainControlPanelConfig] = trainControlPanelConfig.load[F]
 }

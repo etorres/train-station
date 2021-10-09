@@ -2,7 +2,6 @@ package es.eriktorr.train_station
 package http.infrastructure
 
 import cats.data.{Kleisli, OptionT}
-import cats.effect.BracketThrow
 import cats.implicits._
 import cats.{Applicative, Defer}
 import io.janstenpickle.trace4cats.Span
@@ -11,9 +10,10 @@ import io.janstenpickle.trace4cats.inject.Trace
 import io.janstenpickle.trace4cats.model.SampleDecision
 import org.http4s._
 import org.typelevel.ci._
+import cats.effect.MonadCancelThrow
 
 object B3Propagation {
-  def make[F[_]: Applicative: Trace, G[_]: Defer: BracketThrow](service: HttpRoutes[G])(implicit
+  def make[F[_]: Applicative: Trace, G[_]: Defer: MonadCancelThrow](service: HttpRoutes[G])(implicit
     P: Provide[F, G, Span[F]]
   ): HttpRoutes[G] = Kleisli { request: Request[G] =>
     for {

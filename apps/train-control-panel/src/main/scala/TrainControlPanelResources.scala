@@ -20,15 +20,14 @@ final case class TrainControlPanelResources[F[_]](
 )
 
 object TrainControlPanelResources extends EventAvroCodec {
-  def impl[F[_]: ConcurrentEffect: ContextShift: Timer: Logger](
-    executionContext: ExecutionContext,
-    blocker: Blocker
+  def impl[F[_]: Async: Temporal: Logger](
+    executionContext: ExecutionContext
   ): Resource[F, TrainControlPanelResources[F]] =
     for {
       config <- Resource.eval(TrainControlPanelConfig.load[F])
       (consumer, producer) <- KafkaClient.clientsFor(config.kafkaConfig, config.connectedTo)
       transactor <- JdbcTransactor
-        .impl[F](config.jdbcConfig, executionContext, blocker)
+        .impl[F](config.jdbcConfig, executionContext)
         .transactorResource
     } yield TrainControlPanelResources(config, consumer, producer, transactor)
 }

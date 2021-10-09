@@ -46,6 +46,7 @@ lazy val `train-control-panel` =
     .mainDependencies(
       catsCore,
       catsEffect,
+      catsEffectKernel,
       catsFree,
       catsKernel,
       caseInsensitive,
@@ -74,7 +75,6 @@ lazy val `train-control-panel` =
       newType,
       refined,
       refinedCats,
-      scalaReflect,
       shapeless,
       slf4jApi,
       sttpModelCore,
@@ -96,6 +96,7 @@ lazy val `train-control-panel` =
       trace4CatsKernel,
       trace4CatsLogExporter,
       trace4CatsModel,
+      typename,
       vulcan
     )
     .testDependencies(caffeine, catsScalaCheck, weaverCats, weaverScalaCheck)

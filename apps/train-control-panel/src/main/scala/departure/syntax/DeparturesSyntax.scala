@@ -5,16 +5,18 @@ import departure.Departures
 import departure.Departures.Departure
 import departure.Departures.DepartureError.UnexpectedDestination
 
-import cats.effect.BracketThrow
+import cats.Defer
+import cats.effect.MonadCancelThrow
 import cats.implicits._
-import cats.{Defer, Monad}
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.base.context.Provide
 import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus}
 
 trait DeparturesSyntax {
-  implicit class DeparturesOps[F[_]: Monad](self: Departures[F]) {
-    def liftTrace[G[_]: Defer: BracketThrow](implicit P: Provide[F, G, Span[F]]): Departures[G] =
+  implicit class DeparturesOps[F[_]: MonadCancelThrow](self: Departures[F]) {
+    def liftTrace[G[_]: Defer: MonadCancelThrow](implicit
+      P: Provide[F, G, Span[F]]
+    ): Departures[G] =
       (departure: Departure) =>
         P
           .ask[Span[F]]
