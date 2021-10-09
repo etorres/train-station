@@ -101,7 +101,7 @@ trait Fs2Kafka {
 trait Hikari {
   private[this] val organization = "com.zaxxer"
 
-  private[this] val version = "4.0.3"
+  private[this] val version = "5.0.0"
 
   val hikariCP = (organization % "HikariCP" % version)
     .exclude("org.slf4j", "slf4j-api")
