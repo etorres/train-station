@@ -37,7 +37,7 @@ object HttpServer {
 
     BlazeServerBuilder[F](executionContext)
       .bindHttp(httpServerConfig.port.value, httpServerConfig.host.value)
-      .withHttpApp(CORS(GZip(finalHttpApp)))
+      .withHttpApp(CORS.policy.withAllowOriginAll(GZip(finalHttpApp)))
       .serve
   }.drain
 
