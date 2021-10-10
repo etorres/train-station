@@ -15,7 +15,8 @@ import time.Moment
 import time.Moment.When.{Actual, Expected}
 import train.TrainId
 
-import cats.effect.{Concurrent, ContextShift, Sync, Timer}
+import cats.effect.kernel.Async
+import cats.effect.{Concurrent, Sync, Temporal}
 import cats.implicits._
 import io.circe.Encoder
 import io.circe.generic.auto._
@@ -98,7 +99,7 @@ object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with 
       .errorOut(jsonBody[DepartureError])
   }
 
-  def routes[F[_]: Sync: Concurrent: ContextShift: Timer](
+  def routes[F[_]: Async: Concurrent: Temporal](
     A: Arrivals[F],
     D: Departures[F]
   ): HttpRoutes[F] =
@@ -112,7 +113,7 @@ object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with 
   import sttp.tapir.openapi.circe.yaml._
   import sttp.tapir.swagger.http4s.SwaggerHttp4s
 
-  def swaggerRoute[F[_]: Sync: ContextShift]: HttpRoutes[F] = new SwaggerHttp4s(
+  def swaggerRoute[F[_]: Sync]: HttpRoutes[F] = new SwaggerHttp4s(
     OpenAPIDocsInterpreter()
       .toOpenAPI(List(arrivalEndpoint, departureEndpoint), "Train Control Panel", "v1")
       .toYaml

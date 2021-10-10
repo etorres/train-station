@@ -7,8 +7,8 @@ import arrival.infrastructure.FakeExpectedTrains.ExpectedTrainsState
 import train.TrainId
 
 import cats.effect.Sync
-import cats.effect.concurrent.Ref
 import cats.implicits._
+import cats.effect.Ref
 
 final class FakeExpectedTrains[F[_]: Sync] private[arrival] (val ref: Ref[F, ExpectedTrainsState])
     extends ExpectedTrains[F] {

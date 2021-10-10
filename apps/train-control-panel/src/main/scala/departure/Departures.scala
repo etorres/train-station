@@ -16,7 +16,7 @@ import uuid.UUIDGenerator
 
 import cats.data.NonEmptyList
 import cats.derived.semiauto
-import cats.effect.Sync
+import cats.effect.{Async, Sync}
 import cats.implicits._
 import cats.{Applicative, Show}
 import io.circe._
@@ -41,7 +41,7 @@ object Departures {
 
   object Departure extends MomentJsonProtocol with StationJsonProtocol with TrainJsonProtocol {
     implicit val departureDecoder: Decoder[Departure] = deriveDecoder
-    implicit def departureEntityDecoder[F[_]: Sync]: EntityDecoder[F, Departure] = jsonOf
+    implicit def departureEntityDecoder[F[_]: Async]: EntityDecoder[F, Departure] = jsonOf
 
     implicit val departureEncoder: Encoder[Departure] = deriveEncoder
     implicit def departureEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Departure] =

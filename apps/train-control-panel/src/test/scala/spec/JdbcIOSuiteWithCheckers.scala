@@ -12,7 +12,7 @@ import weaver.scalacheck._
 trait JdbcIOSuiteWithCheckers extends SimpleIOSuite with Checkers {
   override def maxParallelism: Int = 1
   override def checkConfig: CheckConfig =
-    super.checkConfig.copy(minimumSuccessful = 10, perPropertyParallelism = 1)
+    super.checkConfig.copy(minimumSuccessful = 20, perPropertyParallelism = 1)
 
   def currentSchema: String
 
@@ -21,7 +21,6 @@ trait JdbcIOSuiteWithCheckers extends SimpleIOSuite with Checkers {
   val testResources: Resource[IO, Transactor[IO]] =
     JdbcTestTransactor.testTransactorResource[IO](
       currentSchema,
-      connectEc,
-      Blocker.liftExecutionContext(connectEc)
+      connectEc
     )
 }

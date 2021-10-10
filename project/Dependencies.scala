@@ -20,11 +20,12 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.6.1"
-  private[this] val catsEffectVersion = "2.5.4"
+  private[this] val catsEffectVersion = "3.2.9"
   private[this] val kittensVersion = "2.3.2"
 
   val catsCore = organization %% "cats-core" % catsVersion
   val catsEffect = organization %% "cats-effect" % catsEffectVersion
+  val catsEffectKernel = organization %% "cats-effect-kernel" % catsEffectVersion
   val catsFree = organization %% "cats-free" % catsVersion
   val catsKernel = organization %% "cats-kernel" % catsVersion
   val kittens = organization %% "kittens" % kittensVersion
@@ -62,7 +63,7 @@ trait Circe {
 trait Ciris {
   private[this] val organization = "is.cir"
 
-  private[this] val version = "1.2.1"
+  private[this] val version = "2.1.1"
 
   val ciris = organization %% "ciris" % version
   val cirisRefined = organization %% "ciris-refined" % version
@@ -71,7 +72,7 @@ trait Ciris {
 trait Doobie {
   private[this] val organization = "org.tpolecat"
 
-  private[this] val version = "0.12.1"
+  private[this] val version = "1.0.0-RC1"
 
   val doobieCore = organization %% "doobie-core" % version
   val doobieFree = organization %% "doobie-free" % version
@@ -83,7 +84,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "2.5.9"
+  private[this] val version = "3.1.5"
 
   val fs2Core = organization %% "fs2-core" % version
 }
@@ -91,7 +92,7 @@ trait Fs2 {
 trait Fs2Kafka {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.8.0"
+  private[this] val version = "2.2.0"
 
   val fs2Kafka = organization %% "fs2-kafka" % version
   val fs2KafkaVulcan = organization %% "fs2-kafka-vulcan" % version
@@ -100,15 +101,16 @@ trait Fs2Kafka {
 trait Hikari {
   private[this] val organization = "com.zaxxer"
 
-  private[this] val version = "3.4.5"
+  private[this] val version = "5.0.0"
 
-  val hikariCP = organization % "HikariCP" % version
+  val hikariCP = (organization % "HikariCP" % version)
+    .exclude("org.slf4j", "slf4j-api")
 }
 
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.22.0"
+  private[this] val version = "0.23.5"
 
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
@@ -136,7 +138,7 @@ trait Logback {
 trait Log4Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "1.3.1"
+  private[this] val version = "2.1.1"
 
   val log4CatsCore = organization %% "log4cats-core" % version
   val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
@@ -177,10 +179,7 @@ trait ScalaCheck {
 }
 
 trait ScalaLang {
-  private[this] val organization = "org.scala-lang"
-
   val projectScalaVersion = "2.13.6"
-  val scalaReflect = organization % "scala-reflect" % projectScalaVersion
 }
 
 trait Shapeless {
@@ -204,13 +203,13 @@ trait Tapir {
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
-  private[this] val modelVersion = "1.4.14"
+  private[this] val modelVersion = "1.4.15"
   private[this] val sharedVersion = "1.2.6"
-  private[this] val tapirVersion = "0.18.3"
+  private[this] val tapirVersion = "0.19.0-M4"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedCore = sharedOrganization %% "core" % sharedVersion
-  val sttpSharedFs2 = sharedOrganization %% "fs2-ce2" % sharedVersion
+  val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedVersion
   val tapirCore = tapirOrganization %% "tapir-core" % tapirVersion
   val tapirHttp4sServer = tapirOrganization %% "tapir-http4s-server" % tapirVersion
   val tapirJsonCirce = tapirOrganization %% "tapir-json-circe" % tapirVersion
@@ -224,7 +223,7 @@ trait Tapir {
 trait Trace4Cats {
   private[this] val organization = "io.janstenpickle"
 
-  private[this] val version = "0.11.1"
+  private[this] val version = "0.12.0"
 
   val trace4CatsBase = organization %% "trace4cats-base" % version
   val trace4CatsCore = organization %% "trace4cats-core" % version
@@ -234,6 +233,14 @@ trait Trace4Cats {
   val trace4CatsKernel = organization %% "trace4cats-kernel" % version
   val trace4CatsLogExporter = organization %% "trace4cats-log-exporter" % version
   val trace4CatsModel = organization %% "trace4cats-model" % version
+}
+
+trait Typename {
+  private[this] val organization = "org.tpolecat"
+
+  private[this] val version = "1.0.0"
+
+  val typename = organization %% "typename" % version
 }
 
 trait Vulcan {
@@ -247,7 +254,7 @@ trait Vulcan {
 trait Weaver {
   private[this] val organization = "com.disneystreaming"
 
-  private[this] val version = "0.6.0"
+  private[this] val version = "0.7.6"
 
   val weaverCats = organization %% "weaver-cats" % version
   val weaverScalaCheck = organization %% "weaver-scalacheck" % version
@@ -278,5 +285,6 @@ object Dependencies
     with Slf4j
     with Tapir
     with Trace4Cats
+    with Typename
     with Vulcan
     with Weaver
