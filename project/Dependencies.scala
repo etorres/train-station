@@ -179,7 +179,7 @@ trait ScalaCheck {
 }
 
 trait ScalaLang {
-  val projectScalaVersion = "2.13.6"
+  val projectScalaVersion = "2.13.7"
 }
 
 trait Shapeless {
