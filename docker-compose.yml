@@ -6,7 +6,7 @@
 version: "3"
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.2.0
+    image: confluentinc/cp-zookeeper:7.0.0
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -16,7 +16,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_SYNC_LIMIT: 2
   kafka:
-    image: confluentinc/cp-kafka:6.2.1
+    image: confluentinc/cp-kafka:7.0.0
     hostname: kafka
     container_name: kafka
     depends_on:
@@ -58,7 +58,7 @@ services:
     depends_on:
       - kafka
   postgres:
-    image: postgres:13.3-alpine
+    image: postgres:13.5-alpine
     hostname: postgres
     container_name: postgres
     ports:

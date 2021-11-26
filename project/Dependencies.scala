@@ -3,7 +3,7 @@ import sbt._
 trait Avro {
   private[this] val organization = "org.apache.avro"
 
-  private[this] val version = "1.10.2"
+  private[this] val version = "1.11.0"
 
   val avro = organization % "avro" % version
 }
@@ -11,7 +11,7 @@ trait Avro {
 trait Caffeine {
   private[this] val organization = "com.github.blemale"
 
-  private[this] val version = "4.1.0"
+  private[this] val version = "5.1.1"
 
   val caffeine = organization %% "scaffeine" % version
 }
@@ -42,7 +42,7 @@ trait CatsScalaCheck {
 trait CaseInsensitive {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "1.1.4"
+  private[this] val version = "1.2.0"
 
   val caseInsensitive = organization %% "case-insensitive" % version
 }
@@ -63,7 +63,7 @@ trait Circe {
 trait Ciris {
   private[this] val organization = "is.cir"
 
-  private[this] val version = "2.1.1"
+  private[this] val version = "2.2.1"
 
   val ciris = organization %% "ciris" % version
   val cirisRefined = organization %% "ciris-refined" % version
@@ -84,7 +84,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "3.1.6"
+  private[this] val version = "3.2.2"
 
   val fs2Core = organization %% "fs2-core" % version
 }
@@ -110,7 +110,7 @@ trait Hikari {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.23.5"
+  private[this] val version = "0.23.6"
 
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
@@ -122,7 +122,7 @@ trait Http4s {
 trait Kafka {
   private[this] val organization = "io.confluent"
 
-  private[this] val version = "6.2.0"
+  private[this] val version = "7.0.0"
 
   val kafkaSchemaRegistryClient = organization % "kafka-schema-registry-client" % version
 }
@@ -130,7 +130,7 @@ trait Kafka {
 trait Logback {
   private[this] val organization = "ch.qos.logback"
 
-  private[this] val version = "1.2.6"
+  private[this] val version = "1.2.7"
 
   val logback = organization % "logback-classic" % version
 }
@@ -254,7 +254,7 @@ trait Vulcan {
 trait Weaver {
   private[this] val organization = "com.disneystreaming"
 
-  private[this] val version = "0.7.6"
+  private[this] val version = "0.7.7"
 
   val weaverCats = organization %% "weaver-cats" % version
   val weaverScalaCheck = organization %% "weaver-scalacheck" % version
