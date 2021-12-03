@@ -205,7 +205,7 @@ trait Tapir {
 
   private[this] val modelVersion = "1.4.18"
   private[this] val sharedVersion = "1.2.7"
-  private[this] val tapirVersion = "0.19.0-M4"
+  private[this] val tapirVersion = "0.19.1"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedCore = sharedOrganization %% "core" % sharedVersion
@@ -217,7 +217,8 @@ trait Tapir {
   val tapirOpenApiCirceYaml = tapirOrganization %% "tapir-openapi-circe-yaml" % tapirVersion
   val tapirOpenApiDocs = tapirOrganization %% "tapir-openapi-docs" % tapirVersion
   val tapirOpenApiModel = tapirOrganization %% "tapir-openapi-model" % tapirVersion
-  val tapirSwaggerUI = tapirOrganization %% "tapir-swagger-ui-http4s" % tapirVersion
+  val tapirSwaggerUI = tapirOrganization %% "tapir-swagger-ui" % tapirVersion
+  val tapirSwaggerUIBundle = tapirOrganization %% "tapir-swagger-ui-bundle" % tapirVersion
 }
 
 trait Trace4Cats {

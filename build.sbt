@@ -88,6 +88,7 @@ lazy val `train-control-panel` =
       tapirOpenApiDocs,
       tapirOpenApiModel,
       tapirSwaggerUI,
+      tapirSwaggerUIBundle,
       trace4CatsBase,
       trace4CatsCore,
       trace4CatsHttp4sCommon,
