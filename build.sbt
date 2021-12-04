@@ -78,7 +78,6 @@ lazy val `train-control-panel` =
       shapeless,
       slf4jApi,
       sttpModelCore,
-      sttpSharedCore,
       sttpSharedFs2,
       tapirCore,
       tapirJsonCirce,

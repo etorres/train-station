@@ -208,7 +208,6 @@ trait Tapir {
   private[this] val tapirVersion = "0.19.1"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
-  val sttpSharedCore = sharedOrganization %% "core" % sharedVersion
   val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedVersion
   val tapirCore = tapirOrganization %% "tapir-core" % tapirVersion
   val tapirHttp4sServer = tapirOrganization %% "tapir-http4s-server" % tapirVersion

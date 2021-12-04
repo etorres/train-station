@@ -30,6 +30,7 @@ import sttp.tapir.json.circe.jsonBody
 import sttp.tapir.openapi.circe.yaml.RichOpenAPI
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import sttp.tapir.swagger.SwaggerUI
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
 import java.time.OffsetDateTime
 
@@ -107,11 +108,14 @@ object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with 
     Http4sServerInterpreter().toRoutes(serverEndpoints)
   }
 
-  def swaggerRoute[F[_]: Async]: HttpRoutes[F] = {
-//    val swaggerEndpoints = SwaggerInterpreter()
-//      .fromEndpoints[F](List(arrivalEndpoint, departureEndpoint), "Train Control Panel", "v1")
-//    Http4sServerInterpreter().toRoutes(swaggerEndpoints)
+  // TODO
+  def swaggerRoute2[F[_]: Async]: HttpRoutes[F] = {
+    val swaggerEndpoints = SwaggerInterpreter()
+      .fromEndpoints[F](List(arrivalEndpoint, departureEndpoint), "Train Control Panel", "v1")
+    Http4sServerInterpreter().toRoutes(swaggerEndpoints)
+  }
 
+  def swaggerRoute[F[_]: Async]: HttpRoutes[F] = {
     val openAPIYaml = OpenAPIDocsInterpreter()
       .toOpenAPI(List(arrivalEndpoint, departureEndpoint), "Train Control Panel", "v1")
       .toYaml
