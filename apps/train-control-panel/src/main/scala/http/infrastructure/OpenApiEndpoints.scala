@@ -1,8 +1,10 @@
 package es.eriktorr.train_station
 package http.infrastructure
 
+import arrival.Arrivals
 import arrival.Arrivals.ArrivalError.UnexpectedTrain
 import arrival.Arrivals.{Arrival, ArrivalError}
+import departure.Departures
 import departure.Departures.{Departure, DepartureError}
 import event.EventId
 import json.infrastructure.{EventJsonProtocol, StationJsonProtocol, TrainJsonProtocol}
@@ -13,32 +15,31 @@ import time.Moment.When.{Actual, Expected}
 import train.TrainId
 
 import cats.effect.{Async, Sync}
+import cats.implicits._
 import io.circe.Encoder
 import io.circe.generic.auto._
 import io.circe.syntax._
 import org.http4s.HttpRoutes
-import sttp.capabilities.WebSockets
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.codec.newtype._
+import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe.jsonBody
+import sttp.tapir.openapi.circe.yaml.RichOpenAPI
 import sttp.tapir.server.http4s.Http4sServerInterpreter
-import sttp.tapir.swagger.bundle.SwaggerInterpreter
+import sttp.tapir.swagger.SwaggerUI
 
 import java.time.OffsetDateTime
 
 object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with TrainJsonProtocol {
 
-  type StreamTypes[F[_]] = Fs2Streams[F] with WebSockets
-
   implicit val arrivalErrorEncoder: Encoder[ArrivalError] = Encoder.instance {
     case unexpectedTrain @ UnexpectedTrain(_, _) => unexpectedTrain.asJson
   }
 
-  def arrivalEndpoint[F[_]: Sync]
-    : Endpoint[Unit, Arrival, ArrivalError, EventId, StreamTypes[F]] = {
+  def arrivalEndpoint[F[_]: Sync]: Endpoint[Unit, Arrival, ArrivalError, EventId, Fs2Streams[F]] = {
     @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
     val arrivalBody = jsonBody[Arrival]
       .description("The arrival")
@@ -64,7 +65,7 @@ object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with 
   }
 
   def departureEndpoint[F[_]: Sync]
-    : Endpoint[Unit, Departure, DepartureError, EventId, StreamTypes[F]] = {
+    : Endpoint[Unit, Departure, DepartureError, EventId, Fs2Streams[F]] = {
     @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
     val departureBody = jsonBody[Departure]
       .description("The departure")
@@ -91,23 +92,29 @@ object OpenApiEndpoints extends EventJsonProtocol with StationJsonProtocol with 
       .errorOut(jsonBody[DepartureError])
   }
 
-  def routes[F[_]: Async]: HttpRoutes[F] = {
-    val swaggerEndpoints =
-      SwaggerInterpreter()
-        .fromEndpoints[F](List(arrivalEndpoint, departureEndpoint), "Train Control Panel", "v1")
-
-    Http4sServerInterpreter().toRoutes(swaggerEndpoints)
+  def routes[F[_]: Async](A: Arrivals[F], D: Departures[F]): HttpRoutes[F] = {
+    @SuppressWarnings(
+      Array(
+        "org.wartremover.warts.JavaSerializable",
+        "org.wartremover.warts.Product",
+        "org.wartremover.warts.Serializable"
+      )
+    )
+    val serverEndpoints = List(
+      arrivalEndpoint.serverLogicRecoverErrors(A.register(_).map(_.id)),
+      departureEndpoint.serverLogicRecoverErrors(D.register(_).map(_.id))
+    )
+    Http4sServerInterpreter().toRoutes(serverEndpoints)
   }
 
-  import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
-  import sttp.tapir.openapi.circe.yaml.RichOpenAPI
-  import sttp.tapir.swagger.SwaggerUI
-
   def swaggerRoute[F[_]: Async]: HttpRoutes[F] = {
+//    val swaggerEndpoints = SwaggerInterpreter()
+//      .fromEndpoints[F](List(arrivalEndpoint, departureEndpoint), "Train Control Panel", "v1")
+//    Http4sServerInterpreter().toRoutes(swaggerEndpoints)
+
     val openAPIYaml = OpenAPIDocsInterpreter()
       .toOpenAPI(List(arrivalEndpoint, departureEndpoint), "Train Control Panel", "v1")
       .toYaml
-
     Http4sServerInterpreter().toRoutes(SwaggerUI[F](openAPIYaml))
   }
 }
