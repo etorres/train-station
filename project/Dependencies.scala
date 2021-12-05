@@ -217,7 +217,6 @@ trait Tapir {
   val tapirOpenApiDocs = tapirOrganization %% "tapir-openapi-docs" % tapirVersion
   val tapirOpenApiModel = tapirOrganization %% "tapir-openapi-model" % tapirVersion
   val tapirSwaggerUI = tapirOrganization %% "tapir-swagger-ui" % tapirVersion
-  val tapirSwaggerUIBundle = tapirOrganization %% "tapir-swagger-ui-bundle" % tapirVersion
 }
 
 trait Trace4Cats {

@@ -14,15 +14,13 @@ import time.Moment.When.{Actual, Created}
 import train.TrainId
 import uuid.UUIDGenerator
 
+import cats.Show
 import cats.derived.semiauto
-import cats.effect.{Async, Sync}
+import cats.effect.Sync
 import cats.implicits._
-import cats.{Applicative, Show}
 import io.circe._
 import io.circe.generic.semiauto._
 import io.circe.syntax._
-import org.http4s._
-import org.http4s.circe._
 import org.typelevel.log4cats.Logger
 
 import scala.util.control.NoStackTrace
@@ -36,10 +34,10 @@ object Arrivals {
 
   object Arrival extends MomentJsonProtocol with TrainJsonProtocol {
     implicit val arrivalDecoder: Decoder[Arrival] = deriveDecoder
-    implicit def arrivalEntityDecoder[F[_]: Async]: EntityDecoder[F, Arrival] = jsonOf
+//    implicit def arrivalEntityDecoder[F[_]: Async]: EntityDecoder[F, Arrival] = jsonOf
 
     implicit val arrivalEncoder: Encoder[Arrival] = deriveEncoder
-    implicit def arrivalEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Arrival] = jsonEncoderOf
+//    implicit def arrivalEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Arrival] = jsonEncoderOf
 
     implicit val showArrival: Show[Arrival] = semiauto.show
   }
@@ -50,12 +48,8 @@ object Arrivals {
     final case class UnexpectedTrain(message: String, trainId: TrainId) extends ArrivalError
 
     implicit val unexpectedTrainDecoder: Decoder[UnexpectedTrain] = deriveDecoder
-    implicit def unexpectedTrainEntityDecoder[F[_]: Async]: EntityDecoder[F, UnexpectedTrain] =
-      jsonOf
 
     implicit val unexpectedTrainEncoder: Encoder[UnexpectedTrain] = deriveEncoder[UnexpectedTrain]
-    implicit def unexpectedTrainEntityEncoder[F[_]: Applicative]
-      : EntityEncoder[F, UnexpectedTrain] = jsonEncoderOf
 
     @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
     implicit val arrivalErrorDecoder: Decoder[ArrivalError] =

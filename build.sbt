@@ -62,7 +62,6 @@ lazy val `train-control-panel` =
       fs2Kafka,
       fs2KafkaVulcan,
       http4sBlazeServer,
-      http4sCirce,
       http4sCore,
       http4sServer,
       hikariCP,
@@ -87,7 +86,6 @@ lazy val `train-control-panel` =
       tapirOpenApiDocs,
       tapirOpenApiModel,
       tapirSwaggerUI,
-      tapirSwaggerUIBundle,
       trace4CatsBase,
       trace4CatsCore,
       trace4CatsHttp4sCommon,
@@ -99,4 +97,4 @@ lazy val `train-control-panel` =
       typename,
       vulcan
     )
-    .testDependencies(caffeine, catsScalaCheck, weaverCats, weaverScalaCheck)
+    .testDependencies(caffeine, catsScalaCheck, http4sCirce, weaverCats, weaverScalaCheck)

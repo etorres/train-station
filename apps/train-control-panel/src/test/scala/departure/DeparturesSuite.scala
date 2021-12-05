@@ -40,6 +40,7 @@ import io.janstenpickle.trace4cats.model.TraceProcess
 import org.http4s.MediaType.application
 import org.http4s._
 import org.http4s.circe.CirceEntityDecoder._
+import org.http4s.circe.jsonEncoderOf
 import org.http4s.headers._
 import org.http4s.implicits._
 import org.scalacheck.Gen
@@ -124,8 +125,7 @@ object DeparturesSuite
         method = Method.POST,
         uri = uri"api/v1/departure",
         headers = Headers(`Content-Type`(application.json)) |+| toHeaders(requestB3Headers),
-        body = Departure
-          .departureEntityEncoder[IO]
+        body = jsonEncoderOf[IO, Departure]
           .toEntity(departure)
           .body
       ),
