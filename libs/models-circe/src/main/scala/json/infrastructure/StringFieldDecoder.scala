@@ -8,30 +8,17 @@ trait StringFieldDecoder {
     field: String,
     fA: String => Either[_ <: Throwable, A]
   ): Decoder[A] =
-    (cursor: HCursor) =>
-      cursor
-        .downField(field)
-        .as[String]
-        .map(fA)
-        .fold(Left(_), valueOf(cursor.value))
+    (cursor: HCursor) => cursor.downField(field).as[String].flatMap(valueOf(_, fA))
 
   private[infrastructure] def decodeValue[A](fA: String => Either[_ <: Throwable, A]): Decoder[A] =
-    (cursor: HCursor) =>
-      cursor
-        .as[String]
-        .map(fA)
-        .fold(Left(_), valueOf(cursor.value))
+    (cursor: HCursor) => cursor.as[String].flatMap(valueOf(_, fA))
 
   private[this] def valueOf[A](
-    json: Json
-  ): Either[_ <: Throwable, A] => Either[DecodingFailure, A] = {
-    case Left(constructorError) =>
-      Left(
-        DecodingFailure(
-          s"Failed to decode: ${json.toString}, with error: ${constructorError.getMessage}",
-          List.empty
-        )
-      )
-    case Right(value) => Right(value)
-  }
+    str: String,
+    fA: String => Either[_ <: Throwable, A]
+  ): Decoder.Result[A] =
+    fA(str) match {
+      case Left(error) => Left(DecodingFailure.fromThrowable(error, List.empty))
+      case Right(value) => Right(value)
+    }
 }
