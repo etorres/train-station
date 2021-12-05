@@ -20,6 +20,7 @@ import cats.implicits._
 import cats.{Applicative, Show}
 import io.circe._
 import io.circe.generic.semiauto._
+import io.circe.syntax._
 import org.http4s._
 import org.http4s.circe._
 import org.typelevel.log4cats.Logger
@@ -45,8 +46,24 @@ object Arrivals {
 
   sealed trait ArrivalError extends NoStackTrace
 
-  object ArrivalError {
+  object ArrivalError extends TrainJsonProtocol {
     final case class UnexpectedTrain(message: String, trainId: TrainId) extends ArrivalError
+
+    implicit val unexpectedTrainDecoder: Decoder[UnexpectedTrain] = deriveDecoder
+    implicit def unexpectedTrainEntityDecoder[F[_]: Async]: EntityDecoder[F, UnexpectedTrain] =
+      jsonOf
+
+    implicit val unexpectedTrainEncoder: Encoder[UnexpectedTrain] = deriveEncoder[UnexpectedTrain]
+    implicit def unexpectedTrainEntityEncoder[F[_]: Applicative]
+      : EntityEncoder[F, UnexpectedTrain] = jsonEncoderOf
+
+    @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+    implicit val arrivalErrorDecoder: Decoder[ArrivalError] =
+      List[Decoder[ArrivalError]](Decoder[UnexpectedTrain].widen).reduceLeft(_ or _)
+
+    implicit val arrivalErrorEncoder: Encoder[ArrivalError] = Encoder.instance {
+      case unexpectedTrain @ UnexpectedTrain(_, _) => unexpectedTrain.asJson
+    }
   }
 
   def impl[F[_]: Sync: Logger: UUIDGenerator](

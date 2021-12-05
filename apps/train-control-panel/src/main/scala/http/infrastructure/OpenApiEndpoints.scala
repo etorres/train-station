@@ -17,7 +17,6 @@ import train.TrainId
 import cats.effect.{Async, Sync}
 import cats.implicits._
 import io.circe.Encoder
-import io.circe.generic.auto._
 import io.circe.syntax._
 import org.http4s.HttpRoutes
 import sttp.capabilities.fs2.Fs2Streams
