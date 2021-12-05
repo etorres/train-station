@@ -22,6 +22,7 @@ lazy val `models-circe` = project
   .library("models-circe")
   .dependsOn(models)
   .mainDependencies(circeCore, refined)
+  .testDependencies(circeParser, weaverCats)
 
 lazy val `models-doobie` = project
   .library("models-doobie")

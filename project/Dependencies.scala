@@ -56,6 +56,8 @@ trait Circe {
   val circeGeneric = organization %% "circe-generic" % version
   // for string interpolation to JSON model
   val circeLiteral = organization %% "circe-literal" % version
+  // circe parser
+  val circeParser = organization %% "circe-parser" % version
   // codecs for refined types
   val circeRefined = organization %% "circe-refined" % version
 }
