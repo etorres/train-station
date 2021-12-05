@@ -35,8 +35,6 @@ import cats.data.NonEmptyList
 import cats.derived._
 import cats.effect._
 import cats.implicits._
-import io.circe._
-import io.circe.generic.semiauto._
 import io.janstenpickle.trace4cats.inject.Trace
 import io.janstenpickle.trace4cats.model.TraceProcess
 import org.http4s.MediaType.application
@@ -135,8 +133,6 @@ object DeparturesSuite
       expectedStatus,
       expectedBody
     )
-
-    implicit val unexpectedDestinationDecoder: Decoder[UnexpectedDestination] = deriveDecoder
 
     forall(gen) {
       case TestCase(origin, connectedStations, departure, eventId, expectedEvents, b3Headers) =>
