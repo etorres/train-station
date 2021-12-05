@@ -34,10 +34,8 @@ object Arrivals {
 
   object Arrival extends MomentJsonProtocol with TrainJsonProtocol {
     implicit val arrivalDecoder: Decoder[Arrival] = deriveDecoder
-//    implicit def arrivalEntityDecoder[F[_]: Async]: EntityDecoder[F, Arrival] = jsonOf
 
     implicit val arrivalEncoder: Encoder[Arrival] = deriveEncoder
-//    implicit def arrivalEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Arrival] = jsonEncoderOf
 
     implicit val showArrival: Show[Arrival] = semiauto.show
   }
