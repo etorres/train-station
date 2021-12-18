@@ -207,7 +207,7 @@ trait Tapir {
 
   private[this] val modelVersion = "1.4.18"
   private[this] val sharedVersion = "1.2.7"
-  private[this] val tapirVersion = "0.19.1"
+  private[this] val tapirVersion = "0.19.3"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedVersion
