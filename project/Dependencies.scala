@@ -20,7 +20,7 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.7.0"
-  private[this] val catsEffectVersion = "3.3.0"
+  private[this] val catsEffectVersion = "3.3.1"
   private[this] val kittensVersion = "2.3.2"
 
   val catsCore = organization %% "cats-core" % catsVersion
@@ -86,7 +86,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "3.2.2"
+  private[this] val version = "3.2.3"
 
   val fs2Core = organization %% "fs2-core" % version
 }
@@ -205,9 +205,9 @@ trait Tapir {
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
-  private[this] val modelVersion = "1.4.18"
-  private[this] val sharedVersion = "1.2.7"
-  private[this] val tapirVersion = "0.19.1"
+  private[this] val modelVersion = "1.4.19"
+  private[this] val sharedVersion = "1.3.0"
+  private[this] val tapirVersion = "0.19.3"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedVersion
