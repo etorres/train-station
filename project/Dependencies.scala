@@ -112,7 +112,7 @@ trait Hikari {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.23.6"
+  private[this] val version = "0.23.10"
 
   val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
@@ -147,9 +147,9 @@ trait Log4Cats {
 }
 
 trait Magnolia {
-  private[this] val organization = "com.propensive"
+  private[this] val organization = "com.softwaremill.magnolia1_2"
 
-  private[this] val version = "0.17.0"
+  private[this] val version = "1.1.1"
 
   val magnolia = organization %% "magnolia" % version
 }
@@ -195,7 +195,7 @@ trait Shapeless {
 trait Slf4j {
   private[this] val organization = "org.slf4j"
 
-  private[this] val version = "1.7.32"
+  private[this] val version = "1.7.35"
 
   val slf4jApi = organization % "slf4j-api" % version
 }
@@ -207,7 +207,7 @@ trait Tapir {
 
   private[this] val modelVersion = "1.4.25"
   private[this] val sharedVersion = "1.3.2"
-  private[this] val tapirVersion = "0.19.4"
+  private[this] val tapirVersion = "0.20.1"
 
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedVersion
