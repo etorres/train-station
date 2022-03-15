@@ -8,7 +8,7 @@ object Generators {
   def nDistinct[T](number: Int, elementGen: Gen[T]): Gen[NonEmptyList[T]] = {
     @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
     def generate(accumulator: List[T]): Gen[List[T]] =
-      if (accumulator.size == number) Gen.const(accumulator)
+      if (accumulator.lengthIs == number) Gen.const(accumulator)
       else
         for {
           candidate <- elementGen
