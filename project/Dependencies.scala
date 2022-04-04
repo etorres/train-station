@@ -86,7 +86,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "3.2.4"
+  private[this] val version = "3.2.5"
 
   val fs2Core = organization %% "fs2-core" % version
 }
