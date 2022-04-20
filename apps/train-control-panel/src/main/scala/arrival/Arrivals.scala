@@ -49,7 +49,7 @@ object Arrivals {
 
     implicit val unexpectedTrainEncoder: Encoder[UnexpectedTrain] = deriveEncoder[UnexpectedTrain]
 
-    @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+    @SuppressWarnings(Array("org.wartremover.warts.IterableOps"))
     implicit val arrivalErrorDecoder: Decoder[ArrivalError] =
       List[Decoder[ArrivalError]](Decoder[UnexpectedTrain].widen).reduceLeft(_ or _)
 

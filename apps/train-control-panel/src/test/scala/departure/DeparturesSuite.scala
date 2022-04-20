@@ -70,7 +70,7 @@ object DeparturesSuite
       implicit val showTestCase: Show[TestCase] = semiauto.show
     }
 
-    @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+    @SuppressWarnings(Array("org.wartremover.warts.IterableOps"))
     val gen = for {
       (origin, allDestinations) <- nDistinct(4, stationGen[Destination]).map {
         _.splitAt(1) match {
