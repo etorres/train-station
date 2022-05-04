@@ -2,7 +2,7 @@
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/etorres/train-station/CI?logo=github)](https://github.com/etorres/train-station/actions?query=workflow%3A%22CI%22)
 [![Codecov](https://img.shields.io/codecov/c/github/etorres/train-station?logo=codecov)](https://codecov.io/gh/etorres/train-station)
 [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
-[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://gh.mergify.io/badges/etorres/train-station&style=flat)](https://mergify.io)
+[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://api.mergify.com/v1/badges/etorres/train-station&style=flat)](https://mergify.io)
 
 This is an adaptation of the blog entry [Event-driven railway network based on Pulsar](https://scala.monster/train-station/) (by [Pavels Sisojevs](https://github.com/psisoyev)) to the following stack:
 * [Cats Effect](https://typelevel.org/cats-effect/).
