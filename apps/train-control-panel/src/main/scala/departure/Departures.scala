@@ -56,7 +56,7 @@ object Departures {
 
     implicit val unexpectedDestinationEncoder: Encoder[UnexpectedDestination] = deriveEncoder
 
-    @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+    @SuppressWarnings(Array("org.wartremover.warts.IterableOps"))
     implicit val departureErrorDecoder: Decoder[DepartureError] =
       List[Decoder[DepartureError]](Decoder[UnexpectedDestination].widen).reduceLeft(_ or _)
 
