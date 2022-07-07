@@ -19,7 +19,7 @@ trait Caffeine {
 trait Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val catsVersion = "2.7.0"
+  private[this] val catsVersion = "2.8.0"
   private[this] val catsEffectVersion = "3.3.13"
   private[this] val kittensVersion = "2.3.2"
 
