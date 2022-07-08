@@ -165,7 +165,7 @@ trait NewType {
 trait Refined {
   private[this] val organization = "eu.timepit"
 
-  private[this] val version = "0.9.27"
+  private[this] val version = "0.10.1"
 
   val refined = organization %% "refined" % version
   val refinedCats = organization %% "refined-cats" % version
@@ -187,7 +187,7 @@ trait ScalaLang {
 trait Shapeless {
   private[this] val organization = "com.chuusai"
 
-  private[this] val version = "2.3.7"
+  private[this] val version = "2.3.9"
 
   val shapeless = organization %% "shapeless" % version
 }
