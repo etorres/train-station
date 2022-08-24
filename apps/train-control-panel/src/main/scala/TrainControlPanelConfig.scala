@@ -30,6 +30,8 @@ object TrainControlPanelConfig {
   object HttpServerConfig {
     val defaultHost: Host = host"0.0.0.0"
     val defaultPort: Port = port"8080"
+
+    val default: HttpServerConfig = HttpServerConfig(defaultHost, defaultPort)
   }
 
   final case class JdbcConfig(

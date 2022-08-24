@@ -2,7 +2,6 @@ package es.eriktorr.train_station
 package shared.infrastructure
 
 import TrainControlPanelConfig.{HttpServerConfig, JdbcConfig, KafkaConfig}
-import refined.InUserPortRange
 import station.Station
 import station.Station.TravelDirection.{Destination, Origin}
 
@@ -15,7 +14,7 @@ import eu.timepit.refined.predicates.all._
 object TrainControlPanelTestConfig {
   @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
   val testConfig: TrainControlPanelConfig = TrainControlPanelConfig(
-    HttpServerConfig(refineMV[NonEmpty]("0.0.0.0"), refineMV[InUserPortRange](8080)),
+    HttpServerConfig.default,
     JdbcConfig(
       refineMV[NonEmpty]("org.postgresql.Driver"),
       refineMV[NonEmpty]("jdbc:postgresql://localhost:5432/train_station"),
