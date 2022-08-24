@@ -10,9 +10,9 @@ import cats.effect.Async
 import cats.implicits._
 import ciris._
 import ciris.refined._
+import com.comcast.ip4s.{Host, IpLiteralSyntax, Port}
 import eu.timepit.refined.auto._
 import eu.timepit.refined.cats._
-import eu.timepit.refined.types.net.UserPortNumber
 import eu.timepit.refined.types.string.NonEmptyString
 
 final case class TrainControlPanelConfig(
@@ -24,7 +24,13 @@ final case class TrainControlPanelConfig(
 )
 
 object TrainControlPanelConfig {
-  final case class HttpServerConfig(host: NonEmptyString, port: UserPortNumber)
+  final case class HttpServerConfig(host: Host, port: Port)
+
+  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
+  object HttpServerConfig {
+    val defaultHost: Host = host"0.0.0.0"
+    val defaultPort: Port = port"8080"
+  }
 
   final case class JdbcConfig(
     driverClassName: NonEmptyString,
@@ -54,10 +60,23 @@ object TrainControlPanelConfig {
       }
     }
 
+  implicit def hostDecoder: ConfigDecoder[String, Host] = ConfigDecoder.lift { host =>
+    Host.fromString(host) match {
+      case Some(value) => Right(value)
+      case None => Left(ConfigError("Invalid host"))
+    }
+  }
+  implicit def portDecoder: ConfigDecoder[String, Port] = ConfigDecoder.lift { port =>
+    Port.fromString(port) match {
+      case Some(value) => Right(value)
+      case None => Left(ConfigError("Invalid port"))
+    }
+  }
+
   private def trainControlPanelConfig: ConfigValue[Effect, TrainControlPanelConfig] =
     (
-      env("HTTP_HOST").as[NonEmptyString].option,
-      env("HTTP_PORT").as[UserPortNumber].option,
+      env("HTTP_HOST").as[Host].option,
+      env("HTTP_PORT").as[Port].option,
       env("JDBC_DRIVER_CLASS_NAME").as[NonEmptyString].option,
       env("JDBC_CONNECT_URL").as[NonEmptyString].option,
       env("JDBC_USER").as[NonEmptyString].option,
@@ -84,7 +103,10 @@ object TrainControlPanelConfig {
         connectedStations
       ) =>
         TrainControlPanelConfig(
-          HttpServerConfig(httpHost getOrElse "0.0.0.0", httpPort getOrElse 8080),
+          HttpServerConfig(
+            httpHost.fold(HttpServerConfig.defaultHost)(identity),
+            httpPort.fold(HttpServerConfig.defaultPort)(identity)
+          ),
           JdbcConfig(
             jdbcDriverClassName getOrElse "org.postgresql.Driver",
             jdbcConnectUrl getOrElse "jdbc:postgresql://localhost:5432/train_station",

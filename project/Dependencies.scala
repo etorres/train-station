@@ -49,7 +49,7 @@ trait CaseInsensitive {
 
 trait Circe {
   private[this] val organization = "io.circe"
-  private[this] val version = "0.14.1"
+  private[this] val version = "0.14.2"
 
   val circeCore = organization %% "circe-core" % version
   // for auto-derivation of JSON codecs
@@ -86,7 +86,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "3.2.8"
+  private[this] val version = "3.2.12"
 
   val fs2Core = organization %% "fs2-core" % version
 }
@@ -112,13 +112,20 @@ trait Hikari {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.23.10"
+  private[this] val version = "0.23.15"
 
-  val http4sBlazeServer = organization %% "http4s-blaze-server" % version
   val http4sCirce = organization %% "http4s-circe" % version
   val http4sCore = organization %% "http4s-core" % version
   val http4sDsl = organization %% "http4s-dsl" % version
+  val http4sEmberServer = organization %% "http4s-ember-server" % version
   val http4sServer = organization %% "http4s-server" % version
+}
+
+trait Ip4s {
+  private[this] val organization = "com.comcast"
+  private[this] val version = "3.1.3"
+
+  val ip4sCore = organization %% "ip4s-core" % version
 }
 
 trait Kafka {
@@ -140,7 +147,7 @@ trait Logback {
 trait Log4Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "2.1.1"
+  private[this] val version = "2.4.0"
 
   val log4CatsCore = organization %% "log4cats-core" % version
   val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
@@ -149,7 +156,7 @@ trait Log4Cats {
 trait Magnolia {
   private[this] val organization = "com.softwaremill.magnolia1_2"
 
-  private[this] val version = "1.1.1"
+  private[this] val version = "1.1.2"
 
   val magnolia = organization %% "magnolia" % version
 }
@@ -195,29 +202,31 @@ trait Shapeless {
 trait Slf4j {
   private[this] val organization = "org.slf4j"
 
-  private[this] val version = "1.7.35"
+  private[this] val version = "1.7.36"
 
   val slf4jApi = organization % "slf4j-api" % version
 }
 
 trait Tapir {
+  private[this] val apispecOrganization = "com.softwaremill.sttp.apispec"
   private[this] val modelOrganization = "com.softwaremill.sttp.model"
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
+  private[this] val apispecVersion = "0.2.1"
   private[this] val modelVersion = "1.5.0"
   private[this] val sharedVersion = "1.3.7"
-  private[this] val tapirVersion = "0.20.2"
+  private[this] val tapirVersion = "1.0.6"
 
+  val openApiModel = apispecOrganization %% "openapi-model" % apispecVersion
+  val openApiCirceYaml = apispecOrganization %% "openapi-circe-yaml" % apispecVersion
   val sttpModelCore = modelOrganization %% "core" % modelVersion
   val sttpSharedFs2 = sharedOrganization %% "fs2" % sharedVersion
   val tapirCore = tapirOrganization %% "tapir-core" % tapirVersion
   val tapirHttp4sServer = tapirOrganization %% "tapir-http4s-server" % tapirVersion
   val tapirJsonCirce = tapirOrganization %% "tapir-json-circe" % tapirVersion
   val tapirNewType = tapirOrganization %% "tapir-newtype" % tapirVersion
-  val tapirOpenApiCirceYaml = tapirOrganization %% "tapir-openapi-circe-yaml" % tapirVersion
   val tapirOpenApiDocs = tapirOrganization %% "tapir-openapi-docs" % tapirVersion
-  val tapirOpenApiModel = tapirOrganization %% "tapir-openapi-model" % tapirVersion
   val tapirSwaggerUI = tapirOrganization %% "tapir-swagger-ui" % tapirVersion
 }
 
@@ -274,6 +283,7 @@ object Dependencies
     with Fs2Kafka
     with Hikari
     with Http4s
+    with Ip4s
     with Kafka
     with Logback
     with Log4Cats

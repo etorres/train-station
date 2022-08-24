@@ -48,8 +48,6 @@ object TrainControlPanelApp extends IOApp {
               entryPoint,
               config.httpServerConfig
             )
-            .compile
-            .drain
 
           F.info(show"Started train station ${config.station}") *> (
             departureListener,

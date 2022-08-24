@@ -10,13 +10,12 @@ import departure.syntax._
 import cats.data.Kleisli
 import cats.effect.{Async, Temporal}
 import cats.implicits._
-import fs2.Stream
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.http4s.common.Http4sRequestFilter
 import io.janstenpickle.trace4cats.http4s.server.syntax._
 import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
 import org.http4s._
-import org.http4s.blaze.server.BlazeServerBuilder
+import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits._
 import org.http4s.server.middleware.{CORS, GZip, Logger => Http4sLogger}
 
@@ -26,17 +25,20 @@ object HttpServer {
     departures: Departures[F],
     entryPoint: EntryPoint[F],
     httpServerConfig: HttpServerConfig
-  ): Stream[F, Nothing] = {
+  ): F[Unit] = {
 
     val finalHttpApp = Http4sLogger.httpApp(logHeaders = true, logBody = true)(
       httpApp(arrivals, departures, entryPoint)
     )
 
-    BlazeServerBuilder[F]
-      .bindHttp(httpServerConfig.port.value, httpServerConfig.host.value)
+    EmberServerBuilder
+      .default[F]
+      .withHost(httpServerConfig.host)
+      .withPort(httpServerConfig.port)
       .withHttpApp(CORS.policy.withAllowOriginAll(GZip(finalHttpApp)))
-      .serve
-  }.drain
+      .build
+      .use(_ => F.never)
+  }
 
   def httpApp[F[_]: Async: Temporal: Trace](
     arrivals: Arrivals[F],

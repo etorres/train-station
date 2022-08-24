@@ -19,6 +19,7 @@ import cats.implicits._
 import io.circe.Encoder
 import io.circe.syntax._
 import org.http4s.HttpRoutes
+import sttp.apispec.openapi.circe.yaml._
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.model.StatusCode
 import sttp.tapir._
@@ -26,7 +27,6 @@ import sttp.tapir.codec.newtype._
 import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe.jsonBody
-import sttp.tapir.openapi.circe.yaml.RichOpenAPI
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import sttp.tapir.swagger.SwaggerUI
 
