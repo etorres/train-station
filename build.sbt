@@ -60,6 +60,7 @@ lazy val `train-control-panel` =
       doobieHikari,
       doobiePostgres,
       fs2Core,
+      fs2Io,
       fs2Kafka,
       fs2KafkaVulcan,
       http4sEmberServer,
