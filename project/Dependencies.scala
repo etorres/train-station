@@ -89,6 +89,7 @@ trait Fs2 {
   private[this] val version = "3.3.0"
 
   val fs2Core = organization %% "fs2-core" % version
+  val fs2Io = organization %% "fs2-io" % version
 }
 
 trait Fs2Kafka {
