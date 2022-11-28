@@ -86,7 +86,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "3.3.0"
+  private[this] val version = "3.4.0"
 
   val fs2Core = organization %% "fs2-core" % version
   val fs2Io = organization %% "fs2-io" % version
@@ -216,7 +216,7 @@ trait Tapir {
 
   private[this] val apispecVersion = "0.3.1"
   private[this] val modelVersion = "1.5.3"
-  private[this] val sharedVersion = "1.3.11"
+  private[this] val sharedVersion = "1.3.12"
   private[this] val tapirVersion = "1.2.3"
 
   val openApiModel = apispecOrganization %% "openapi-model" % apispecVersion
