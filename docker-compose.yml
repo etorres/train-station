@@ -50,7 +50,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: ignored
       KAFKA_ADVERTISED_LISTENERS: ignored
   schema-registry:
-    image: apicurio/apicurio-registry-mem:latest
+    image: apicurio/apicurio-registry-mem:latest-release
     hostname: schema-registry
     container_name: schema-registry
     ports:
