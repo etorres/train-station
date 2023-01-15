@@ -69,7 +69,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: ignored
 
   postgres:
-    image: postgres
+    image: postgres:13.5-alpine
     hostname: postgres
     container_name: postgres
     ports:
