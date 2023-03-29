@@ -25,7 +25,7 @@ object TrainControlPanelTestConfig {
       NonEmptyList.one(refineMV[NonEmpty]("localhost:29092")),
       refineMV[NonEmpty]("train-station"),
       refineMV[NonEmpty]("train-arrivals-and-departures"),
-      refineMV[NonEmpty]("http://localhost:8081")
+      refineMV[NonEmpty]("http://localhost:8081/api/ccompat")
     ),
     Station.fromString[Origin]("Barcelona").toOption.get,
     NonEmptyList.fromListUnsafe(
