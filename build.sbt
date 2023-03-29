@@ -96,7 +96,6 @@ lazy val `train-control-panel` =
       trace4CatsKernel,
       trace4CatsLogExporter,
       trace4CatsModel,
-      typename,
       vulcan
     )
     .testDependencies(caffeine, catsScalaCheck, http4sCirce, weaverCats, weaverScalaCheck)

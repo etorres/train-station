@@ -3,7 +3,7 @@ import sbt._
 trait Avro {
   private[this] val organization = "org.apache.avro"
 
-  private[this] val version = "1.11.0"
+  private[this] val version = "1.11.1"
 
   val avro = organization % "avro" % version
 }
@@ -11,7 +11,7 @@ trait Avro {
 trait Caffeine {
   private[this] val organization = "com.github.blemale"
 
-  private[this] val version = "5.1.1"
+  private[this] val version = "5.2.1"
 
   val caffeine = organization %% "scaffeine" % version
 }
@@ -20,7 +20,7 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.9.0"
-  private[this] val catsEffectVersion = "3.4.2"
+  private[this] val catsEffectVersion = "3.4.8"
   private[this] val kittensVersion = "3.0.0"
 
   val catsCore = organization %% "cats-core" % catsVersion
@@ -34,7 +34,7 @@ trait Cats {
 trait CatsScalaCheck {
   private[this] val organization = "io.chrisdavenport"
 
-  private[this] val version = "0.3.1"
+  private[this] val version = "0.3.2"
 
   val catsScalaCheck = organization %% "cats-scalacheck" % version
 }
@@ -49,7 +49,7 @@ trait CaseInsensitive {
 
 trait Circe {
   private[this] val organization = "io.circe"
-  private[this] val version = "0.14.3"
+  private[this] val version = "0.14.5"
 
   val circeCore = organization %% "circe-core" % version
   // for auto-derivation of JSON codecs
@@ -65,7 +65,7 @@ trait Circe {
 trait Ciris {
   private[this] val organization = "is.cir"
 
-  private[this] val version = "2.2.1"
+  private[this] val version = "3.1.0"
 
   val ciris = organization %% "ciris" % version
   val cirisRefined = organization %% "ciris-refined" % version
@@ -86,7 +86,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "3.4.0"
+  private[this] val version = "3.6.1"
 
   val fs2Core = organization %% "fs2-core" % version
   val fs2Io = organization %% "fs2-io" % version
@@ -95,7 +95,7 @@ trait Fs2 {
 trait Fs2Kafka {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "2.2.0"
+  private[this] val version = "2.5.0"
 
   val fs2Kafka = organization %% "fs2-kafka" % version
   val fs2KafkaVulcan = organization %% "fs2-kafka-vulcan" % version
@@ -104,7 +104,7 @@ trait Fs2Kafka {
 trait Hikari {
   private[this] val organization = "com.zaxxer"
 
-  private[this] val version = "5.0.0"
+  private[this] val version = "5.0.1"
 
   val hikariCP = (organization % "HikariCP" % version)
     .exclude("org.slf4j", "slf4j-api")
@@ -113,7 +113,7 @@ trait Hikari {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.23.16"
+  private[this] val version = "0.23.18"
 
   val http4sCirce = organization %% "http4s-circe" % version
   val http4sCore = organization %% "http4s-core" % version
@@ -140,7 +140,7 @@ trait Kafka {
 trait Logback {
   private[this] val organization = "ch.qos.logback"
 
-  private[this] val version = "1.2.7"
+  private[this] val version = "1.2.12"
 
   val logback = organization % "logback-classic" % version
 }
@@ -173,7 +173,7 @@ trait NewType {
 trait Refined {
   private[this] val organization = "eu.timepit"
 
-  private[this] val version = "0.10.1"
+  private[this] val version = "0.10.3"
 
   val refined = organization %% "refined" % version
   val refinedCats = organization %% "refined-cats" % version
@@ -183,7 +183,7 @@ trait Refined {
 trait ScalaCheck {
   private[this] val organization = "org.scalacheck"
 
-  private[this] val version = "1.15.4"
+  private[this] val version = "1.17.0"
 
   val scalaCheck = organization %% "scalacheck" % version
 }
@@ -214,10 +214,10 @@ trait Tapir {
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
-  private[this] val apispecVersion = "0.3.1"
-  private[this] val modelVersion = "1.5.3"
-  private[this] val sharedVersion = "1.3.12"
-  private[this] val tapirVersion = "1.2.4"
+  private[this] val apispecVersion = "0.3.2"
+  private[this] val modelVersion = "1.5.5"
+  private[this] val sharedVersion = "1.3.14"
+  private[this] val tapirVersion = "1.2.11"
 
   val openApiModel = apispecOrganization %% "openapi-model" % apispecVersion
   val openApiCirceYaml = apispecOrganization %% "openapi-circe-yaml" % apispecVersion
@@ -234,7 +234,7 @@ trait Tapir {
 trait Trace4Cats {
   private[this] val organization = "io.janstenpickle"
 
-  private[this] val version = "0.12.0"
+  private[this] val version = "0.13.1"
 
   val trace4CatsBase = organization %% "trace4cats-base" % version
   val trace4CatsCore = organization %% "trace4cats-core" % version
@@ -246,18 +246,10 @@ trait Trace4Cats {
   val trace4CatsModel = organization %% "trace4cats-model" % version
 }
 
-trait Typename {
-  private[this] val organization = "org.tpolecat"
-
-  private[this] val version = "1.0.0"
-
-  val typename = organization %% "typename" % version
-}
-
 trait Vulcan {
   private[this] val organization = "com.github.fd4s"
 
-  private[this] val version = "1.7.1"
+  private[this] val version = "1.8.4"
 
   val vulcan = organization %% "vulcan" % version
 }
@@ -265,7 +257,7 @@ trait Vulcan {
 trait Weaver {
   private[this] val organization = "com.disneystreaming"
 
-  private[this] val version = "0.7.7"
+  private[this] val version = "0.8.1"
 
   val weaverCats = organization %% "weaver-cats" % version
   val weaverScalaCheck = organization %% "weaver-scalacheck" % version
@@ -297,6 +289,5 @@ object Dependencies
     with Slf4j
     with Tapir
     with Trace4Cats
-    with Typename
     with Vulcan
     with Weaver
