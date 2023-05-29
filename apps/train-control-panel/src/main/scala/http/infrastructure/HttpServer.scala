@@ -10,6 +10,8 @@ import departure.syntax._
 import cats.data.Kleisli
 import cats.effect.{Async, Temporal}
 import cats.implicits._
+import fs2.compression.Compression
+import fs2.io.net.Network
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.http4s.common.Http4sRequestFilter
 import io.janstenpickle.trace4cats.http4s.server.syntax._
@@ -20,7 +22,7 @@ import org.http4s.implicits._
 import org.http4s.server.middleware.{CORS, GZip, Logger => Http4sLogger}
 
 object HttpServer {
-  def stream[F[_]: Async: Temporal: Trace](
+  def stream[F[_]: Async: Compression: Network: Temporal: Trace](
     arrivals: Arrivals[F],
     departures: Departures[F],
     entryPoint: EntryPoint[F],
