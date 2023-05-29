@@ -18,12 +18,14 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.concurrent.ExecutionContext
 import cats.effect.Temporal
+import fs2.compression.Compression
+import fs2.io.net.Network
 
 object TrainControlPanelApp extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
 
-    def program[F[_]: Async: Temporal: NonEmptyParallel: Logger: Trace](
+    def program[F[_]: Async: Compression: Network: Temporal: NonEmptyParallel: Logger: Trace](
       executionContext: ExecutionContext,
       entryPoint: EntryPoint[F]
     ): F[Unit] =
