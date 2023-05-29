@@ -42,7 +42,7 @@ trait CatsScalaCheck {
 trait CaseInsensitive {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "1.3.0"
+  private[this] val version = "1.4.0"
 
   val caseInsensitive = organization %% "case-insensitive" % version
 }
@@ -86,7 +86,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "3.6.1"
+  private[this] val version = "3.7.0"
 
   val fs2Core = organization %% "fs2-core" % version
   val fs2Io = organization %% "fs2-io" % version
@@ -113,7 +113,7 @@ trait Hikari {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.23.18"
+  private[this] val version = "0.23.19"
 
   val http4sCirce = organization %% "http4s-circe" % version
   val http4sCore = organization %% "http4s-core" % version
@@ -124,7 +124,7 @@ trait Http4s {
 
 trait Ip4s {
   private[this] val organization = "com.comcast"
-  private[this] val version = "3.2.0"
+  private[this] val version = "3.3.0"
 
   val ip4sCore = organization %% "ip4s-core" % version
 }
@@ -148,7 +148,7 @@ trait Logback {
 trait Log4Cats {
   private[this] val organization = "org.typelevel"
 
-  private[this] val version = "2.5.0"
+  private[this] val version = "2.6.0"
 
   val log4CatsCore = organization %% "log4cats-core" % version
   val log4CatsSlf4j = organization %% "log4cats-slf4j" % version
