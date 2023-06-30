@@ -20,7 +20,7 @@ trait Cats {
   private[this] val organization = "org.typelevel"
 
   private[this] val catsVersion = "2.9.0"
-  private[this] val catsEffectVersion = "3.5.0"
+  private[this] val catsEffectVersion = "3.5.1"
   private[this] val kittensVersion = "3.0.0"
 
   val catsCore = organization %% "cats-core" % catsVersion
@@ -113,7 +113,7 @@ trait Hikari {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.23.20"
+  private[this] val version = "0.23.21"
 
   val http4sCirce = organization %% "http4s-circe" % version
   val http4sCore = organization %% "http4s-core" % version
