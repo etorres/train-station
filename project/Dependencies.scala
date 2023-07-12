@@ -215,7 +215,7 @@ trait Tapir {
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
   private[this] val apispecVersion = "0.4.0"
-  private[this] val modelVersion = "1.6.0"
+  private[this] val modelVersion = "1.7.0"
   private[this] val sharedVersion = "1.3.15"
   private[this] val tapirVersion = "1.6.0"
 
