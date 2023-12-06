@@ -49,7 +49,7 @@ trait CaseInsensitive {
 
 trait Circe {
   private[this] val organization = "io.circe"
-  private[this] val version = "0.14.5"
+  private[this] val version = "0.14.6"
 
   val circeCore = organization %% "circe-core" % version
   // for auto-derivation of JSON codecs
@@ -113,7 +113,7 @@ trait Hikari {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.23.21"
+  private[this] val version = "0.23.24"
 
   val http4sCirce = organization %% "http4s-circe" % version
   val http4sCore = organization %% "http4s-core" % version
@@ -157,7 +157,7 @@ trait Log4Cats {
 trait Magnolia {
   private[this] val organization = "com.softwaremill.magnolia1_2"
 
-  private[this] val version = "1.1.3"
+  private[this] val version = "1.1.6"
 
   val magnolia = organization %% "magnolia" % version
 }
@@ -214,10 +214,10 @@ trait Tapir {
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
-  private[this] val apispecVersion = "0.4.0"
+  private[this] val apispecVersion = "0.7.3"
   private[this] val modelVersion = "1.7.6"
   private[this] val sharedVersion = "1.3.17"
-  private[this] val tapirVersion = "1.6.0"
+  private[this] val tapirVersion = "1.9.3"
 
   val openApiModel = apispecOrganization %% "openapi-model" % apispecVersion
   val openApiCirceYaml = apispecOrganization %% "openapi-circe-yaml" % apispecVersion
