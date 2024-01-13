@@ -157,7 +157,7 @@ trait Log4Cats {
 trait Magnolia {
   private[this] val organization = "com.softwaremill.magnolia1_2"
 
-  private[this] val version = "1.1.6"
+  private[this] val version = "1.1.8"
 
   val magnolia = organization %% "magnolia" % version
 }
