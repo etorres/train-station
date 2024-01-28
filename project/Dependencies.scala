@@ -113,7 +113,7 @@ trait Hikari {
 trait Http4s {
   private[this] val organization = "org.http4s"
 
-  private[this] val version = "0.23.24"
+  private[this] val version = "0.23.25"
 
   val http4sCirce = organization %% "http4s-circe" % version
   val http4sCore = organization %% "http4s-core" % version
@@ -214,7 +214,7 @@ trait Tapir {
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
-  private[this] val apispecVersion = "0.7.3"
+  private[this] val apispecVersion = "0.7.4"
   private[this] val modelVersion = "1.7.6"
   private[this] val sharedVersion = "1.3.17"
   private[this] val tapirVersion = "1.9.7"
