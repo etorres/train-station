@@ -18,7 +18,7 @@ trait StringFieldDecoder {
     fA: String => Either[_ <: Throwable, A]
   ): Decoder.Result[A] =
     fA(str) match {
-      case Left(error) => Left(DecodingFailure.fromThrowable(error, List.empty))
+      case Left(`error`) => Left(DecodingFailure.fromThrowable(`error`, List.empty))
       case Right(value) => Right(value)
     }
 }
