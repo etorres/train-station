@@ -216,7 +216,7 @@ trait Tapir {
 
   private[this] val apispecVersion = "0.8.0"
   private[this] val modelVersion = "1.7.10"
-  private[this] val sharedVersion = "1.3.17"
+  private[this] val sharedVersion = "1.3.18"
   private[this] val tapirVersion = "1.10.4"
 
   val openApiModel = apispecOrganization %% "openapi-model" % apispecVersion
