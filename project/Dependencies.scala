@@ -86,7 +86,7 @@ trait Doobie {
 trait Fs2 {
   private[this] val organization = "co.fs2"
 
-  private[this] val version = "3.9.4"
+  private[this] val version = "3.10.0"
 
   val fs2Core = organization %% "fs2-core" % version
   val fs2Io = organization %% "fs2-io" % version
@@ -157,7 +157,7 @@ trait Log4Cats {
 trait Magnolia {
   private[this] val organization = "com.softwaremill.magnolia1_2"
 
-  private[this] val version = "1.1.8"
+  private[this] val version = "1.1.9"
 
   val magnolia = organization %% "magnolia" % version
 }
@@ -214,10 +214,10 @@ trait Tapir {
   private[this] val sharedOrganization = "com.softwaremill.sttp.shared"
   private[this] val tapirOrganization = "com.softwaremill.sttp.tapir"
 
-  private[this] val apispecVersion = "0.8.0"
+  private[this] val apispecVersion = "0.10.0"
   private[this] val modelVersion = "1.7.10"
   private[this] val sharedVersion = "1.3.18"
-  private[this] val tapirVersion = "1.10.4"
+  private[this] val tapirVersion = "1.10.6"
 
   val openApiModel = apispecOrganization %% "openapi-model" % apispecVersion
   val openApiCirceYaml = apispecOrganization %% "openapi-circe-yaml" % apispecVersion
