@@ -157,7 +157,7 @@ trait Log4Cats {
 trait Magnolia {
   private[this] val organization = "com.softwaremill.magnolia1_2"
 
-  private[this] val version = "1.1.9"
+  private[this] val version = "1.1.10"
 
   val magnolia = organization %% "magnolia" % version
 }
@@ -217,7 +217,7 @@ trait Tapir {
   private[this] val apispecVersion = "0.10.0"
   private[this] val modelVersion = "1.7.11"
   private[this] val sharedVersion = "1.3.19"
-  private[this] val tapirVersion = "1.10.7"
+  private[this] val tapirVersion = "1.10.10"
 
   val openApiModel = apispecOrganization %% "openapi-model" % apispecVersion
   val openApiCirceYaml = apispecOrganization %% "openapi-circe-yaml" % apispecVersion
