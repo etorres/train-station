@@ -18,15 +18,19 @@ jobs:
       CI: true
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Spin up Test Environment
-        run: docker-compose up -d
-      - name: Setup Scala
-        uses: olafurpg/setup-scala@v11
+        run: docker compose up -d
+      - name: Setup JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: openjdk@1.17
+          distribution: temurin
+          java-version: 21
+          cache: sbt
       - name: Coursier cache
         uses: coursier/cache-action@v6
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
       - name: Build and Test
         run: |
           sbt -v -Dfile.encoding=UTF-8 +check +coverage +test +coverageReport
@@ -36,6 +40,6 @@ jobs:
           find $HOME/.cache/coursier/v1         -name "ivydata-*.properties" -delete || true
           find $HOME/.sbt                       -name "*.lock"               -delete || true
       - name: Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
