@@ -81,9 +81,9 @@ object Settings {
       javacOptions ++= Seq(
         "-g:none",
         "-source",
-        "21",
+        "11",
         "-target",
-        "21",
+        "11",
         "-encoding",
         "UTF-8"
       )
