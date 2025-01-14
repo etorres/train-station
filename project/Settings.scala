@@ -15,12 +15,11 @@ object Settings {
       "; undeclaredCompileDependenciesTest; unusedCompileDependenciesTest; scalafmtSbtCheck; scalafmtCheckAll"
     ) ++ addCommandAlias("testWithCoverage", "; coverage; test; coverageReport")
 
-  def welcomeMessage: Def.Setting[String] = onLoadMessage := {
+  def welcomeMessage: Def.Setting[String] = onLoadMessage :=
     s"""Custom tasks:
        |check - run all project checks
        |testWithCoverage - test with coverage
        |""".stripMargin
-  }
 
   private[this] val warts: Seq[Wart] = Warts.allBut(
     Wart.Any,
