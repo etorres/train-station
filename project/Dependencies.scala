@@ -21,7 +21,7 @@ trait Cats {
 
   private[this] val catsVersion = "2.12.0"
   private[this] val catsEffectVersion = "3.5.4"
-  private[this] val kittensVersion = "3.3.0"
+  private[this] val kittensVersion = "3.5.0"
 
   val catsCore = organization %% "cats-core" % catsVersion
   val catsEffect = organization %% "cats-effect" % catsEffectVersion
