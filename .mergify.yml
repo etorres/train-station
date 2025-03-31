@@ -1,17 +1,17 @@
 queue_rules:
   - name: default
-    conditions:
+    queue_conditions:
       - author=scala-steward
       - status-success=validate
       - body~=labels:.*semver-patch
+    merge_conditions:
+      - author=scala-steward
+      - status-success=validate
+      - body~=labels:.*semver-patch
+    merge_method: merge
 
 pull_request_rules:
   - name: automatically merge scala-steward's PRs
-    conditions:
-      - author=scala-steward
-      - status-success=validate
-      - body~=labels:.*semver-patch
+    conditions: []
     actions:
       queue:
-        method: merge
-        name: default
