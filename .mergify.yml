@@ -1,6 +1,6 @@
 queue_rules:
   - name: default
-    conditions:
+    merge_conditions:
       - author=scala-steward
       - status-success=validate
       - body~=labels:.*semver-patch
